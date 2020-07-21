@@ -678,7 +678,11 @@ namespace Ryujinx.Ava
                                                      ConfigurationState.Instance.System.IgnoreMissingServices,
                                                      ConfigurationState.Instance.Graphics.AspectRatio,
                                                      ConfigurationState.Instance.System.AudioVolume,
-                                                     ConfigurationState.Instance.System.UseHypervisor);
+                                                     ConfigurationState.Instance.System.UseHypervisor,
+                                                     ConfigurationState.Instance.Multiplayer.Mode,
+                                                     ConfigurationState.Instance.Multiplayer.DisableP2p,
+                                                     ConfigurationState.Instance.Multiplayer.LdnPassphrase,
+                                                     ConfigurationState.Instance.Multiplayer.LanInterfaceId);
 
             Device = new Switch(configuration);
         }
