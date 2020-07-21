@@ -1,6 +1,7 @@
 ﻿using LibHac.Tools.FsSystem;
 using Ryujinx.Audio.Integration;
 using Ryujinx.Common.Configuration;
+using Ryujinx.Common.Configuration.Multiplayer;
 using Ryujinx.Graphics.GAL;
 using Ryujinx.HLE.FileSystem;
 using Ryujinx.HLE.HOS;
@@ -154,6 +155,26 @@ namespace Ryujinx.HLE
         internal readonly bool UseHypervisor;
 
         /// <summary>
+        /// Multiplayer Mode
+        /// </summary>
+        public MultiplayerMode MultiplayerMode { internal get; set; }
+
+        /// <summary>
+        /// Disable P2P mode
+        /// </summary>
+        public bool MultiplayerDisableP2p { internal get; set; }
+
+        /// <summary>
+        /// Multiplayer Passphrase
+        /// </summary>
+        public string MultiplayerLdnPassphrase { internal get; set; }
+
+        /// <summary>
+        /// Multiplayer LAN Interface ID (device GUID)
+        /// </summary>
+        public string MultiplayerLanInterfaceId { internal get; set; }
+
+        /// <summary>
         /// An action called when HLE force a refresh of output after docked mode changed.
         /// </summary>
         public Action RefreshInputConfig { internal get; set; }
@@ -181,7 +202,11 @@ namespace Ryujinx.HLE
                                 bool                   ignoreMissingServices,
                                 AspectRatio            aspectRatio,
                                 float                  audioVolume,
-                                bool                   useHypervisor)
+                                bool                   useHypervisor,
+                                MultiplayerMode        multiplayerMode,
+                                bool                   multiplayerDisableP2p,
+                                string                 multiplayerLdnPassphrase,
+                                string                 multiplayerLanInterfaceId)
         {
             VirtualFileSystem      = virtualFileSystem;
             LibHacHorizonManager   = libHacHorizonManager;
@@ -207,6 +232,11 @@ namespace Ryujinx.HLE
             AspectRatio            = aspectRatio;
             AudioVolume            = audioVolume;
             UseHypervisor          = useHypervisor;
+
+            MultiplayerMode           = multiplayerMode;
+            MultiplayerDisableP2p     = multiplayerDisableP2p;
+            MultiplayerLdnPassphrase  = multiplayerLdnPassphrase;
+            MultiplayerLanInterfaceId = multiplayerLanInterfaceId;
         }
     }
 }
