@@ -10,6 +10,7 @@ using Ryujinx.HLE.HOS.Kernel.Threading;
 using Ryujinx.HLE.HOS.Services.Ldn.Types;
 using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.RyuLdn;
 using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.RyuLdn.Types;
+using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn;
 using Ryujinx.Memory;
 using System;
 using System.Net;
@@ -35,7 +36,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator
         private NetworkState     _state;
         private DisconnectReason _disconnectReason;
         private ResultCode       _nifmResultCode;
-        private ulong             _currentPid;
+        private ulong            _currentPid;
 
         private AccessPoint _accessPoint;
         private Station     _station;
@@ -609,7 +610,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator
                                     AddressList addressList = LdnHelper.FromBytes<AddressList>(addressListBytes);
 
                                     _accessPoint.CreateNetworkPrivate(securityConfig, securityParameter, userConfig, networkConfig, addressList);
-                                } 
+                                }
                                 else
                                 {
                                     _accessPoint.CreateNetwork(securityConfig, userConfig, networkConfig);
@@ -955,7 +956,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator
 
                 return ResultCode.InvalidState;
             }
-        
+
             return ResultCode.InvalidArgument;
         }
 
@@ -1010,7 +1011,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator
                         }
 
                         DestroyNetworkImpl(disconnectReason);
-                        
+
                         break;
                     }
                 case NetworkState.Station:
@@ -1088,6 +1089,9 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator
                                     Logger.Error?.Print(LogClass.ServiceLdn, "Could not locate RyuLdn server. Defaulting to stubbed wireless.");
                                     NetworkClient = new DisabledLdnClient();
                                 }
+                                break;
+                            case MultiplayerMode.Spacemeowx2Ldn:
+                                NetworkClient = new Spacemeowx2LdnClient(this, context.Device.Configuration);
                                 break;
                             case MultiplayerMode.Disabled:
                                 NetworkClient = new DisabledLdnClient();
