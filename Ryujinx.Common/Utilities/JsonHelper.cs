@@ -1,4 +1,4 @@
-﻿using Ryujinx.Common.Configuration.Hid;
+using Ryujinx.Common.Configuration.Hid;
 using Ryujinx.Common.Configuration.Hid.Controller.Motion;
 using System.IO;
 using System.Text;
@@ -43,7 +43,6 @@ namespace Ryujinx.Common.Utilities
                         builder.Append(c);
                     }
                 }
-
                 return builder.ToString();
             }
         }
@@ -60,6 +59,8 @@ namespace Ryujinx.Common.Utilities
                 DictionaryKeyPolicy  = SnakeCase,
                 PropertyNamingPolicy = SnakeCase,
                 WriteIndented        = prettyPrint,
+                // TODO: remove this again - only used for debugging
+                IncludeFields = true,
                 AllowTrailingCommas  = true,
                 ReadCommentHandling  = JsonCommentHandling.Skip
             };
