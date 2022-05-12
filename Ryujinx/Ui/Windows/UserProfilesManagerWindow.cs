@@ -32,7 +32,7 @@ namespace Ryujinx.Ui.Windows
 
         public UserProfilesManagerWindow(AccountManager accountManager, ContentManager contentManager, VirtualFileSystem virtualFileSystem) : base($"Ryujinx {Program.Version} - Manage User Profiles")
         {
-            Icon = new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Ryujinx.Ui.Common.Resources.Logo_Ryujinx.png");
+            Icon = new Gdk.Pixbuf(Assembly.GetExecutingAssembly(), "Ryujinx.Ui.Resources.Logo_Ryujinx.png");
 
             InitializeComponent();
 
@@ -53,7 +53,7 @@ namespace Ryujinx.Ui.Windows
             _usersTreeView.AppendColumn("User Info", new CellRendererText(),   "text",   2, "background-rgba", 3);
 
             _tableStore.SetSortColumnId(0, SortType.Descending);
-            
+
             RefreshList();
 
             if (_contentManager.GetCurrentFirmwareVersion() != null)
@@ -232,7 +232,7 @@ namespace Ryujinx.Ui.Windows
 
                 ResponseType responseDialog = GtkDialog.CreateCustomDialog("Profile Image Selection",
                                                                            "Choose a Profile Image",
-                                                                           "You may import a custom profile image, or select an avatar from the system firmware.", 
+                                                                           "You may import a custom profile image, or select an avatar from the system firmware.",
                                                                            buttons, MessageType.Question);
 
                 if (responseDialog == 0)

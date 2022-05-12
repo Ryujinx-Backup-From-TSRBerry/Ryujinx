@@ -1,0 +1,84 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:flex="clr-namespace:Avalonia.Flexbox;assembly=Avalonia.Flexbox"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:locale="clr-namespace:Ryujinx.Ava.Common.Locale"
+             xmlns:controls="clr-namespace:Ryujinx.Rsc.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Ryujinx.Rsc.Controls.GameGridView">
+	<UserControl.Resources>
+		<controls:BitmapArrayValueConverter x:Key="ByteImage" />
+	</UserControl.Resources>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<ListBox Grid.Row="0"
+                 Padding="8"
+                 HorizontalAlignment="Stretch"
+                 SelectionChanged="GameList_SelectionChanged"
+                 VerticalAlignment="Stretch"
+                 Items="{Binding AppsObservableList}">
+			<ListBox.ItemsPanel>
+				<ItemsPanelTemplate>
+					<flex:FlexPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" JustifyContent="Center"
+                                    AlignContent="FlexStart" />
+				</ItemsPanelTemplate>
+			</ListBox.ItemsPanel>
+			<ListBox.Styles>
+				<Style Selector="ListBoxItem">
+					<Setter Property="Padding" Value="0" />
+					<Setter Property="Margin" Value="5" />
+					<Setter Property="CornerRadius" Value="5" />
+					<Setter Property="Background" Value="{DynamicResource SystemAccentColorDark3}" />
+					<Style.Animations>
+						<Animation Duration="0:0:0.7">
+							<KeyFrame Cue="0%">
+								<Setter Property="MaxWidth" Value="0"/>
+								<Setter Property="Opacity" Value="0.0"/>
+							</KeyFrame>
+							<KeyFrame Cue="50%">
+								<Setter Property="MaxWidth" Value="1000"/>
+								<Setter Property="Opacity" Value="0.3"/>
+							</KeyFrame>
+							<KeyFrame Cue="100%">
+								<Setter Property="MaxWidth" Value="1000"/>
+								<Setter Property="Opacity" Value="1.0"/>
+							</KeyFrame>
+						</Animation>
+					</Style.Animations>
+				</Style>
+			</ListBox.Styles>
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<Grid>
+						<Border
+                            Classes.small="{Binding $parent[UserControl].DataContext.IsGridSmall}"
+                            Classes.normal="{Binding $parent[UserControl].DataContext.IsGridMedium}"
+                            Classes.large="{Binding $parent[UserControl].DataContext.IsGridLarge}"
+                            Classes.huge="{Binding $parent[UserControl].DataContext.IsGridHuge}"
+                            HorizontalAlignment="Stretch"
+                            Padding="{Binding $parent[UserControl].DataContext.GridItemPadding}" CornerRadius="5"
+                            VerticalAlignment="Stretch" Margin="0" ClipToBounds="True">
+							<Grid Margin="0">
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
+								<Image HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0" Grid.Row="0"
+                                       Source="{Binding Icon, Converter={StaticResource ByteImage}}" />
+								<StackPanel IsVisible="{Binding $parent[UserControl].DataContext.ShowNames}"
+                                            Height="50" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                            Margin="5" Grid.Row="1">
+									<TextBlock Text="{Binding TitleName}" TextAlignment="Center" TextWrapping="Wrap"
+                                               HorizontalAlignment="Stretch" />
+								</StackPanel>
+							</Grid>
+						</Border>
+					</Grid>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+	</Grid>
+</UserControl>

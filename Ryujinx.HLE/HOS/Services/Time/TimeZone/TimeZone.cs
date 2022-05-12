@@ -1163,7 +1163,7 @@ namespace Ryujinx.HLE.HOS.Services.Time.TimeZone
                     return false;
                 }
 
-                if (outRules.TimeCount > 1)
+                /*if (outRules.TimeCount > 1)
                 {
                     for (int i = 1; i < outRules.TimeCount; i++)
                     {
@@ -1182,7 +1182,7 @@ namespace Ryujinx.HLE.HOS.Services.Time.TimeZone
                             break;
                         }
                     }
-                }
+                }*/
 
                 int defaultType;
 

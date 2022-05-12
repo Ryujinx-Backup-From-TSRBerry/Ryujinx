@@ -10,7 +10,7 @@ namespace Ryujinx.Ui.Widgets
     {
         private static bool _isChoiceDialogOpen;
 
-        private GtkDialog(string title, string mainText, string secondaryText, MessageType messageType = MessageType.Other, ButtonsType buttonsType = ButtonsType.Ok) 
+        private GtkDialog(string title, string mainText, string secondaryText, MessageType messageType = MessageType.Other, ButtonsType buttonsType = ButtonsType.Ok)
             : base(null, DialogFlags.Modal, messageType, buttonsType, null)
         {
             Title              = title;
