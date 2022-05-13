@@ -83,7 +83,7 @@ namespace Ryujinx.Ui.Widgets
             return error switch
             {
                 UserError.NoKeys or
-                UserError.NoFirmware or 
+                UserError.NoFirmware or
                 UserError.FirmwareParsingFailed => true,
                 _                               => false,
             };

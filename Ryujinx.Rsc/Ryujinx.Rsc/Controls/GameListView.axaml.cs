@@ -54,7 +54,7 @@ namespace Ryujinx.Rsc.Controls
         {
             AvaloniaXamlLoader.Load(this);
         }
-        
+
         private void MenuBase_OnMenuOpened(object sender, EventArgs e)
         {
             var selection = SelectedApplication;

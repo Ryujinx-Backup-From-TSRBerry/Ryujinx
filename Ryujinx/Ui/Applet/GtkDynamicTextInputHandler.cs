@@ -44,7 +44,7 @@ namespace Ryujinx.Ui.Applet
 
             _inputToTextEntry.TruncateMultiline = true;
 
-            // Start with input processing turned off so the text box won't accumulate text 
+            // Start with input processing turned off so the text box won't accumulate text
             // if the user is playing on the keyboard.
             _canProcessInput = false;
         }

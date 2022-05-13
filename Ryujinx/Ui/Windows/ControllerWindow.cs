@@ -535,7 +535,7 @@ namespace Ryujinx.Ui.Windows
                     {
                         _controllerRangeLeft.Value  = 1.0;
                         _controllerRangeRight.Value = 1.0;
-                        
+
                         Logger.Info?.Print(LogClass.Application, $"{config.PlayerIndex} stick range reset. Save the profile now to update your configuration");
                     }
 
@@ -635,7 +635,7 @@ namespace Ryujinx.Ui.Windows
                     },
                 };
             }
-            
+
             if (_inputDevice.ActiveId.StartsWith("controller"))
             {
                 Enum.TryParse(_lStick.Label,      out ConfigStickInputId lStick);
@@ -853,7 +853,7 @@ namespace Ryujinx.Ui.Windows
             {
                 throw new Exception("Controller not supported");
             }
-            
+
             return assigner;
         }
 
