@@ -4,6 +4,8 @@ using ARMeilleure.State;
 
 using NUnit.Framework;
 
+using Ryujinx.Cpu;
+
 using System;
 using System.Collections.Generic;
 
@@ -405,7 +407,7 @@ namespace Ryujinx.Tests.Cpu
         public void SanityCheck(ulong a)
         {
             uint opcode = 0xD503201F; // NOP
-            ExecutionContext context = SingleOpcode(opcode, x0: a);
+            IExecutionContext context = SingleOpcode(opcode, x0: a);
 
             Assert.That(context.GetX(0), Is.EqualTo(a));
         }

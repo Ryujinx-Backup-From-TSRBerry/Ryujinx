@@ -2,6 +2,7 @@
 
 using ARMeilleure.State;
 using NUnit.Framework;
+using Ryujinx.Cpu;
 using System;
 
 namespace Ryujinx.Tests.Cpu
@@ -87,7 +88,7 @@ namespace Ryujinx.Tests.Cpu
 
             SingleOpcode(opcode, r1: test.Crc, r2: test.Value, sp: sp, runUnicorn: false);
 
-            ExecutionContext context = GetContext();
+            IExecutionContext context = GetContext();
             ulong result = context.GetX((int)rd);
             Assert.That(result == test.Results[size]);
         }

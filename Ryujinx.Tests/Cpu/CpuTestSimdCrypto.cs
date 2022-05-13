@@ -1,6 +1,7 @@
 // https://www.intel.com/content/dam/doc/white-paper/advanced-encryption-standard-new-instructions-set-paper.pdf
 
 using ARMeilleure.State;
+using Ryujinx.Cpu;
 
 using NUnit.Framework;
 
@@ -24,7 +25,7 @@ namespace Ryujinx.Tests.Cpu
             V128 v0 = MakeVectorE0E1(roundKeyL ^ valueL, roundKeyH ^ valueH);
             V128 v1 = MakeVectorE0E1(roundKeyL,          roundKeyH);
 
-            ExecutionContext context = SingleOpcode(opcode, v0: v0, v1: v1);
+            IExecutionContext context = SingleOpcode(opcode, v0: v0, v1: v1);
 
             Assert.Multiple(() =>
             {
@@ -56,7 +57,7 @@ namespace Ryujinx.Tests.Cpu
             V128 v0 = MakeVectorE0E1(roundKeyL ^ valueL, roundKeyH ^ valueH);
             V128 v1 = MakeVectorE0E1(roundKeyL,          roundKeyH);
 
-            ExecutionContext context = SingleOpcode(opcode, v0: v0, v1: v1);
+            IExecutionContext context = SingleOpcode(opcode, v0: v0, v1: v1);
 
             Assert.Multiple(() =>
             {
@@ -85,7 +86,7 @@ namespace Ryujinx.Tests.Cpu
 
             V128 v = MakeVectorE0E1(valueL, valueH);
 
-            ExecutionContext context = SingleOpcode(
+            IExecutionContext context = SingleOpcode(
                 opcode,
                 v0: rn == 0u ? v : default(V128),
                 v1: rn == 1u ? v : default(V128));
@@ -120,7 +121,7 @@ namespace Ryujinx.Tests.Cpu
 
             V128 v = MakeVectorE0E1(valueL, valueH);
 
-            ExecutionContext context = SingleOpcode(
+            IExecutionContext context = SingleOpcode(
                 opcode,
                 v0: rn == 0u ? v : default(V128),
                 v1: rn == 1u ? v : default(V128));
