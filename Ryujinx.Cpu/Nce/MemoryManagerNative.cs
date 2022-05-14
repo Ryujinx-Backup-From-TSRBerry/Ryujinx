@@ -8,12 +8,12 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
-namespace Ryujinx.Cpu.Jit
+namespace Ryujinx.Cpu.Nce
 {
     /// <summary>
     /// Represents a CPU memory manager which maps guest virtual memory directly onto a host virtual region.
     /// </summary>
-    public sealed class MemoryManagerHostMapped : MemoryManagerBase, IMemoryManager, IVirtualMemoryManagerTracked, IWritableBlock
+    public sealed class MemoryManagerNative : MemoryManagerBase, IMemoryManager, IVirtualMemoryManagerTracked, IWritableBlock
     {
         public const int PageBits = 12;
         public const int PageSize = 1 << PageBits;
@@ -50,7 +50,9 @@ namespace Ryujinx.Cpu.Jit
 
         public int AddressSpaceBits { get; }
 
-        public IntPtr PageTablePointer => _addressSpace.Pointer;
+        public IntPtr PageTablePointer => IntPtr.Zero;
+
+        public ulong ReservedSize => (ulong)_addressSpace.Pointer.ToInt64();
 
         public MemoryManagerType Type => _unsafeMode ? MemoryManagerType.HostMappedUnsafe : MemoryManagerType.HostMapped;
 
@@ -65,7 +67,7 @@ namespace Ryujinx.Cpu.Jit
         /// <param name="addressSpaceSize">Size of the address space</param>
         /// <param name="unsafeMode">True if unmanaged access should not be masked (unsafe), false otherwise.</param>
         /// <param name="invalidAccessHandler">Optional function to handle invalid memory accesses</param>
-        public MemoryManagerHostMapped(MemoryBlock backingMemory, ulong addressSpaceSize, bool unsafeMode, InvalidAccessHandler invalidAccessHandler = null)
+        public MemoryManagerNative(MemoryBlock backingMemory, ulong addressSpaceSize, bool unsafeMode, InvalidAccessHandler invalidAccessHandler = null)
         {
             _backingMemory = backingMemory;
             _pageTable = new PageTable<ulong>();
@@ -92,7 +94,7 @@ namespace Ryujinx.Cpu.Jit
             _addressSpaceMirror = new MemoryBlock(asSize, asFlags | MemoryAllocationFlags.ForceWindows4KBViewMapping);
 
             Tracking = new MemoryTracking(this, PageSize, invalidAccessHandler);
-            _memoryEh = new MemoryEhMeilleure(_addressSpace, Tracking);
+            _memoryEh = new MemoryEhMeilleure(asSize, Tracking);
         }
 
         /// <summary>
@@ -149,8 +151,8 @@ namespace Ryujinx.Cpu.Jit
         {
             AssertValidAddressAndSize(va, size);
 
-            _addressSpace.MapView(_backingMemory, pa, va, size);
-            _addressSpaceMirror.MapView(_backingMemory, pa, va, size);
+            _addressSpace.MapView(_backingMemory, pa, AddressToOffset(va), size);
+            _addressSpaceMirror.MapView(_backingMemory, pa, AddressToOffset(va), size);
             AddMapping(va, size);
             PtMap(va, pa, size);
 
@@ -167,13 +169,15 @@ namespace Ryujinx.Cpu.Jit
 
             RemoveMapping(va, size);
             PtUnmap(va, size);
-            _addressSpace.UnmapView(_backingMemory, va, size);
-            _addressSpaceMirror.UnmapView(_backingMemory, va, size);
+            _addressSpace.UnmapView(_backingMemory, AddressToOffset(va), size);
+            _addressSpaceMirror.UnmapView(_backingMemory, AddressToOffset(va), size);
         }
 
         /// <inheritdoc/>
         public void Reprotect(ulong va, ulong size, MemoryPermission permission)
         {
+            permission &= ~MemoryPermission.Execute;
+            _addressSpace.Reprotect(AddressToOffset(va), size, permission);
         }
 
         private void PtMap(ulong va, ulong pa, ulong size)
@@ -206,7 +210,7 @@ namespace Ryujinx.Cpu.Jit
             {
                 AssertMapped(va, (ulong)Unsafe.SizeOf<T>());
 
-                return _addressSpaceMirror.Read<T>(va);
+                return _addressSpaceMirror.Read<T>(AddressToOffset(va));
             }
             catch (InvalidMemoryRegionException)
             {
@@ -246,7 +250,7 @@ namespace Ryujinx.Cpu.Jit
             {
                 AssertMapped(va, (ulong)data.Length);
 
-                _addressSpaceMirror.Read(va, data);
+                _addressSpaceMirror.Read(AddressToOffset(va), data);
             }
             catch (InvalidMemoryRegionException)
             {
@@ -265,7 +269,7 @@ namespace Ryujinx.Cpu.Jit
             {
                 SignalMemoryTracking(va, (ulong)Unsafe.SizeOf<T>(), write: true);
 
-                _addressSpaceMirror.Write(va, value);
+                _addressSpaceMirror.Write(AddressToOffset(va), value);
             }
             catch (InvalidMemoryRegionException)
             {
@@ -282,7 +286,7 @@ namespace Ryujinx.Cpu.Jit
             try {
                 SignalMemoryTracking(va, (ulong)data.Length, write: true);
 
-                _addressSpaceMirror.Write(va, data);
+                _addressSpaceMirror.Write(AddressToOffset(va), data);
             }
             catch (InvalidMemoryRegionException)
             {
@@ -300,7 +304,7 @@ namespace Ryujinx.Cpu.Jit
             {
                 AssertMapped(va, (ulong)data.Length);
 
-                _addressSpaceMirror.Write(va, data);
+                _addressSpaceMirror.Write(AddressToOffset(va), data);
             }
             catch (InvalidMemoryRegionException)
             {
@@ -323,7 +327,7 @@ namespace Ryujinx.Cpu.Jit
                 AssertMapped(va, (ulong)size);
             }
 
-            return _addressSpaceMirror.GetSpan(va, size);
+            return _addressSpaceMirror.GetSpan(AddressToOffset(va), size);
         }
 
         /// <inheritdoc/>
@@ -338,7 +342,7 @@ namespace Ryujinx.Cpu.Jit
                 AssertMapped(va, (ulong)size);
             }
 
-            return _addressSpaceMirror.GetWritableRegion(va, size);
+            return _addressSpaceMirror.GetWritableRegion(AddressToOffset(va), size);
         }
 
         /// <inheritdoc/>
@@ -346,7 +350,7 @@ namespace Ryujinx.Cpu.Jit
         {
             SignalMemoryTracking(va, (ulong)Unsafe.SizeOf<T>(), true);
 
-            return ref _addressSpaceMirror.GetRef<T>(va);
+            return ref _addressSpaceMirror.GetRef<T>(AddressToOffset(va));
         }
 
         /// <inheritdoc/>
@@ -668,7 +672,7 @@ namespace Ryujinx.Cpu.Jit
                 _ => MemoryPermission.None
             };
 
-            _addressSpace.Reprotect(va, size, protection, false);
+            _addressSpace.Reprotect(AddressToOffset(va), size, protection, false);
         }
 
         /// <inheritdoc/>
@@ -767,6 +771,16 @@ namespace Ryujinx.Cpu.Jit
 
                 mask = 0;
             }
+        }
+
+        private ulong AddressToOffset(ulong address)
+        {
+            if (address < ReservedSize)
+            {
+                throw new ArgumentException($"Invalid address 0x{address:x16}");
+            }
+
+            return address - ReservedSize;
         }
 
         /// <summary>

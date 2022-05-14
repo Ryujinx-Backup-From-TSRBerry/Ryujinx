@@ -4,6 +4,7 @@ using LibHac.Ncm;
 using LibHac.Util;
 using Ryujinx.Common;
 using Ryujinx.Common.Logging;
+using Ryujinx.Cpu;
 using Ryujinx.HLE.HOS.Kernel;
 using Ryujinx.HLE.HOS.Kernel.Common;
 using Ryujinx.HLE.HOS.Kernel.Memory;
@@ -37,6 +38,8 @@ namespace Ryujinx.HLE.HOS
         private const int ArgsHeaderSize = 8;
         private const int ArgsDataSize   = 0x9000;
         private const int ArgsTotalSize  = ArgsHeaderSize + ArgsDataSize;
+
+        private const int ReservedPatchSize = 0x100000;
 
         public static bool LoadKip(KernelContext context, KipExecutable kip)
         {
@@ -118,7 +121,8 @@ namespace Ryujinx.HLE.HOS
                 return false;
             }
 
-            result = LoadIntoMemory(process, kip, codeBaseAddress);
+            // TODO: Support NCE of KIPs too.
+            result = LoadIntoMemory(process, kip, codeBaseAddress, 0UL);
 
             if (result != KernelResult.Success)
             {
@@ -173,6 +177,7 @@ namespace Ryujinx.HLE.HOS
                 _ => ""
             }).Replace("-", "").ToUpper());
 
+            ulong[] nsoPatch = new ulong[executables.Length];
             ulong[] nsoBase = new ulong[executables.Length];
 
             for (int index = 0; index < executables.Length; index++)
@@ -197,6 +202,10 @@ namespace Ryujinx.HLE.HOS
 
                 nsoSize = BitUtils.AlignUp(nsoSize, KPageTableBase.PageSize);
 
+                nsoPatch[index] = codeStart + (ulong)codeSize;
+
+                codeSize += ReservedPatchSize;
+
                 nsoBase[index] = codeStart + (ulong)codeSize;
 
                 codeSize += nsoSize;
@@ -210,6 +219,8 @@ namespace Ryujinx.HLE.HOS
                     codeSize += argsSize;
                 }
             }
+
+            codeSize += ReservedPatchSize;
 
             PtcProfiler.StaticCodeStart = codeStart;
             PtcProfiler.StaticCodeSize  = (ulong)codeSize;
@@ -271,7 +282,9 @@ namespace Ryujinx.HLE.HOS
                 MemoryMarshal.Cast<byte, int>(npdm.KernelCapabilityData).ToArray(),
                 resourceLimit,
                 memoryRegion,
-                processContextFactory);
+                processContextFactory,
+                null,
+                ReservedPatchSize);
 
             if (result != KernelResult.Success)
             {
@@ -284,9 +297,12 @@ namespace Ryujinx.HLE.HOS
 
             for (int index = 0; index < executables.Length; index++)
             {
-                Logger.Info?.Print(LogClass.Loader, $"Loading image {index} at 0x{nsoBase[index]:x16}...");
+                ulong nsoPatchAddress = process.Context.ReservedSize + nsoPatch[index];
+                ulong nsoBaseAddress = process.Context.ReservedSize + nsoBase[index];
 
-                result = LoadIntoMemory(process, executables[index], nsoBase[index]);
+                Logger.Info?.Print(LogClass.Loader, $"Loading image {index} at 0x{nsoBaseAddress:x16}...");
+
+                result = LoadIntoMemory(process, executables[index], nsoBaseAddress, nsoPatchAddress);
 
                 if (result != KernelResult.Success)
                 {
@@ -322,7 +338,7 @@ namespace Ryujinx.HLE.HOS
             return true;
         }
 
-        private static KernelResult LoadIntoMemory(KProcess process, IExecutable image, ulong baseAddress)
+        private static KernelResult LoadIntoMemory(KProcess process, IExecutable image, ulong baseAddress, ulong patchAddress)
         {
             ulong textStart = baseAddress + (ulong)image.TextOffset;
             ulong roStart   = baseAddress + (ulong)image.RoOffset;
@@ -341,6 +357,8 @@ namespace Ryujinx.HLE.HOS
             process.CpuMemory.Write(dataStart, image.Data);
 
             process.CpuMemory.Fill(bssStart, image.BssSize, 0);
+
+            process.Context.PatchCodeForNce(textStart, (ulong)image.Text.Length, patchAddress, ReservedPatchSize);
 
             KernelResult SetProcessMemoryPermission(ulong address, ulong size, KMemoryPermission permission)
             {

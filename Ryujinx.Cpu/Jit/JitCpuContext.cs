@@ -37,5 +37,9 @@ namespace Ryujinx.Cpu.Jit
         {
             _translator.InvalidateJitCacheRegion(address, size);
         }
+
+        public void PatchCodeForNce(ulong textAddress, ulong textSize, ulong patchRegionAddress, ulong patchRegionSize)
+        {
+        }
     }
 }

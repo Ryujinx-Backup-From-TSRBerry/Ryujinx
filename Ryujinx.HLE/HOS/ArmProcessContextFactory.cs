@@ -1,6 +1,7 @@
 ﻿using Ryujinx.Common.Configuration;
 using Ryujinx.Cpu;
 using Ryujinx.Cpu.Jit;
+using Ryujinx.Cpu.Nce;
 using Ryujinx.Graphics.Gpu;
 using Ryujinx.HLE.HOS.Kernel;
 using Ryujinx.HLE.HOS.Kernel.Process;
@@ -24,25 +25,35 @@ namespace Ryujinx.HLE.HOS
         {
             MemoryManagerMode mode = context.Device.Configuration.MemoryManagerMode;
 
-            if (!MemoryBlock.SupportsFlags(MemoryAllocationFlags.ViewCompatible))
+            if (true)
             {
-                mode = MemoryManagerMode.SoftwarePageTable;
+                bool unsafeMode = mode == MemoryManagerMode.HostMappedUnsafe;
+                var memoryManagerNative = new MemoryManagerNative(context.Memory, addressSpaceSize, unsafeMode, invalidAccessHandler);
+                Console.WriteLine("mm base address 0x" + memoryManagerNative.ReservedSize.ToString("X16"));
+                return new ArmProcessContext<MemoryManagerNative>(pid, _cpuEngine, _gpu, memoryManagerNative, for64Bit, memoryManagerNative.ReservedSize);
             }
-
-            switch (mode)
+            else
             {
-                case MemoryManagerMode.SoftwarePageTable:
-                    var memoryManager = new MemoryManager(context.Memory, addressSpaceSize, invalidAccessHandler);
-                    return new ArmProcessContext<MemoryManager>(pid, _cpuEngine, _gpu, memoryManager, for64Bit);
+                if (!MemoryBlock.SupportsFlags(MemoryAllocationFlags.ViewCompatible))
+                {
+                    mode = MemoryManagerMode.SoftwarePageTable;
+                }
 
-                case MemoryManagerMode.HostMapped:
-                case MemoryManagerMode.HostMappedUnsafe:
-                    bool unsafeMode = mode == MemoryManagerMode.HostMappedUnsafe;
-                    var memoryManagerHostMapped = new MemoryManagerHostMapped(context.Memory, addressSpaceSize, unsafeMode, invalidAccessHandler);
-                    return new ArmProcessContext<MemoryManagerHostMapped>(pid, _cpuEngine, _gpu, memoryManagerHostMapped, for64Bit);
+                switch (mode)
+                {
+                    case MemoryManagerMode.SoftwarePageTable:
+                        var memoryManager = new MemoryManager(context.Memory, addressSpaceSize, invalidAccessHandler);
+                        return new ArmProcessContext<MemoryManager>(pid, _cpuEngine, _gpu, memoryManager, for64Bit);
 
-                default:
-                    throw new ArgumentOutOfRangeException();
+                    case MemoryManagerMode.HostMapped:
+                    case MemoryManagerMode.HostMappedUnsafe:
+                        bool unsafeMode = mode == MemoryManagerMode.HostMappedUnsafe;
+                        var memoryManagerHostMapped = new MemoryManagerHostMapped(context.Memory, addressSpaceSize, unsafeMode, invalidAccessHandler);
+                        return new ArmProcessContext<MemoryManagerHostMapped>(pid, _cpuEngine, _gpu, memoryManagerHostMapped, for64Bit);
+
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             }
         }
     }

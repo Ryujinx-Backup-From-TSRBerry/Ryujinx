@@ -193,7 +193,8 @@ namespace Ryujinx.HLE.HOS.Kernel.Process
             KResourceLimit resourceLimit,
             MemoryRegion memRegion,
             IProcessContextFactory contextFactory,
-            ThreadStart customThreadStart = null)
+            ThreadStart customThreadStart = null,
+            ulong entrypointOffset = 0UL)
         {
             ResourceLimit = resourceLimit;
             _memRegion = memRegion;
@@ -251,7 +252,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Process
 
             bool aslrEnabled = creationInfo.Flags.HasFlag(ProcessCreationFlags.EnableAslr);
 
-            ulong codeAddress = creationInfo.CodeAddress;
+            ulong codeAddress = creationInfo.CodeAddress + Context.ReservedSize;
 
             ulong codeSize = codePagesCount * KPageTableBase.PageSize;
 
@@ -300,7 +301,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Process
                 return result;
             }
 
-            result = ParseProcessInfo(creationInfo);
+            result = ParseProcessInfo(creationInfo, Context.ReservedSize + entrypointOffset);
 
             if (result != KernelResult.Success)
             {
@@ -310,7 +311,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Process
             return result;
         }
 
-        private KernelResult ParseProcessInfo(ProcessCreationInfo creationInfo)
+        private KernelResult ParseProcessInfo(ProcessCreationInfo creationInfo, ulong entrypointOffset = 0UL)
         {
             // Ensure that the current kernel version is equal or above to the minimum required.
             uint requiredKernelVersionMajor = (uint)Capabilities.KernelReleaseVersion >> 19;
@@ -354,7 +355,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Process
             Flags = creationInfo.Flags;
             _version = creationInfo.Version;
             TitleId = creationInfo.TitleId;
-            _entrypoint = creationInfo.CodeAddress;
+            _entrypoint = creationInfo.CodeAddress + entrypointOffset;
             _imageSize = (ulong)creationInfo.CodePagesCount * KPageTableBase.PageSize;
 
             switch (Flags & ProcessCreationFlags.AddressSpaceMask)

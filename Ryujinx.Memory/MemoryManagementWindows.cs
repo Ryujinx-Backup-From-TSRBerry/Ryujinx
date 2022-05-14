@@ -21,7 +21,7 @@ namespace Ryujinx.Memory
         {
             if (viewCompatible)
             {
-                IntPtr baseAddress = AllocateInternal2(size, AllocationType.Reserve | AllocationType.ReservePlaceholder);
+                IntPtr baseAddress = AllocateInternal2Low(size, AllocationType.Reserve | AllocationType.ReservePlaceholder);
 
                 if (!force4KBMap)
                 {
@@ -49,6 +49,35 @@ namespace Ryujinx.Memory
         private static IntPtr AllocateInternal2(IntPtr size, AllocationType flags = 0)
         {
             IntPtr ptr = WindowsApi.VirtualAlloc2(WindowsApi.CurrentProcessHandle, IntPtr.Zero, size, flags, MemoryProtection.NoAccess, IntPtr.Zero, 0);
+
+            if (ptr == IntPtr.Zero)
+            {
+                throw new OutOfMemoryException();
+            }
+
+            return ptr;
+        }
+
+        private static IntPtr AllocateInternal2Low(IntPtr size, AllocationType flags = 0)
+        {
+            IntPtr ptr = IntPtr.Zero;
+
+            for (int attempt = 0; attempt < 2048; attempt++)
+            {
+                IntPtr tryPtr = (IntPtr)((ulong)(attempt + 1) << 30);
+
+                ptr = WindowsApi.VirtualAlloc2(WindowsApi.CurrentProcessHandle, tryPtr, size, flags, MemoryProtection.NoAccess, IntPtr.Zero, 0);
+
+                if (ptr != IntPtr.Zero)
+                {
+                    break;
+                }
+            }
+
+            if (ptr == IntPtr.Zero)
+            {
+                ptr = WindowsApi.VirtualAlloc2(WindowsApi.CurrentProcessHandle, IntPtr.Zero, size, flags, MemoryProtection.NoAccess, IntPtr.Zero, 0);
+            }
 
             if (ptr == IntPtr.Zero)
             {
