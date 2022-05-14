@@ -24,6 +24,11 @@ namespace Ryujinx.Memory.Tests
             throw new NotImplementedException();
         }
 
+        public void Reprotect(ulong va, ulong size, MemoryPermission permission)
+        {
+            throw new NotImplementedException();
+        }
+
         public T Read<T>(ulong va) where T : unmanaged
         {
             throw new NotImplementedException();

@@ -165,15 +165,39 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
         /// <inheritdoc/>
         protected override KernelResult Reprotect(ulong address, ulong pagesCount, KMemoryPermission permission)
         {
-            // TODO.
+            _cpuMemory.Reprotect(address, pagesCount * PageSize, ConvertMemoryPermission(permission));
+
             return KernelResult.Success;
         }
 
         /// <inheritdoc/>
         protected override KernelResult ReprotectWithAttributes(ulong address, ulong pagesCount, KMemoryPermission permission)
         {
-            // TODO.
+            _cpuMemory.Reprotect(address, pagesCount * PageSize, ConvertMemoryPermission(permission));
+
             return KernelResult.Success;
+        }
+
+        private static MemoryPermission ConvertMemoryPermission(KMemoryPermission permission)
+        {
+            MemoryPermission output = MemoryPermission.None;
+
+            if (permission.HasFlag(KMemoryPermission.Read))
+            {
+                output |= MemoryPermission.Read;
+            }
+
+            if (permission.HasFlag(KMemoryPermission.Write))
+            {
+                output |= MemoryPermission.Write;
+            }
+
+            if (permission.HasFlag(KMemoryPermission.Execute))
+            {
+                output |= MemoryPermission.Execute;
+            }
+
+            return output;
         }
 
         /// <inheritdoc/>
