@@ -71,7 +71,95 @@ namespace Ryujinx.Rsc.Views
 
         private void Application_Opened(object sender, ApplicationOpenedEventArgs e)
         {
-            throw new System.NotImplementedException();
+            if (e.Application != null)
+            {
+                string path = new FileInfo(e.Application.Path).FullName;
+
+                LoadApplication(path);
+            }
+
+            e.Handled = true;
+        }
+
+#pragma warning disable CS1998
+        public async void LoadApplication(string path, bool startFullscreen = false, string titleName = "")
+#pragma warning restore CS1998
+        {
+            if (AppHost != null)
+            {
+                return;
+            }
+
+#if RELEASE
+            //await PerformanceCheck();
+#endif
+
+            Logger.RestartTime();
+
+            Scaling = VisualRoot.RenderScaling;
+
+            _mainViewContent = ContentFrame.Content as Control;
+
+            VkRenderer = new VulkanRendererControl(ConfigurationState.Instance.Logger.GraphicsDebugLevel);
+            AppHost = new AppHost(VkRenderer, InputManager, path, VirtualFileSystem, ContentManager, AccountManager, _userChannelPersistence, this);
+
+            if (!AppHost.LoadGuestApplication().Result)
+            {
+                AppHost.DisposeContext();
+
+                return;
+            }
+
+            ViewModel.TitleName = string.IsNullOrWhiteSpace(titleName) ? AppHost.Device.Application.TitleName : titleName;
+
+            SwitchToGameControl();
+
+            _currentEmulatedGamePath = path;
+            Thread gameThread = new Thread(InitializeGame)
+            {
+                Name = "GUI.WindowThread"
+            };
+            gameThread.Start();
+        }
+
+        private void InitializeGame()
+        {
+            VkRenderer.RendererInitialized += Renderer_Created;
+            AppHost.AppExit += AppHost_AppExit;
+
+            _rendererWaitEvent.WaitOne();
+
+            AppHost?.Start();
+
+            AppHost.DisposeContext();
+        }
+
+        private void AppHost_AppExit(object sender, EventArgs e)
+        {
+            if (_isClosing)
+            {
+                return;
+            }
+
+            ViewModel.IsGameRunning = false;
+
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if (ContentFrame.Content != _mainViewContent)
+                {
+                    ContentFrame.Content = _mainViewContent;
+                }
+
+                AppHost = null;
+            });
+
+            VkRenderer.RendererInitialized -= Renderer_Created;
+            VkRenderer = null;
+
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                ViewModel.Title = $"Ryujinx Test";
+            });
         }
     }
 }
