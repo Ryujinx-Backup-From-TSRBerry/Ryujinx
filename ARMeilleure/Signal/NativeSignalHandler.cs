@@ -1,4 +1,5 @@
-﻿using ARMeilleure.IntermediateRepresentation;
+﻿using ARMeilleure.Diagnostics;
+using ARMeilleure.IntermediateRepresentation;
 using ARMeilleure.Translation;
 using System;
 using System.Runtime.CompilerServices;
@@ -95,7 +96,8 @@ namespace ARMeilleure.Signal
             {
                 if (_initialized) return;
 
-                bool unix = OperatingSystem.IsLinux() || OperatingSystem.IsMacOS();
+                bool unix = OperatingSystem.IsLinux() || OperatingSystem.IsMacOS() || OperatingSystem.IsAndroid();
+                Ryujinx.Common.Logging.Logger.Info?.Print(Ryujinx.Common.Logging.LogClass.Cpu, $"unix? {unix}");
                 ref SignalHandlerConfig config = ref GetConfigRef();
 
                 if (unix)
