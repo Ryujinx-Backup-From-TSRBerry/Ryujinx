@@ -1,108 +1,133 @@
 using ARMeilleure.Memory;
 using ARMeilleure.State;
 using System;
+using System.Runtime.InteropServices;
 
 namespace Ryujinx.Cpu.Nce
 {
     class NceExecutionContext : IExecutionContext
     {
-        private readonly ExecutionContext _impl;
-        internal ExecutionContext Impl => _impl;
+        private readonly NceNativeContext _context;
+        internal IntPtr NativeContextPtr => _context.BasePtr;
 
-        public ulong Pc => _impl.Pc;
+        public ulong Pc => 0UL;
 
         public long TpidrEl0
         {
-            get => _impl.TpidrEl0;
-            set => _impl.TpidrEl0 = value;
+            get => (long)_context.GetStorage().TpidrEl0;
+            set => _context.GetStorage().TpidrEl0 = (ulong)value;
         }
 
         public long TpidrroEl0
         {
-            get => _impl.TpidrroEl0;
-            set => _impl.TpidrroEl0 = value;
+            get => (long)_context.GetStorage().TpidrroEl0;
+            set => _context.GetStorage().TpidrroEl0 = (ulong)value;
         }
 
         public uint Pstate
         {
-            get => _impl.Pstate;
-            set => _impl.Pstate = value;
+            get => _context.GetStorage().Pstate;
+            set => _context.GetStorage().Pstate = value;
         }
 
         public uint Fpcr
         {
-            get => (uint)_impl.Fpcr;
-            set => _impl.Fpcr = (FPCR)value;
+            get => _context.GetStorage().Fpcr;
+            set => _context.GetStorage().Fpcr = value;
         }
 
         public uint Fpsr
         {
-            get => (uint)_impl.Fpsr;
-            set => _impl.Fpsr = (FPSR)value;
+            get => _context.GetStorage().Fpsr;
+            set => _context.GetStorage().Fpsr = value;
         }
 
         public bool IsAarch32
         {
-            get => _impl.IsAarch32;
-            set => _impl.IsAarch32 = value;
+            get => false;
+            set
+            {
+                if (value)
+                {
+                    throw new NotSupportedException();
+                }
+            }
         }
 
-        public bool Running => _impl.Running;
+        public bool Running { get; private set; }
 
-        public event EventHandler<EventArgs> Interrupt
+        public event EventHandler<EventArgs> Interrupt;
+        public event EventHandler<InstExceptionEventArgs> Break;
+        public event EventHandler<InstExceptionEventArgs> SupervisorCall;
+        public event EventHandler<InstUndefinedEventArgs> Undefined;
+
+        private delegate bool SupervisorCallHandler(int imm);
+        private SupervisorCallHandler _svcHandler;
+
+        public NceExecutionContext()
         {
-            add => _impl.Interrupt += value;
-            remove => _impl.Interrupt -= value;
+            _svcHandler = OnSupervisorCall;
+            IntPtr svcHandlerPtr = Marshal.GetFunctionPointerForDelegate(_svcHandler);
+
+            _context = new NceNativeContext();
+
+            ref var storage = ref _context.GetStorage();
+            storage.SvcCallHandler = svcHandlerPtr;
+            storage.InManaged = 1u;
+
+            Running = true;
         }
 
-        public event EventHandler<InstExceptionEventArgs> Break
+        public ulong GetX(int index) => _context.GetStorage().X[index];
+        public void SetX(int index, ulong value) => _context.GetStorage().X[index] = value;
+
+        public V128 GetV(int index) => _context.GetStorage().V[index];
+        public void SetV(int index, V128 value) => _context.GetStorage().V[index] = value;
+
+        // TODO
+        public bool GetPstateFlag(PState flag) => false;
+        public void SetPstateFlag(PState flag, bool value) { }
+
+        // TODO
+        public bool GetFPstateFlag(FPState flag) => false;
+        public void SetFPstateFlag(FPState flag, bool value) { }
+
+        public void SetStartAddress(ulong address)
         {
-            add => _impl.Break += value;
-            remove => _impl.Break -= value;
+            ref var storage = ref _context.GetStorage();
+            storage.X[30] = address;
+            storage.HostThreadHandle = NceThreadPal.GetCurrentThreadHandle();
         }
 
-        public event EventHandler<InstExceptionEventArgs> SupervisorCall
+        public bool OnSupervisorCall(int imm)
         {
-            add => _impl.SupervisorCall += value;
-            remove => _impl.SupervisorCall -= value;
+            SupervisorCall?.Invoke(this, new InstExceptionEventArgs(0UL, imm));
+            return Running;
         }
 
-        public event EventHandler<InstUndefinedEventArgs> Undefined
+        public bool OnInterrupt()
         {
-            add => _impl.Undefined += value;
-            remove => _impl.Undefined -= value;
+            Interrupt?.Invoke(this, EventArgs.Empty);
+            return Running;
         }
-
-        public NceExecutionContext(IJitMemoryAllocator allocator, ICounter counter)
-        {
-            _impl = new ExecutionContext(allocator, counter);
-        }
-
-        public ulong GetX(int index) => _impl.GetX(index);
-        public void SetX(int index, ulong value) => _impl.SetX(index, value);
-
-        public V128 GetV(int index) => _impl.GetV(index);
-        public void SetV(int index, V128 value) => _impl.SetV(index, value);
-
-        public bool GetPstateFlag(PState flag) => _impl.GetPstateFlag(flag);
-        public void SetPstateFlag(PState flag, bool value) => _impl.SetPstateFlag(flag, value);
-
-        public bool GetFPstateFlag(FPState flag) => _impl.GetFPstateFlag(flag);
-        public void SetFPstateFlag(FPState flag, bool value) => _impl.SetFPstateFlag(flag, value);
 
         public void RequestInterrupt()
         {
-            _impl.RequestInterrupt();
+            IntPtr threadHandle = _context.GetStorage().HostThreadHandle;
+            if (threadHandle != IntPtr.Zero)
+            {
+                NceThreadPal.SuspendThread(threadHandle);
+            }
         }
 
         public void StopRunning()
         {
-            _impl.StopRunning();
+            Running = false;
         }
 
         public void Dispose()
         {
-            _impl.Dispose();
+            _context.Dispose();
         }
     }
 }

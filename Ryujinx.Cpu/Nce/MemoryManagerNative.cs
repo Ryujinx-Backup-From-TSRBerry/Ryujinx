@@ -176,7 +176,6 @@ namespace Ryujinx.Cpu.Nce
         /// <inheritdoc/>
         public void Reprotect(ulong va, ulong size, MemoryPermission permission)
         {
-            permission &= ~MemoryPermission.Execute;
             _addressSpace.Reprotect(AddressToOffset(va), size, permission);
         }
 
@@ -325,6 +324,11 @@ namespace Ryujinx.Cpu.Nce
             else
             {
                 AssertMapped(va, (ulong)size);
+            }
+
+            if (size == 0)
+            {
+                return ReadOnlySpan<byte>.Empty;
             }
 
             return _addressSpaceMirror.GetSpan(AddressToOffset(va), size);

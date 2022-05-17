@@ -1,6 +1,8 @@
 ﻿using ARMeilleure.Diagnostics;
 using ARMeilleure.IntermediateRepresentation;
+using ARMeilleure.Memory;
 using ARMeilleure.Translation;
+using ARMeilleure.Translation.Cache;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -88,7 +90,12 @@ namespace ARMeilleure.Signal
             config = new SignalHandlerConfig();
         }
 
-        public static void InitializeSignalHandler()
+        public static void InitializeJitCache(IJitMemoryAllocator allocator)
+        {
+            JitCache.Initialize(allocator);
+        }
+
+        public static void InitializeSignalHandler(Func<IntPtr, IntPtr> customSignalHandlerFactory = null, int userSignal = -1)
         {
             if (_initialized) return;
 
@@ -110,7 +117,12 @@ namespace ARMeilleure.Signal
 
                     _signalHandlerPtr = Marshal.GetFunctionPointerForDelegate(GenerateUnixSignalHandler(_handlerConfig));
 
-                    SigAction old = UnixSignalHandlerRegistration.RegisterExceptionHandler(_signalHandlerPtr);
+                    if (customSignalHandlerFactory != null)
+                    {
+                        _signalHandlerPtr = customSignalHandlerFactory(_signalHandlerPtr);
+                    }
+
+                    SigAction old = UnixSignalHandlerRegistration.RegisterExceptionHandler(_signalHandlerPtr, userSignal);
                     config.UnixOldSigaction = (nuint)(ulong)old.sa_handler;
                     config.UnixOldSigaction3Arg = old.sa_flags & 4;
                 }
@@ -120,6 +132,11 @@ namespace ARMeilleure.Signal
                     config.StructWriteOffset = 32; // ExceptionInformation0
 
                     _signalHandlerPtr = Marshal.GetFunctionPointerForDelegate(GenerateWindowsSignalHandler(_handlerConfig));
+
+                    if (customSignalHandlerFactory != null)
+                    {
+                        _signalHandlerPtr = customSignalHandlerFactory(_signalHandlerPtr);
+                    }
 
                     _signalHandlerHandle = WindowsSignalHandlerRegistration.RegisterExceptionHandler(_signalHandlerPtr);
                 }
