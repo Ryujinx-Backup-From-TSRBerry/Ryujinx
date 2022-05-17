@@ -859,7 +859,7 @@ namespace ARMeilleure.CodeGen.Arm64
             WriteInstruction(instruction, rd);
         }
 
-        private void WriteInstructionAuto(uint instruction, Operand rd, Operand rn)
+        public void WriteInstructionAuto(uint instruction, Operand rd, Operand rn)
         {
             if (rd.Type == OperandType.I64)
             {
@@ -879,22 +879,22 @@ namespace ARMeilleure.CodeGen.Arm64
             WriteInstruction(instruction, rd, rn, rm, ra);
         }
 
-        private void WriteInstruction(uint instruction, Operand rd)
+        public void WriteInstruction(uint instruction, Operand rd)
         {
             WriteUInt32(instruction | EncodeReg(rd));
         }
 
-        private void WriteInstruction(uint instruction, Operand rd, Operand rn)
+        public void WriteInstruction(uint instruction, Operand rd, Operand rn)
         {
             WriteUInt32(instruction | EncodeReg(rd) | (EncodeReg(rn) << 5));
         }
 
-        private void WriteInstruction(uint instruction, Operand rd, Operand rn, Operand rm)
+        public void WriteInstruction(uint instruction, Operand rd, Operand rn, Operand rm)
         {
             WriteUInt32(instruction | EncodeReg(rd) | (EncodeReg(rn) << 5) | (EncodeReg(rm) << 10));
         }
 
-        private void WriteInstruction(uint instruction, Operand rd, Operand rn, Operand rm, Operand ra)
+        public void WriteInstruction(uint instruction, Operand rd, Operand rn, Operand rm, Operand ra)
         {
             WriteUInt32(instruction | EncodeReg(rd) | (EncodeReg(rn) << 5) | (EncodeReg(ra) << 10) | (EncodeReg(rm) << 16));
         }

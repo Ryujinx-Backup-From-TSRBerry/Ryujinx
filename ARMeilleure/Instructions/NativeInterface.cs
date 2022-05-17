@@ -239,6 +239,8 @@ namespace ARMeilleure.Instructions
         {
             TranslatedFunction function = Context.Translator.GetOrTranslate(address, GetContext().ExecutionMode);
 
+            // System.Console.WriteLine($"get func address 0x{address:X16} -> 0x{(ulong)function.FuncPtr.ToInt64():X16}");
+
             return (ulong)function.FuncPtr.ToInt64();
         }
 

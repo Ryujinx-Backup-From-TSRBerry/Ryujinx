@@ -30,7 +30,7 @@ namespace ARMeilleure.Signal
         [DllImport("libc", SetLastError = true)]
         private static extern int sigemptyset(ref SigSet set);
 
-        public static SigAction RegisterExceptionHandler(IntPtr action)
+        public static SigAction RegisterExceptionHandler(IntPtr action, int userSignal = -1)
         {
             SigAction sig = new SigAction
             {
@@ -54,6 +54,16 @@ namespace ARMeilleure.Signal
                 if (result != 0)
                 {
                     throw new InvalidOperationException($"Could not register SIGBUS sigaction. Error: {result}");
+                }
+            }
+
+            if (userSignal != -1)
+            {
+                result = sigaction(userSignal, ref sig, out SigAction oldc);
+
+                if (result != 0)
+                {
+                    throw new InvalidOperationException($"Could not register SIGSEGV sigaction. Error: {result}");
                 }
             }
 

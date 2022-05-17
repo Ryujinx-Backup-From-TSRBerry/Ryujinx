@@ -119,12 +119,26 @@ namespace ARMeilleure.Instructions
 
         public static void Fcvtas_Gp(ArmEmitterContext context)
         {
-            EmitFcvt_s_Gp(context, (op1) => EmitRoundMathCall(context, MidpointRounding.AwayFromZero, op1));
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpFToGp(context, Intrinsic.Arm64FcvtasGp);
+            }
+            else
+            {
+                EmitFcvt_s_Gp(context, (op1) => EmitRoundMathCall(context, MidpointRounding.AwayFromZero, op1));
+            }
         }
 
         public static void Fcvtas_S(ArmEmitterContext context)
         {
-            EmitFcvt(context, (op1) => EmitRoundMathCall(context, MidpointRounding.AwayFromZero, op1), signed: true, scalar: true);
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpF(context, Intrinsic.Arm64FcvtasS);
+            }
+            else
+            {
+                EmitFcvt(context, (op1) => EmitRoundMathCall(context, MidpointRounding.AwayFromZero, op1), signed: true, scalar: true);
+            }
         }
 
         public static void Fcvtas_V(ArmEmitterContext context)
@@ -134,7 +148,14 @@ namespace ARMeilleure.Instructions
 
         public static void Fcvtau_Gp(ArmEmitterContext context)
         {
-            EmitFcvt_u_Gp(context, (op1) => EmitRoundMathCall(context, MidpointRounding.AwayFromZero, op1));
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpFToGp(context, Intrinsic.Arm64FcvtauGp);
+            }
+            else
+            {
+                EmitFcvt_u_Gp(context, (op1) => EmitRoundMathCall(context, MidpointRounding.AwayFromZero, op1));
+            }
         }
 
         public static void Fcvtau_S(ArmEmitterContext context)
@@ -144,7 +165,14 @@ namespace ARMeilleure.Instructions
 
         public static void Fcvtau_V(ArmEmitterContext context)
         {
-            EmitFcvt(context, (op1) => EmitRoundMathCall(context, MidpointRounding.AwayFromZero, op1), signed: false, scalar: false);
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpF(context, Intrinsic.Arm64FcvtauS);
+            }
+            else
+            {
+                EmitFcvt(context, (op1) => EmitRoundMathCall(context, MidpointRounding.AwayFromZero, op1), signed: false, scalar: false);
+            }
         }
 
         public static void Fcvtl_V(ArmEmitterContext context)
@@ -207,7 +235,11 @@ namespace ARMeilleure.Instructions
 
         public static void Fcvtms_Gp(ArmEmitterContext context)
         {
-            if (Optimizations.UseSse41)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpFToGp(context, Intrinsic.Arm64FcvtmsGp);
+            }
+            else if (Optimizations.UseSse41)
             {
                 EmitSse41Fcvts_Gp(context, FPRoundingMode.TowardsMinusInfinity, isFixed: false);
             }
@@ -231,7 +263,11 @@ namespace ARMeilleure.Instructions
 
         public static void Fcvtmu_Gp(ArmEmitterContext context)
         {
-            if (Optimizations.UseSse41)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpFToGp(context, Intrinsic.Arm64FcvtmuGp);
+            }
+            else if (Optimizations.UseSse41)
             {
                 EmitSse41Fcvtu_Gp(context, FPRoundingMode.TowardsMinusInfinity, isFixed: false);
             }
@@ -316,7 +352,11 @@ namespace ARMeilleure.Instructions
 
         public static void Fcvtns_Gp(ArmEmitterContext context)
         {
-            if (Optimizations.UseSse41)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpFToGp(context, Intrinsic.Arm64FcvtnsGp);
+            }
+            else if (Optimizations.UseSse41)
             {
                 EmitSse41Fcvts_Gp(context, FPRoundingMode.ToNearest, isFixed: false);
             }
@@ -328,7 +368,11 @@ namespace ARMeilleure.Instructions
 
         public static void Fcvtns_S(ArmEmitterContext context)
         {
-            if (Optimizations.UseSse41)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpF(context, Intrinsic.Arm64FcvtnsS);
+            }
+            else if (Optimizations.UseSse41)
             {
                 EmitSse41FcvtsOpF(context, FPRoundingMode.ToNearest, scalar: true);
             }
@@ -352,7 +396,11 @@ namespace ARMeilleure.Instructions
 
         public static void Fcvtnu_S(ArmEmitterContext context)
         {
-            if (Optimizations.UseSse41)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpF(context, Intrinsic.Arm64FcvtnuS);
+            }
+            else if (Optimizations.UseSse41)
             {
                 EmitSse41FcvtuOpF(context, FPRoundingMode.ToNearest, scalar: true);
             }
@@ -376,7 +424,11 @@ namespace ARMeilleure.Instructions
 
         public static void Fcvtps_Gp(ArmEmitterContext context)
         {
-            if (Optimizations.UseSse41)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpFToGp(context, Intrinsic.Arm64FcvtpsGp);
+            }
+            else if (Optimizations.UseSse41)
             {
                 EmitSse41Fcvts_Gp(context, FPRoundingMode.TowardsPlusInfinity, isFixed: false);
             }
@@ -400,7 +452,11 @@ namespace ARMeilleure.Instructions
 
         public static void Fcvtzs_Gp(ArmEmitterContext context)
         {
-            if (Optimizations.UseSse41)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpFToGp(context, Intrinsic.Arm64FcvtzsGp);
+            }
+            else if (Optimizations.UseSse41)
             {
                 EmitSse41Fcvts_Gp(context, FPRoundingMode.TowardsZero, isFixed: false);
             }
@@ -424,7 +480,11 @@ namespace ARMeilleure.Instructions
 
         public static void Fcvtzs_S(ArmEmitterContext context)
         {
-            if (Optimizations.UseSse41)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpF(context, Intrinsic.Arm64FcvtzsS);
+            }
+            else if (Optimizations.UseSse41)
             {
                 EmitSse41FcvtsOpF(context, FPRoundingMode.TowardsZero, scalar: true);
             }
@@ -460,7 +520,11 @@ namespace ARMeilleure.Instructions
 
         public static void Fcvtzu_Gp(ArmEmitterContext context)
         {
-            if (Optimizations.UseSse41)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpFToGp(context, Intrinsic.Arm64FcvtzuGp);
+            }
+            else if (Optimizations.UseSse41)
             {
                 EmitSse41Fcvtu_Gp(context, FPRoundingMode.TowardsZero, isFixed: false);
             }
@@ -484,7 +548,11 @@ namespace ARMeilleure.Instructions
 
         public static void Fcvtzu_S(ArmEmitterContext context)
         {
-            if (Optimizations.UseSse41)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpF(context, Intrinsic.Arm64FcvtzuS);
+            }
+            else if (Optimizations.UseSse41)
             {
                 EmitSse41FcvtuOpF(context, FPRoundingMode.TowardsZero, scalar: true);
             }
@@ -554,7 +622,11 @@ namespace ARMeilleure.Instructions
 
         public static void Scvtf_S(ArmEmitterContext context)
         {
-            if (Optimizations.UseSse2)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpF(context, Intrinsic.Arm64ScvtfS);
+            }
+            else if (Optimizations.UseSse2)
             {
                 EmitSse2ScvtfOp(context, scalar: true);
             }
@@ -578,7 +650,11 @@ namespace ARMeilleure.Instructions
 
         public static void Scvtf_V(ArmEmitterContext context)
         {
-            if (Optimizations.UseSse2)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitVectorUnaryOpF(context, Intrinsic.Arm64ScvtfV);
+            }
+            else if (Optimizations.UseSse2)
             {
                 EmitSse2ScvtfOp(context, scalar: false);
             }
@@ -626,7 +702,11 @@ namespace ARMeilleure.Instructions
 
         public static void Ucvtf_S(ArmEmitterContext context)
         {
-            if (Optimizations.UseSse2)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpF(context, Intrinsic.Arm64UcvtfS);
+            }
+            else if (Optimizations.UseSse2)
             {
                 EmitSse2UcvtfOp(context, scalar: true);
             }
@@ -650,7 +730,11 @@ namespace ARMeilleure.Instructions
 
         public static void Ucvtf_V(ArmEmitterContext context)
         {
-            if (Optimizations.UseSse2)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitVectorUnaryOpF(context, Intrinsic.Arm64UcvtfV);
+            }
+            else if (Optimizations.UseSse2)
             {
                 EmitSse2UcvtfOp(context, scalar: false);
             }

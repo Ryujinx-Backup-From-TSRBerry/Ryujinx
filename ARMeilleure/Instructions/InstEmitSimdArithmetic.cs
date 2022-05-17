@@ -377,7 +377,11 @@ namespace ARMeilleure.Instructions
 
         public static void Fabs_S(ArmEmitterContext context)
         {
-            if (Optimizations.UseSse2)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpF(context, Intrinsic.Arm64FabsS);
+            }
+            else if (Optimizations.UseSse2)
             {
                 OpCodeSimd op = (OpCodeSimd)context.CurrOp;
 
@@ -405,7 +409,11 @@ namespace ARMeilleure.Instructions
 
         public static void Fabs_V(ArmEmitterContext context)
         {
-            if (Optimizations.UseSse2)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitVectorUnaryOpF(context, Intrinsic.Arm64FabsV);
+            }
+            else if (Optimizations.UseSse2)
             {
                 OpCodeSimd op = (OpCodeSimd)context.CurrOp;
 
@@ -486,7 +494,11 @@ namespace ARMeilleure.Instructions
 
         public static void Faddp_S(ArmEmitterContext context)
         {
-            if (Optimizations.FastFP && Optimizations.UseSse3)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpF(context, Intrinsic.Arm64FaddpS);
+            }
+            else if (Optimizations.FastFP && Optimizations.UseSse3)
             {
                 OpCodeSimd op = (OpCodeSimd)context.CurrOp;
 
@@ -588,7 +600,11 @@ namespace ARMeilleure.Instructions
 
         public static void Fmadd_S(ArmEmitterContext context) // Fused.
         {
-            if (Optimizations.FastFP && Optimizations.UseSse2)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarTernaryOpF(context, Intrinsic.Arm64FmaddS);
+            }
+            else if (Optimizations.FastFP && Optimizations.UseSse2)
             {
                 OpCodeSimdReg op = (OpCodeSimdReg)context.CurrOp;
 
@@ -711,7 +727,11 @@ namespace ARMeilleure.Instructions
 
         public static void Fmaxnmp_S(ArmEmitterContext context)
         {
-            if (Optimizations.FastFP && Optimizations.UseSse41)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpF(context, Intrinsic.Arm64FmaxnmpS);
+            }
+            else if (Optimizations.FastFP && Optimizations.UseSse41)
             {
                 EmitSse2ScalarPairwiseOpF(context, (op1, op2) =>
                 {
@@ -901,7 +921,11 @@ namespace ARMeilleure.Instructions
 
         public static void Fminnmp_S(ArmEmitterContext context)
         {
-            if (Optimizations.FastFP && Optimizations.UseSse41)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpF(context, Intrinsic.Arm64FminnmpS);
+            }
+            else if (Optimizations.FastFP && Optimizations.UseSse41)
             {
                 EmitSse2ScalarPairwiseOpF(context, (op1, op2) =>
                 {
@@ -1203,7 +1227,11 @@ namespace ARMeilleure.Instructions
 
         public static void Fmsub_S(ArmEmitterContext context) // Fused.
         {
-            if (Optimizations.FastFP && Optimizations.UseSse2)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarTernaryOpF(context, Intrinsic.Arm64FmsubS);
+            }
+            else if (Optimizations.FastFP && Optimizations.UseSse2)
             {
                 OpCodeSimdReg op = (OpCodeSimdReg)context.CurrOp;
 
@@ -1371,7 +1399,11 @@ namespace ARMeilleure.Instructions
 
         public static void Fneg_S(ArmEmitterContext context)
         {
-            if (Optimizations.UseSse2)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpF(context, Intrinsic.Arm64FnegS);
+            }
+            else if (Optimizations.UseSse2)
             {
                 OpCodeSimd op = (OpCodeSimd)context.CurrOp;
 
@@ -1400,7 +1432,11 @@ namespace ARMeilleure.Instructions
 
         public static void Fneg_V(ArmEmitterContext context)
         {
-            if (Optimizations.UseSse2)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitVectorUnaryOpF(context, Intrinsic.Arm64FnegV);
+            }
+            else if (Optimizations.UseSse2)
             {
                 OpCodeSimd op = (OpCodeSimd)context.CurrOp;
 
@@ -1436,7 +1472,11 @@ namespace ARMeilleure.Instructions
 
         public static void Fnmadd_S(ArmEmitterContext context) // Fused.
         {
-            if (Optimizations.FastFP && Optimizations.UseSse2)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarTernaryOpF(context, Intrinsic.Arm64FnmaddS);
+            }
+            else if (Optimizations.FastFP && Optimizations.UseSse2)
             {
                 OpCodeSimdReg op = (OpCodeSimdReg)context.CurrOp;
 
@@ -1479,7 +1519,11 @@ namespace ARMeilleure.Instructions
 
         public static void Fnmsub_S(ArmEmitterContext context) // Fused.
         {
-            if (Optimizations.FastFP && Optimizations.UseSse2)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarTernaryOpF(context, Intrinsic.Arm64FnmsubS);
+            }
+            else if (Optimizations.FastFP && Optimizations.UseSse2)
             {
                 OpCodeSimdReg op = (OpCodeSimdReg)context.CurrOp;
 
@@ -1538,7 +1582,11 @@ namespace ARMeilleure.Instructions
 
             int sizeF = op.Size & 1;
 
-            if (Optimizations.FastFP && Optimizations.UseSse41 && sizeF == 0)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpF(context, Intrinsic.Arm64FrecpeS);
+            }
+            else if (Optimizations.FastFP && Optimizations.UseSse41 && sizeF == 0)
             {
                 Operand res = EmitSse41Round32Exp8OpF(context, context.AddIntrinsic(Intrinsic.X86Rcpss, GetVec(op.Rn)), scalar: true);
 
@@ -1559,7 +1607,11 @@ namespace ARMeilleure.Instructions
 
             int sizeF = op.Size & 1;
 
-            if (Optimizations.FastFP && Optimizations.UseSse41 && sizeF == 0)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitVectorUnaryOpF(context, Intrinsic.Arm64FrecpeV);
+            }
+            else if (Optimizations.FastFP && Optimizations.UseSse41 && sizeF == 0)
             {
                 Operand res = EmitSse41Round32Exp8OpF(context, context.AddIntrinsic(Intrinsic.X86Rcpps, GetVec(op.Rn)), scalar: false);
 
@@ -1680,59 +1732,91 @@ namespace ARMeilleure.Instructions
 
         public static void Frinta_S(ArmEmitterContext context)
         {
-            EmitScalarUnaryOpF(context, (op1) =>
+            if (Optimizations.UseAdvSimd)
             {
-                return EmitRoundMathCall(context, MidpointRounding.AwayFromZero, op1);
-            });
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpF(context, Intrinsic.Arm64FrintaS);
+            }
+            else
+            {
+                EmitScalarUnaryOpF(context, (op1) =>
+                {
+                    return EmitRoundMathCall(context, MidpointRounding.AwayFromZero, op1);
+                });
+            }
         }
 
         public static void Frinta_V(ArmEmitterContext context)
         {
-            EmitVectorUnaryOpF(context, (op1) =>
+            if (Optimizations.UseAdvSimd)
             {
-                return EmitRoundMathCall(context, MidpointRounding.AwayFromZero, op1);
-            });
+                InstEmitSimdNativeArmHelper.EmitVectorUnaryOpF(context, Intrinsic.Arm64FrintaV);
+            }
+            else
+            {
+                EmitVectorUnaryOpF(context, (op1) =>
+                {
+                    return EmitRoundMathCall(context, MidpointRounding.AwayFromZero, op1);
+                });
+            }
         }
 
         public static void Frinti_S(ArmEmitterContext context)
         {
-            OpCodeSimd op = (OpCodeSimd)context.CurrOp;
-
-            EmitScalarUnaryOpF(context, (op1) =>
+            if (Optimizations.UseAdvSimd)
             {
-                if (op.Size == 0)
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpF(context, Intrinsic.Arm64FrintiS);
+            }
+            else
+            {
+                OpCodeSimd op = (OpCodeSimd)context.CurrOp;
+
+                EmitScalarUnaryOpF(context, (op1) =>
                 {
-                    return context.Call(typeof(SoftFallback).GetMethod(nameof(SoftFallback.RoundF)), op1);
-                }
-                else /* if (op.Size == 1) */
-                {
-                    return context.Call(typeof(SoftFallback).GetMethod(nameof(SoftFallback.Round)), op1);
-                }
-            });
+                    if (op.Size == 0)
+                    {
+                        return context.Call(typeof(SoftFallback).GetMethod(nameof(SoftFallback.RoundF)), op1);
+                    }
+                    else /* if (op.Size == 1) */
+                    {
+                        return context.Call(typeof(SoftFallback).GetMethod(nameof(SoftFallback.Round)), op1);
+                    }
+                });
+            }
         }
 
         public static void Frinti_V(ArmEmitterContext context)
         {
-            OpCodeSimd op = (OpCodeSimd)context.CurrOp;
-
-            int sizeF = op.Size & 1;
-
-            EmitVectorUnaryOpF(context, (op1) =>
+            if (Optimizations.UseAdvSimd)
             {
-                if (sizeF == 0)
+                InstEmitSimdNativeArmHelper.EmitVectorUnaryOpF(context, Intrinsic.Arm64FrintiV);
+            }
+            else
+            {
+                OpCodeSimd op = (OpCodeSimd)context.CurrOp;
+
+                int sizeF = op.Size & 1;
+
+                EmitVectorUnaryOpF(context, (op1) =>
                 {
-                    return context.Call(typeof(SoftFallback).GetMethod(nameof(SoftFallback.RoundF)), op1);
-                }
-                else /* if (sizeF == 1) */
-                {
-                    return context.Call(typeof(SoftFallback).GetMethod(nameof(SoftFallback.Round)), op1);
-                }
-            });
+                    if (sizeF == 0)
+                    {
+                        return context.Call(typeof(SoftFallback).GetMethod(nameof(SoftFallback.RoundF)), op1);
+                    }
+                    else /* if (sizeF == 1) */
+                    {
+                        return context.Call(typeof(SoftFallback).GetMethod(nameof(SoftFallback.Round)), op1);
+                    }
+                });
+            }
         }
 
         public static void Frintm_S(ArmEmitterContext context)
         {
-            if (Optimizations.UseSse41)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpF(context, Intrinsic.Arm64FrintmS);
+            }
+            else if (Optimizations.UseSse41)
             {
                 EmitSse41ScalarRoundOpF(context, FPRoundingMode.TowardsMinusInfinity);
             }
@@ -1747,7 +1831,11 @@ namespace ARMeilleure.Instructions
 
         public static void Frintm_V(ArmEmitterContext context)
         {
-            if (Optimizations.UseSse41)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitVectorUnaryOpF(context, Intrinsic.Arm64FrintmV);
+            }
+            else if (Optimizations.UseSse41)
             {
                 EmitSse41VectorRoundOpF(context, FPRoundingMode.TowardsMinusInfinity);
             }
@@ -1762,7 +1850,11 @@ namespace ARMeilleure.Instructions
 
         public static void Frintn_S(ArmEmitterContext context)
         {
-            if (Optimizations.UseSse41)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpF(context, Intrinsic.Arm64FrintnS);
+            }
+            else if (Optimizations.UseSse41)
             {
                 EmitSse41ScalarRoundOpF(context, FPRoundingMode.ToNearest);
             }
@@ -1777,7 +1869,11 @@ namespace ARMeilleure.Instructions
 
         public static void Frintn_V(ArmEmitterContext context)
         {
-            if (Optimizations.UseSse41)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitVectorUnaryOpF(context, Intrinsic.Arm64FrintnV);
+            }
+            else if (Optimizations.UseSse41)
             {
                 EmitSse41VectorRoundOpF(context, FPRoundingMode.ToNearest);
             }
@@ -1792,7 +1888,11 @@ namespace ARMeilleure.Instructions
 
         public static void Frintp_S(ArmEmitterContext context)
         {
-            if (Optimizations.UseSse41)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpF(context, Intrinsic.Arm64FrintpS);
+            }
+            else if (Optimizations.UseSse41)
             {
                 EmitSse41ScalarRoundOpF(context, FPRoundingMode.TowardsPlusInfinity);
             }
@@ -1807,7 +1907,11 @@ namespace ARMeilleure.Instructions
 
         public static void Frintp_V(ArmEmitterContext context)
         {
-            if (Optimizations.UseSse41)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitVectorUnaryOpF(context, Intrinsic.Arm64FrintpV);
+            }
+            else if (Optimizations.UseSse41)
             {
                 EmitSse41VectorRoundOpF(context, FPRoundingMode.TowardsPlusInfinity);
             }
@@ -1858,7 +1962,11 @@ namespace ARMeilleure.Instructions
 
         public static void Frintz_S(ArmEmitterContext context)
         {
-            if (Optimizations.UseSse41)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpF(context, Intrinsic.Arm64FrintzS);
+            }
+            else if (Optimizations.UseSse41)
             {
                 EmitSse41ScalarRoundOpF(context, FPRoundingMode.TowardsZero);
             }
@@ -1873,7 +1981,11 @@ namespace ARMeilleure.Instructions
 
         public static void Frintz_V(ArmEmitterContext context)
         {
-            if (Optimizations.UseSse41)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitVectorUnaryOpF(context, Intrinsic.Arm64FrintzV);
+            }
+            else if (Optimizations.UseSse41)
             {
                 EmitSse41VectorRoundOpF(context, FPRoundingMode.TowardsZero);
             }
@@ -1892,7 +2004,11 @@ namespace ARMeilleure.Instructions
 
             int sizeF = op.Size & 1;
 
-            if (Optimizations.FastFP && Optimizations.UseSse41 && sizeF == 0)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpF(context, Intrinsic.Arm64FrsqrteS);
+            }
+            else if (Optimizations.FastFP && Optimizations.UseSse41 && sizeF == 0)
             {
                 Operand res = EmitSse41Round32Exp8OpF(context, context.AddIntrinsic(Intrinsic.X86Rsqrtss, GetVec(op.Rn)), scalar: true);
 
@@ -1913,7 +2029,11 @@ namespace ARMeilleure.Instructions
 
             int sizeF = op.Size & 1;
 
-            if (Optimizations.FastFP && Optimizations.UseSse41 && sizeF == 0)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitVectorUnaryOpF(context, Intrinsic.Arm64FrsqrteV);
+            }
+            else if (Optimizations.FastFP && Optimizations.UseSse41 && sizeF == 0)
             {
                 Operand res = EmitSse41Round32Exp8OpF(context, context.AddIntrinsic(Intrinsic.X86Rsqrtps, GetVec(op.Rn)), scalar: false);
 
@@ -2038,7 +2158,11 @@ namespace ARMeilleure.Instructions
 
         public static void Fsqrt_S(ArmEmitterContext context)
         {
-            if (Optimizations.FastFP && Optimizations.UseSse2)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitScalarUnaryOpF(context, Intrinsic.Arm64FsqrtS);
+            }
+            else if (Optimizations.FastFP && Optimizations.UseSse2)
             {
                 EmitScalarUnaryOpF(context, Intrinsic.X86Sqrtss, Intrinsic.X86Sqrtsd);
             }
@@ -2053,7 +2177,11 @@ namespace ARMeilleure.Instructions
 
         public static void Fsqrt_V(ArmEmitterContext context)
         {
-            if (Optimizations.FastFP && Optimizations.UseSse2)
+            if (Optimizations.UseAdvSimd)
+            {
+                InstEmitSimdNativeArmHelper.EmitVectorUnaryOpF(context, Intrinsic.Arm64FsqrtV);
+            }
+            else if (Optimizations.FastFP && Optimizations.UseSse2)
             {
                 EmitVectorUnaryOpF(context, Intrinsic.X86Sqrtps, Intrinsic.X86Sqrtpd);
             }

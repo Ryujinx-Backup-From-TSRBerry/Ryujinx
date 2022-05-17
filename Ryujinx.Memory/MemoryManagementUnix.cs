@@ -25,6 +25,7 @@ namespace Ryujinx.Memory
 
         private static IntPtr AllocateInternal(ulong size, MmapProts prot, bool shared = false)
         {
+            IntPtr hintPtr = IntPtr.Zero;
             MmapFlags flags = MmapFlags.MAP_ANONYMOUS;
 
             if (shared)
@@ -38,10 +39,11 @@ namespace Ryujinx.Memory
 
             if (prot == MmapProts.PROT_NONE)
             {
+                hintPtr = (IntPtr)0x800000;
                 flags |= MmapFlags.MAP_NORESERVE;
             }
 
-            IntPtr ptr = mmap(IntPtr.Zero, size, prot, flags, -1, 0);
+            IntPtr ptr = mmap(hintPtr, size, prot, flags, -1, 0);
 
             if (ptr == new IntPtr(-1L))
             {
