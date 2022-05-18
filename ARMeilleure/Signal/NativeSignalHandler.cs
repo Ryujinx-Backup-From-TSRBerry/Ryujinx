@@ -102,11 +102,9 @@ namespace ARMeilleure.Signal
             {
                 if (_initialized) return;
 
-                bool unix = OperatingSystem.IsLinux() || OperatingSystem.IsMacOS() || OperatingSystem.IsAndroid();
-                Ryujinx.Common.Logging.Logger.Info?.Print(Ryujinx.Common.Logging.LogClass.Cpu, $"unix? {unix}");
                 ref SignalHandlerConfig config = ref GetConfigRef();
 
-                if (unix)
+                if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
                 {
                     // Unix siginfo struct locations.
                     // NOTE: These are incredibly likely to be different between kernel version and architectures.
@@ -121,7 +119,25 @@ namespace ARMeilleure.Signal
                         _signalHandlerPtr = customSignalHandlerFactory(_signalHandlerPtr);
                     }
 
-                    SigAction old = UnixSignalHandlerRegistration.RegisterExceptionHandler(_signalHandlerPtr, userSignal);
+                    var old = UnixSignalHandlerRegistration.RegisterExceptionHandler(_signalHandlerPtr, userSignal);
+
+                    config.UnixOldSigaction = (nuint)(ulong)old.sa_handler;
+                    config.UnixOldSigaction3Arg = old.sa_flags & 4;
+                }
+                else if (OperatingSystem.IsAndroid())
+                {
+                    config.StructAddressOffset = 16; // si_addr
+                    config.StructWriteOffset = 8; // si_code
+
+                    _signalHandlerPtr = Marshal.GetFunctionPointerForDelegate(GenerateUnixSignalHandler(_handlerConfig));
+
+                    if (customSignalHandlerFactory != null)
+                    {
+                        _signalHandlerPtr = customSignalHandlerFactory(_signalHandlerPtr);
+                    }
+
+                    var old = AndroidSignalHandlerRegistration.RegisterExceptionHandler(_signalHandlerPtr, userSignal);
+
                     config.UnixOldSigaction = (nuint)(ulong)old.sa_handler;
                     config.UnixOldSigaction3Arg = old.sa_flags & 4;
                 }

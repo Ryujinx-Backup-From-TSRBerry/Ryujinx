@@ -3,25 +3,24 @@ using System.Runtime.InteropServices;
 
 namespace ARMeilleure.Signal
 {
-    static class UnixSignalHandlerRegistration
+    static class AndroidSignalHandlerRegistration
     {
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        [StructLayout(LayoutKind.Sequential, Pack = 8)]
         public unsafe struct SigSet
         {
             fixed long sa_mask[16];
         }
 
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        [StructLayout(LayoutKind.Sequential, Pack = 8)]
         public struct SigAction
         {
+            public int sa_flags;
             public IntPtr sa_handler;
             public SigSet sa_mask;
-            public int sa_flags;
             public IntPtr sa_restorer;
         }
 
         private const int SIGSEGV = 11;
-        private const int SIGBUS = 10;
         private const int SA_SIGINFO = 0x00000004;
 
         [DllImport("libc", SetLastError = true)]
@@ -47,16 +46,6 @@ namespace ARMeilleure.Signal
                 throw new InvalidOperationException($"Could not register SIGSEGV sigaction. Error: {result}");
             }
 
-            if (OperatingSystem.IsMacOS())
-            {
-                result = sigaction(SIGBUS, ref sig, out _);
-
-                if (result != 0)
-                {
-                    throw new InvalidOperationException($"Could not register SIGBUS sigaction. Error: {result}");
-                }
-            }
-
             if (userSignal != -1)
             {
                 result = sigaction(userSignal, ref sig, out SigAction oldu);
@@ -77,7 +66,7 @@ namespace ARMeilleure.Signal
 
         public static bool RestoreExceptionHandler(SigAction oldAction)
         {
-            return sigaction(SIGSEGV, ref oldAction, out SigAction _) == 0 && (!OperatingSystem.IsMacOS() || sigaction(SIGBUS, ref oldAction, out SigAction _) == 0);
+            return sigaction(SIGSEGV, ref oldAction, out SigAction _) == 0;
         }
     }
 }
