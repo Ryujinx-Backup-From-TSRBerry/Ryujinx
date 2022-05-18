@@ -10,13 +10,9 @@ namespace Ryujinx.Memory
             {
                 return MemoryManagementWindows.Allocate((IntPtr)size);
             }
-            else if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
+            else if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS() || OperatingSystem.IsAndroid())
             {
                 return MemoryManagementUnix.Allocate(size);
-            }
-            else if (OperatingSystem.IsAndroid())
-            {
-                return MemoryManagementAndroid.Allocate(size);
             }
             else
             {
@@ -30,13 +26,9 @@ namespace Ryujinx.Memory
             {
                 return MemoryManagementWindows.Reserve((IntPtr)size, viewCompatible);
             }
-            else if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
+            else if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS() || OperatingSystem.IsAndroid())
             {
                 return MemoryManagementUnix.Reserve(size);
-            }
-            else if (OperatingSystem.IsAndroid())
-            {
-                return MemoryManagementAndroid.Reserve(size);
             }
             else
             {
@@ -50,13 +42,9 @@ namespace Ryujinx.Memory
             {
                 return MemoryManagementWindows.Commit(address, (IntPtr)size);
             }
-            else if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
+            else if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS() || OperatingSystem.IsAndroid())
             {
                 return MemoryManagementUnix.Commit(address, size);
-            }
-            else if (OperatingSystem.IsAndroid())
-            {
-                return MemoryManagementAndroid.Commit(address, size);
             }
             else
             {
@@ -70,13 +58,9 @@ namespace Ryujinx.Memory
             {
                 return MemoryManagementWindows.Decommit(address, (IntPtr)size);
             }
-            else if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
+            else if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS() || OperatingSystem.IsAndroid())
             {
                 return MemoryManagementUnix.Decommit(address, size);
-            }
-            else if (OperatingSystem.IsAndroid())
-            {
-                return MemoryManagementAndroid.Decommit(address, size);
             }
             else
             {
@@ -90,13 +74,9 @@ namespace Ryujinx.Memory
             {
                 MemoryManagementWindows.MapView(sharedMemory, srcOffset, address, (IntPtr)size, owner);
             }
-            else if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
+            else if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS() || OperatingSystem.IsAndroid())
             {
                 MemoryManagementUnix.MapView(sharedMemory, srcOffset, address, size);
-            }
-            else if (OperatingSystem.IsAndroid())
-            {
-                MemoryManagementAndroid.MapView(sharedMemory, srcOffset, address, size);
             }
             else
             {
@@ -110,13 +90,9 @@ namespace Ryujinx.Memory
             {
                 MemoryManagementWindows.UnmapView(sharedMemory, address, (IntPtr)size, owner);
             }
-            else if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
+            else if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS() || OperatingSystem.IsAndroid())
             {
                 MemoryManagementUnix.UnmapView(address, size);
-            }
-            else if (OperatingSystem.IsAndroid())
-            {
-                MemoryManagementAndroid.UnmapView(address, size);
             }
             else
             {
@@ -132,13 +108,9 @@ namespace Ryujinx.Memory
             {
                 result = MemoryManagementWindows.Reprotect(address, (IntPtr)size, permission, forView);
             }
-            else if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
+            else if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS() || OperatingSystem.IsAndroid())
             {
                 result = MemoryManagementUnix.Reprotect(address, size, permission);
-            }
-            else if (OperatingSystem.IsAndroid())
-            {
-                result = MemoryManagementAndroid.Reprotect(address, size, permission);
             }
             else
             {
@@ -157,13 +129,9 @@ namespace Ryujinx.Memory
             {
                 return MemoryManagementWindows.Free(address, (IntPtr)size);
             }
-            else if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
+            else if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS() || OperatingSystem.IsAndroid())
             {
                 return MemoryManagementUnix.Free(address);
-            }
-            else if (OperatingSystem.IsAndroid())
-            {
-                return MemoryManagementAndroid.Free(address);
             }
             else
             {
@@ -197,13 +165,9 @@ namespace Ryujinx.Memory
             {
                 MemoryManagementWindows.DestroySharedMemory(handle);
             }
-            else if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
+            else if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS() || OperatingSystem.IsAndroid())
             {
                 MemoryManagementUnix.DestroySharedMemory(handle);
-            }
-            else if (OperatingSystem.IsAndroid())
-            {
-                MemoryManagementAndroid.DestroySharedMemory(handle);
             }
             else
             {
@@ -217,13 +181,9 @@ namespace Ryujinx.Memory
             {
                 return MemoryManagementWindows.MapSharedMemory(handle);
             }
-            else if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
+            else if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS() || OperatingSystem.IsAndroid())
             {
                 return MemoryManagementUnix.MapSharedMemory(handle, size);
-            }
-            else if (OperatingSystem.IsAndroid())
-            {
-                return MemoryManagementAndroid.MapSharedMemory(handle, size);
             }
             else
             {
@@ -237,13 +197,9 @@ namespace Ryujinx.Memory
             {
                 MemoryManagementWindows.UnmapSharedMemory(address);
             }
-            else if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
+            else if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS() || OperatingSystem.IsAndroid())
             {
                 MemoryManagementUnix.UnmapSharedMemory(address, size);
-            }
-            else if (OperatingSystem.IsAndroid())
-            {
-                MemoryManagementAndroid.UnmapSharedMemory(address, size);
             }
             else
             {

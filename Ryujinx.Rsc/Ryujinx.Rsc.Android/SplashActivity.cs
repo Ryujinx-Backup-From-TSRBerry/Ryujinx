@@ -84,9 +84,6 @@ namespace Ryujinx.Rsc.Android
 
         private void ProcessUnhandledException(System.Exception exception)
         {
-            Ptc.Close();
-            PtcProfiler.Stop();
-
             string message = $"Unhandled exception caught: {exception}";
 
             Ryujinx.Common.Logging.Logger.Error?.PrintMsg(LogClass.Application, message);
@@ -95,6 +92,9 @@ namespace Ryujinx.Rsc.Android
             {
                 Ryujinx.Common.Logging.Logger.Notice.PrintMsg(LogClass.Application, message);
             }
+            
+            Ptc.Close();
+            PtcProfiler.Stop();
         }
     }
 }

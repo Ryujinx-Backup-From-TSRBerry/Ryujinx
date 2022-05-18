@@ -16,7 +16,7 @@ namespace Ryujinx.Cpu.Nce
 
         public static IntPtr GetCurrentThreadHandle()
         {
-            if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
+            if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS() || OperatingSystem.IsAndroid())
             {
                 return pthread_self();
             }
@@ -28,7 +28,7 @@ namespace Ryujinx.Cpu.Nce
 
         public static void SuspendThread(IntPtr handle)
         {
-            if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
+            if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS() || OperatingSystem.IsAndroid())
             {
                 int result = pthread_kill(handle, UnixSuspendSignal);
                 if (result != 0)
