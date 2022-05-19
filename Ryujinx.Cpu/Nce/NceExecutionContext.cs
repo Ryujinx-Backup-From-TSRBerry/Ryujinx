@@ -107,7 +107,6 @@ namespace Ryujinx.Cpu.Nce
 
         public bool OnInterrupt()
         {
-            throw new Exception("what");
             Interrupt?.Invoke(this, EventArgs.Empty);
             return Running;
         }
@@ -117,7 +116,7 @@ namespace Ryujinx.Cpu.Nce
             IntPtr threadHandle = _context.GetStorage().HostThreadHandle;
             if (threadHandle != IntPtr.Zero)
             {
-                // NceThreadPal.SuspendThread(threadHandle);
+                NceThreadPal.SuspendThread(threadHandle);
             }
         }
 
