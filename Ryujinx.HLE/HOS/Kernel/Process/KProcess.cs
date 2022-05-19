@@ -158,6 +158,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Process
                 memRegion,
                 codeAddress,
                 codeSize,
+                Context.ReservedSize,
                 slabManager);
 
             if (result != KernelResult.Success)
@@ -263,6 +264,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Process
                 memRegion,
                 codeAddress,
                 codeSize,
+                Context.ReservedSize,
                 slabManager);
 
             if (result != KernelResult.Success)

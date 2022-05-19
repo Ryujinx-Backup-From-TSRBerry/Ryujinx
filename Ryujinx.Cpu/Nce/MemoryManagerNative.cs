@@ -67,7 +67,12 @@ namespace Ryujinx.Cpu.Nce
         /// <param name="addressSpaceSize">Size of the address space</param>
         /// <param name="unsafeMode">True if unmanaged access should not be masked (unsafe), false otherwise.</param>
         /// <param name="invalidAccessHandler">Optional function to handle invalid memory accesses</param>
-        public MemoryManagerNative(MemoryBlock backingMemory, ulong addressSpaceSize, bool unsafeMode, InvalidAccessHandler invalidAccessHandler = null)
+        public MemoryManagerNative(
+            MemoryBlock backingMemory,
+            ulong addressSpaceSize,
+            ulong usableAddressSpaceSize,
+            bool unsafeMode,
+            InvalidAccessHandler invalidAccessHandler = null)
         {
             _backingMemory = backingMemory;
             _pageTable = new PageTable<ulong>();
@@ -90,8 +95,8 @@ namespace Ryujinx.Cpu.Nce
 
             MemoryAllocationFlags asFlags = MemoryAllocationFlags.Reserve | MemoryAllocationFlags.ViewCompatible;
 
-            _addressSpace = new MemoryBlock(asSize, asFlags);
-            _addressSpaceMirror = new MemoryBlock(asSize, asFlags | MemoryAllocationFlags.ForceWindows4KBViewMapping);
+            _addressSpace = new MemoryBlock(usableAddressSpaceSize, asFlags);
+            _addressSpaceMirror = new MemoryBlock(usableAddressSpaceSize, asFlags | MemoryAllocationFlags.ForceWindows4KBViewMapping);
 
             Tracking = new MemoryTracking(this, PageSize, invalidAccessHandler);
             _memoryEh = new MemoryEhMeilleure(asSize, Tracking);
@@ -282,7 +287,8 @@ namespace Ryujinx.Cpu.Nce
         /// <inheritdoc/>
         public void Write(ulong va, ReadOnlySpan<byte> data)
         {
-            try {
+            try
+            {
                 SignalMemoryTracking(va, (ulong)data.Length, write: true);
 
                 _addressSpaceMirror.Write(AddressToOffset(va), data);

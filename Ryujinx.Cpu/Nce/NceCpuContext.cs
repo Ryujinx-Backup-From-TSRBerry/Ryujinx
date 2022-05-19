@@ -5,6 +5,7 @@ using Ryujinx.Common;
 using Ryujinx.Memory;
 using System;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace Ryujinx.Cpu.Nce
 {
@@ -62,6 +63,8 @@ namespace Ryujinx.Cpu.Nce
 
         public void Execute(IExecutionContext context, ulong address)
         {
+            Thread.BeginThreadAffinity();
+
             NceExecutionContext nec = (NceExecutionContext)context;
             NceNativeInterface.RegisterThread(nec, _tickSource);
             NceThreadTable.Register(_getTpidrEl0(), nec.NativeContextPtr);
@@ -72,6 +75,8 @@ namespace Ryujinx.Cpu.Nce
             // System.Console.WriteLine($"thread {System.Threading.Thread.CurrentThread.Name} exited successfully");
 
             NceThreadTable.Unregister(nec.NativeContextPtr);
+
+            Thread.EndThreadAffinity();
         }
 
         public void InvalidateCacheRegion(ulong address, ulong size)

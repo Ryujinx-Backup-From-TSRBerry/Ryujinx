@@ -49,6 +49,8 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
         public ulong TlsIoRegionStart { get; private set; }
         public ulong TlsIoRegionEnd { get; private set; }
 
+        private ulong _reservedSize;
+
         private ulong _heapCapacity;
 
         public ulong PhysicalMemoryUsage { get; private set; }
@@ -95,6 +97,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
             MemoryRegion memRegion,
             ulong address,
             ulong size,
+            ulong reservedSize,
             KMemoryBlockSlabManager slabManager)
         {
             if ((uint)addrSpaceType > (uint)AddressSpaceType.Addr39Bits)
@@ -116,6 +119,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
                 memRegion,
                 address,
                 size,
+                reservedSize,
                 slabManager);
 
             if (result != KernelResult.Success)
@@ -143,6 +147,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
             MemoryRegion memRegion,
             ulong address,
             ulong size,
+            ulong reservedSize,
             KMemoryBlockSlabManager slabManager)
         {
             ulong endAddr = address + size;
@@ -212,6 +217,20 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
                     break;
 
                 default: throw new ArgumentException(nameof(addrSpaceType));
+            }
+
+            // This is not done by the official kernel, it's just an extension
+            // to enable native code execution when we can only use a sub-range of the host address space.
+            if (reservedSize != 0UL)
+            {
+                if (addrSpaceType == AddressSpaceType.Addr39Bits)
+                {
+                    aliasRegion.Size = 0x180000000;
+                    tlsIoRegion.Size = 0x180000000;
+                }
+
+                baseAddress = reservedSize;
+                _reservedSize = reservedSize;
             }
 
             CodeRegionEnd = CodeRegionStart + codeRegionSize;
@@ -2788,7 +2807,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
         {
             if (AddrSpaceWidth == 36 || AddrSpaceWidth == 39)
             {
-                return 0x8000000;
+                return _reservedSize != 0UL ? _reservedSize : 0x8000000;
             }
             else if (AddrSpaceWidth == 32)
             {
@@ -2808,7 +2827,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
             }
             else if (AddrSpaceWidth == 39)
             {
-                return 0x7ff8000000;
+                return _reservedSize != 0UL ? 1UL << 36 : 0x7ff8000000;
             }
             else if (AddrSpaceWidth == 32)
             {

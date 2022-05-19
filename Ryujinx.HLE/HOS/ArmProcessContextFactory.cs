@@ -1,4 +1,5 @@
 ﻿using Ryujinx.Common.Configuration;
+using Ryujinx.Common.Logging;
 using Ryujinx.Cpu;
 using Ryujinx.Cpu.Jit;
 using Ryujinx.Cpu.Nce;
@@ -12,6 +13,8 @@ namespace Ryujinx.HLE.HOS
 {
     class ArmProcessContextFactory : IProcessContextFactory
     {
+        private const ulong MaxNativeAddressSpaceSize = 1UL << 36;
+
         private readonly ICpuEngine _cpuEngine;
         private readonly GpuContext _gpu;
 
@@ -27,9 +30,17 @@ namespace Ryujinx.HLE.HOS
 
             if (true)
             {
+                ulong usableAddressSpaceSize = Math.Min(addressSpaceSize, MaxNativeAddressSpaceSize);
                 bool unsafeMode = mode == MemoryManagerMode.HostMappedUnsafe;
-                var memoryManagerNative = new MemoryManagerNative(context.Memory, addressSpaceSize, unsafeMode, invalidAccessHandler);
-                Console.WriteLine("mm base address 0x" + memoryManagerNative.ReservedSize.ToString("X16"));
+                var memoryManagerNative = new MemoryManagerNative(
+                    context.Memory,
+                    addressSpaceSize,
+                    usableAddressSpaceSize,
+                    unsafeMode,
+                    invalidAccessHandler);
+
+                Logger.Info?.Print(LogClass.Loader, $"Address Space base address: 0x{memoryManagerNative.ReservedSize:X}");
+
                 return new ArmProcessContext<MemoryManagerNative>(pid, _cpuEngine, _gpu, memoryManagerNative, for64Bit, memoryManagerNative.ReservedSize);
             }
             else

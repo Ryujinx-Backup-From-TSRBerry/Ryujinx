@@ -24,11 +24,6 @@ namespace Ryujinx.HLE.HOS.Kernel.Process
             int resourceLimitHandle,
             int systemResourcePagesCount)
         {
-            if ((flags & ProcessCreationFlags.AddressSpaceMask) == ProcessCreationFlags.AddressSpace64Bit)
-            {
-                flags &= ~ProcessCreationFlags.AddressSpaceMask;
-                flags |= ProcessCreationFlags.AddressSpace64BitDeprecated;
-            }
             Name = name;
             Version = version;
             TitleId = titleId;
