@@ -1,0 +1,21 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             ClipToBounds="False"
+             x:Class="Ryujinx.Rsc.Controls.VirtualStick">
+    <UserControl.Resources>
+        <Color x:Key="StickBackgroundColor">#98414141</Color>
+    </UserControl.Resources>
+    <UserControl.Styles>
+        <Style Selector="Ellipse.Circle">
+            <Setter Property="Fill" Value="{DynamicResource StickBackgroundColor}"/>
+        </Style>
+    </UserControl.Styles>
+    <Canvas ClipToBounds="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="100" Height="100" x:Name="Layout">
+        <Ellipse Classes="Circle" Stroke="White" StrokeThickness="2" Width="100" Height="100" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Canvas.Left="0" Canvas.Top="0"
+                />
+        <Ellipse  Fill="Gray" Width="30" Height="30" x:Name="Thumb"/>
+    </Canvas>
+</UserControl>

@@ -1,0 +1,22 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:controls="clr-namespace:Ryujinx.Rsc.Controls"
+             x:Class="Ryujinx.Rsc.Controls.VirtualGameControllerLayout">
+    <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:Name="ControlLayout">
+		<controls:VirtualStick Width="100" Height="100" Name="StickLeft"/>
+		<controls:VirtualStick Width="100" Height="100" Name="StickRight"/>
+		<controls:VirtualButton Width="50" Height="50" Name="ButtonA"/>
+		<controls:VirtualButton Width="50" Height="50" Name="ButtonB"/>
+		<controls:VirtualButton Width="50" Height="50" Name="ButtonX"/>
+		<controls:VirtualButton Width="50" Height="50" Name="ButtonY"/>
+		<controls:VirtualButton Width="50" Height="50" Name="DpadUp"/>
+		<controls:VirtualButton Width="50" Height="50" Name="DPadDown"/>
+		<controls:VirtualButton Width="50" Height="50" Name="DPadLeft"/>
+		<controls:VirtualButton Width="50" Height="50" Name="DPadRight"/>
+		<controls:VirtualButton Width="50" Height="50" Name="Plus"/>
+		<controls:VirtualButton Width="50" Height="50" Name="Minus"/>
+    </Canvas>
+</UserControl>

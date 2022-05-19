@@ -73,11 +73,11 @@ namespace Ryujinx.Input.HLE
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool DriverConfigurationUpdate(ref NpadController controller, InputConfig config)
+        private bool DriverConfigurationUpdate(ref NpadController controller, InputConfig config, bool virtualControllerEnabled = false)
         {
             IGamepadDriver targetDriver = _gamepadDriver;
 
-            if (config is StandardControllerInputConfig && _gamepadDriver != null)
+            if ((config is StandardControllerInputConfig && _gamepadDriver != null) || virtualControllerEnabled)
             {
                 targetDriver = _gamepadDriver;
             }
@@ -156,7 +156,7 @@ namespace Ryujinx.Input.HLE
             ReloadConfiguration(inputConfig, enableKeyboard, enableMouse);
         }
 
-        public void Update(float aspectRatio = 0)
+        public void Update(float aspectRatio = 0, bool virtualControllerEnabled = false)
         {
             lock (_lock)
             {
@@ -178,7 +178,7 @@ namespace Ryujinx.Input.HLE
                     // Do we allow input updates and is a controller connected?
                     if (!_blockInputUpdates && controller != null)
                     {
-                        DriverConfigurationUpdate(ref controller, inputConfig);
+                        DriverConfigurationUpdate(ref controller, inputConfig, virtualControllerEnabled);
 
                         controller.UpdateUserConfiguration(inputConfig);
                         controller.Update();

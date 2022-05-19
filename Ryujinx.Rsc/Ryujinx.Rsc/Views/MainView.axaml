@@ -8,13 +8,21 @@
              x:Class="Ryujinx.Rsc.Views.MainView"
              Foreground="White"
              Background="#171C2C">
-  <Design.DataContext>
-    <viewModels:MainViewModel />
-  </Design.DataContext>
-    <control:GameListView 
-        x:Name="GameGrid"
-        HorizontalContentAlignment="Stretch"
-        HorizontalAlignment="Stretch"
-        VerticalContentAlignment="Stretch"
-        VerticalAlignment="Stretch"/>
+    <Design.DataContext>
+        <viewModels:MainViewModel />
+    </Design.DataContext>
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <ContentControl HorizontalAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch"
+                        x:Name="ContentFrame"
+                        VerticalAlignment="Stretch">
+        <control:GameListView
+            x:Name="GameGrid"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch" />
+    </ContentControl>
+        <control:VirtualGameControllerLayout HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                             IsVisible="{Binding EnableVirtualController}"/>
+    </Grid>
 </UserControl>
