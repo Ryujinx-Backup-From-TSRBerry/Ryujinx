@@ -1,16 +1,32 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Layout;
+using Avalonia.Threading;
+using Ryujinx.Ava.Common.Locale;
+using Ryujinx.Common.Logging;
+using Ryujinx.Graphics.Gpu;
 using Ryujinx.HLE.FileSystem;
 using Ryujinx.HLE.HOS;
 using Ryujinx.HLE.HOS.Services.Account.Acc;
+using Ryujinx.Input.HLE;
+using Ryujinx.Input.SDL2;
+using Ryujinx.Ui.Common.Configuration;
 using Ryujinx.Rsc.Controls;
 using Ryujinx.Rsc.ViewModels;
 using Ryujinx.Ui.App.Common;
+using System;
+using System.IO;
+using System.Threading;
 
 namespace Ryujinx.Rsc.Views
 {
     public partial class MainView : UserControl
     {
+        private Control _mainViewContent;
+        private string _currentEmulatedGamePath;
+        private ManualResetEvent _rendererWaitEvent;
+        private bool _isClosing;
+        private UserChannelPersistence _userChannelPersistence;
         public ApplicationLibrary ApplicationLibrary { get; set; }
 
         public VirtualFileSystem VirtualFileSystem { get; private set; }
@@ -23,13 +39,14 @@ namespace Ryujinx.Rsc.Views
         public MainView()
         {
             InitializeComponent();
+            _rendererWaitEvent = new ManualResetEvent(false);
         }
 
         protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
         {
             base.OnAttachedToVisualTree(e);
 
-            if (ViewModel == null)
+            if (ViewModel == null && App.PreviewerDetached)
             {
                 ViewModel = (MainViewModel) DataContext;
 
@@ -51,6 +68,7 @@ namespace Ryujinx.Rsc.Views
 
         private void Initialize()
         {
+            _userChannelPersistence = new UserChannelPersistence();
             VirtualFileSystem = VirtualFileSystem.CreateInstance();
             LibHacHorizonManager = new LibHacHorizonManager();
             ContentManager = new ContentManager(VirtualFileSystem);
@@ -67,6 +85,8 @@ namespace Ryujinx.Rsc.Views
             AccountManager = new AccountManager(LibHacHorizonManager.RyujinxClient);
 
             VirtualFileSystem.ReloadKeySet();
+
+            InputManager = new InputManager(new AvaloniaKeyboardDriver(this), AvaloniaVirtualControllerDriver.Instance);
         }
 
         private void Application_Opened(object sender, ApplicationOpenedEventArgs e)
@@ -111,10 +131,11 @@ namespace Ryujinx.Rsc.Views
             }
 
             ViewModel.TitleName = string.IsNullOrWhiteSpace(titleName) ? AppHost.Device.Application.TitleName : titleName;
+            
+            _currentEmulatedGamePath = path;
 
             SwitchToGameControl();
 
-            _currentEmulatedGamePath = path;
             Thread gameThread = new Thread(InitializeGame)
             {
                 Name = "GUI.WindowThread"
@@ -150,7 +171,9 @@ namespace Ryujinx.Rsc.Views
                     ContentFrame.Content = _mainViewContent;
                 }
 
+                ViewModel.EnableVirtualController = false;
                 AppHost = null;
+                App.GameState = GameState.None;
             });
 
             VkRenderer.RendererInitialized -= Renderer_Created;
@@ -161,5 +184,37 @@ namespace Ryujinx.Rsc.Views
                 ViewModel.Title = $"Ryujinx Test";
             });
         }
+
+        private void Renderer_Created(object sender, EventArgs e)
+        {
+            _rendererWaitEvent.Set();
+        }
+
+        public VulkanRendererControl VkRenderer { get; set; }
+        public InputManager InputManager { get; private set; }
+
+        public AppHost AppHost { get; set; }
+
+        public static void UpdateGraphicsConfig()
+        {
+            int resScale = ConfigurationState.Instance.Graphics.ResScale;
+            float resScaleCustom = ConfigurationState.Instance.Graphics.ResScaleCustom;
+
+            GraphicsConfig.ResScale = resScale == -1 ? resScaleCustom : resScale;
+            GraphicsConfig.MaxAnisotropy = ConfigurationState.Instance.Graphics.MaxAnisotropy;
+            GraphicsConfig.ShadersDumpPath = ConfigurationState.Instance.Graphics.ShadersDumpPath;
+            Graphics.Gpu.GraphicsConfig.EnableShaderCache = ConfigurationState.Instance.Graphics.EnableShaderCache;
+        }
+
+        public void SwitchToGameControl(bool enableVirtualController = false)
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                ViewModel.EnableVirtualController = enableVirtualController;
+                ContentFrame.Content = VkRenderer;
+            });
+        }
+
+        public static double Scaling { get; set; }
     }
 }

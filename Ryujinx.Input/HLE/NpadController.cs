@@ -384,6 +384,14 @@ namespace Ryujinx.Input.HLE
                 state.LStick = ClampToCircle(ApplyDeadzone(leftAxisX, leftAxisY, controllerConfig.DeadzoneLeft), controllerConfig.RangeLeft);
                 state.RStick = ClampToCircle(ApplyDeadzone(rightAxisX, rightAxisY, controllerConfig.DeadzoneRight), controllerConfig.RangeRight);
             }
+            else if (_gamepad is IGamepad)
+            {
+                (float leftAxisX, float leftAxisY) = State.GetStick(StickInputId.Left);
+                (float rightAxisX, float rightAxisY) = State.GetStick(StickInputId.Right);
+
+                state.LStick = ClampToCircle(ApplyDeadzone(leftAxisX, leftAxisY, 0), 1);
+                state.RStick = ClampToCircle(ApplyDeadzone(rightAxisX, rightAxisY, 0), 1);
+            }
 
             return state;
         }
@@ -408,6 +416,11 @@ namespace Ryujinx.Input.HLE
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static short ClampAxis(float value)
         {
+            if (float.IsNaN(value))
+            {
+                return 0;
+            }
+
             if (Math.Sign(value) < 0)
             {
                 return (short)Math.Max(value * -short.MinValue, short.MinValue);

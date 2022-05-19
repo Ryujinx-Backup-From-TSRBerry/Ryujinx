@@ -17,6 +17,8 @@ namespace Ryujinx.Rsc.ViewModels
         private ObservableCollection<ApplicationData> _applications;
         private ReadOnlyObservableCollection<ApplicationData> _appsObservableList;
         private bool _isLoading;
+        private bool _enableVirtualController;
+
         public MainView Owner { get; set; }
 
         public MainViewModel()
@@ -54,6 +56,16 @@ namespace Ryujinx.Rsc.ViewModels
         public bool IsGridLarge => ConfigurationState.Instance.Ui.GridSize == 3;
         public bool IsGridHuge => ConfigurationState.Instance.Ui.GridSize == 4;
 
+        public bool EnableVirtualController
+        {
+            get => _enableVirtualController; set
+            {
+                _enableVirtualController = value;
+
+                this.RaisePropertyChanged();
+            }
+        }
+
         public void Initialize()
         {
             Owner.ApplicationLibrary.ApplicationCountUpdated += ApplicationLibrary_ApplicationCountUpdated;
@@ -85,7 +97,8 @@ namespace Ryujinx.Rsc.ViewModels
                     ConfigurationState.Instance.System.Language);
 
                 _isLoading = false;
-            }) {Name = "GUI.AppListLoadThread", Priority = ThreadPriority.AboveNormal};
+            })
+            { Name = "GUI.AppListLoadThread", Priority = ThreadPriority.AboveNormal };
 
             thread.Start();
         }
