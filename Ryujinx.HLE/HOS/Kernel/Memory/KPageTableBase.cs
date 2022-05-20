@@ -219,6 +219,8 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
                 default: throw new ArgumentException(nameof(addrSpaceType));
             }
 
+            ulong usableRegionEnd = addrSpaceEnd;
+
             // This is not done by the official kernel, it's just an extension
             // to enable native code execution when we can only use a sub-range of the host address space.
             if (reservedSize != 0UL)
@@ -231,6 +233,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
 
                 baseAddress = reservedSize;
                 _reservedSize = reservedSize;
+                usableRegionEnd = reservedSize + (1UL << 36);
             }
 
             CodeRegionEnd = CodeRegionStart + codeRegionSize;
@@ -238,7 +241,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
             ulong mapBaseAddress;
             ulong mapAvailableSize;
 
-            if (CodeRegionStart - baseAddress >= addrSpaceEnd - CodeRegionEnd)
+            if (CodeRegionStart - baseAddress >= usableRegionEnd - CodeRegionEnd)
             {
                 // Has more space before the start of the code region.
                 mapBaseAddress = baseAddress;
@@ -248,7 +251,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
             {
                 // Has more space after the end of the code region.
                 mapBaseAddress = CodeRegionEnd;
-                mapAvailableSize = addrSpaceEnd - CodeRegionEnd;
+                mapAvailableSize = usableRegionEnd - CodeRegionEnd;
             }
 
             ulong mapTotalSize = aliasRegion.Size + heapRegion.Size + stackRegion.Size + tlsIoRegion.Size;
