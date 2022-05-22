@@ -9,7 +9,6 @@ using Ryujinx.HLE.FileSystem;
 using Ryujinx.HLE.HOS;
 using Ryujinx.HLE.HOS.Services.Account.Acc;
 using Ryujinx.Input.HLE;
-using Ryujinx.Input.SDL2;
 using Ryujinx.Ui.Common.Configuration;
 using Ryujinx.Rsc.Controls;
 using Ryujinx.Rsc.ViewModels;
