@@ -38,5 +38,6 @@
   
   <ItemGroup>
     <ProjectReference Include="..\Ryujinx.Rsc\Ryujinx.Rsc.csproj" />
+    <ProjectReference Include="..\Ryujinx.Audio.Backends.Android\Ryujinx.Audio.Backends.Android.csproj" />
   </ItemGroup>
 </Project>

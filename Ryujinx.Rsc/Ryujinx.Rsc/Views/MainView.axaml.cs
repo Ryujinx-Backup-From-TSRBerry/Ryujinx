@@ -16,6 +16,8 @@ using Ryujinx.Ui.App.Common;
 using System;
 using System.IO;
 using System.Threading;
+using Avalonia.Media;
+using Ryujinx.Audio.Integration;
 
 namespace Ryujinx.Rsc.Views
 {
@@ -130,7 +132,7 @@ namespace Ryujinx.Rsc.Views
             }
 
             ViewModel.TitleName = string.IsNullOrWhiteSpace(titleName) ? AppHost.Device.Application.TitleName : titleName;
-            
+
             _currentEmulatedGamePath = path;
 
             SwitchToGameControl();
@@ -146,12 +148,32 @@ namespace Ryujinx.Rsc.Views
         {
             VkRenderer.RendererInitialized += Renderer_Created;
             AppHost.AppExit += AppHost_AppExit;
+            AppHost.StatusUpdatedEvent += AppHost_StatusUpdatedEvent;
 
             _rendererWaitEvent.WaitOne();
 
             AppHost?.Start();
 
             AppHost.DisposeContext();
+        }
+
+        private void AppHost_StatusUpdatedEvent(object sender, Models.StatusUpdatedEventArgs e)
+        {
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if (e.VSyncEnabled)
+                {
+                    ViewModel.VsyncColor = new SolidColorBrush(Color.Parse("#ff2eeac9"));
+                }
+                else
+                {
+                    ViewModel.VsyncColor = new SolidColorBrush(Color.Parse("#ffff4554"));
+                }
+
+                ViewModel.GameStatusText = e.GameStatus;
+                ViewModel.FifoStatusText = e.FifoStatus;
+                ViewModel.GpuStatusText = e.GpuName;
+            });
         }
 
         private void AppHost_AppExit(object sender, EventArgs e)
@@ -162,6 +184,9 @@ namespace Ryujinx.Rsc.Views
             }
 
             ViewModel.IsGameRunning = false;
+
+            ViewModel.ShowOverlay = false;
+            AppHost.StatusUpdatedEvent -= AppHost_StatusUpdatedEvent;
 
             Dispatcher.UIThread.InvokeAsync(() =>
             {

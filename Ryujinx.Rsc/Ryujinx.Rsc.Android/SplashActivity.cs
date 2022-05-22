@@ -10,6 +10,8 @@ using ARMeilleure.Translation.PTC;
 using Ryujinx.Common.Logging;
 using System.IO;
 using Application = Android.App.Application;
+using AndroidEnv = Android.OS.Environment;
+using static Android.Content.Context;
 
 namespace Ryujinx.Rsc.Android
 {
@@ -68,6 +70,7 @@ namespace Ryujinx.Rsc.Android
 
                 App.GameDirectory = romPath;
                 App.BaseDirectory = appPath;
+                App.CreateAudioHardwareDeviceDriver = CreateAudioHardwareDeviceDriver;
 
                 App.LoadConfiguration();
 
@@ -80,6 +83,26 @@ namespace Ryujinx.Rsc.Android
 
                 Java.Lang.JavaSystem.LoadLibrary("c");
             }
+        }
+
+        private IHardwareDeviceDriver CreateAudioHardwareDeviceDriver(AudioBackend arg)
+        {
+            if (arg != AudioBackend.Dummy)
+            {
+                // FIXME: This is the legacy driver that is supported everywhere but terrible.
+                // BODY: Because AAudio is broken (Waiting on mono CFI) we cannot use it.
+                if (AudioTrackHardwareDeviceDriver.IsSupported)
+                {
+                    return new AudioTrackHardwareDeviceDriver();
+                }
+
+                /*if (AAudioHardwareDeviceDriver.IsSupported)
+                {
+                    return new AAudioHardwareDeviceDriver();
+                }*/
+            }
+
+            return new DummyHardwareDeviceDriver();
         }
 
         private void ProcessUnhandledException(System.Exception exception)

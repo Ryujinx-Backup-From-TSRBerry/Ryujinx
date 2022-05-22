@@ -8,26 +8,65 @@ using Ryujinx.Rsc.Views;
 using Ryujinx.Ui.Common.Configuration;
 using System;
 using System.IO;
+using Ryujinx.Rsc.Controls;
+using Ryujinx.Audio.Integration;
+using Ryujinx.Audio.Backends.Dummy;
 
 namespace Ryujinx.Rsc
 {
     public partial class App : Application
     {
+        private static GameState _gameState;
+
         public static bool PreviewerDetached { get; set; }
         public static string GameDirectory { get; set; }
+        public static string BaseDirectory { get; set; }
+        public static RenderTimer RenderTimer { get; set; }
+
+        public static Func<AudioBackend, IHardwareDeviceDriver> CreateAudioHardwareDeviceDriver { get; set; }
+
+        static App()
+        {
+            CreateAudioHardwareDeviceDriver = (_) => new DummyHardwareDeviceDriver();
+        }
+
+        public static GameState GameState
+        {
+            get => _gameState; set
+            {
+                _gameState = value;
+
+                GameStateChaged?.Invoke(null, new GameStateChangedArgs(_gameState));
+            }
+        }
+
+        public static event EventHandler<GameStateChangedArgs> GameStateChaged;
 
         public override void Initialize()
         {
+            AvaloniaXamlLoader.Load(this);
+        }
+
+        public static void LoadConfiguration()
+        {
             if (PreviewerDetached)
             {
-                var basePath = OperatingSystem.IsAndroid() ? System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) : null;
+                if (BaseDirectory != null)
+                {
+                    Directory.CreateDirectory(BaseDirectory);
+                }
+
                 // Setup base data directory.
-                AppDataManager.Initialize(basePath);
+                AppDataManager.Initialize(BaseDirectory);
 
                 // Initialize the configuration.
                 ConfigurationState.Initialize();
-                string localConfigurationPath   = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Config.json");
-                string appDataConfigurationPath = Path.Combine(AppDataManager.BaseDirPath,            "Config.json");
+
+                // Initialize the logger system.
+                LoggerModule.Initialize();
+
+                string localConfigurationPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Config.json");
+                string appDataConfigurationPath = Path.Combine(AppDataManager.BaseDirPath, "Config.json");
 
                 // Now load the configuration as the other subsystems are now registered
                 ConfigurationPath = File.Exists(localConfigurationPath)
@@ -63,10 +102,9 @@ namespace Ryujinx.Rsc
                     ConfigurationState.Instance.Ui.GameDirs.Value.Add(GameDirectory);
                 }
             }
-            AvaloniaXamlLoader.Load(this);
         }
 
-        public string ConfigurationPath { get; set; }
+        public static string ConfigurationPath { get; set; }
 
         public override void OnFrameworkInitializationCompleted()
         {
