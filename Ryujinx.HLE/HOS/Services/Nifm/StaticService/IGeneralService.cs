@@ -25,7 +25,13 @@ namespace Ryujinx.HLE.HOS.Services.Nifm.StaticService
                 IsAnyInternetRequestAccepted = true // NOTE: Why not accept any internet request?
             };
 
-            NetworkChange.NetworkAddressChanged += new NetworkAddressChangedEventHandler(LocalInterfaceCacheHandler);
+            // FIXME: Android API Level 22 did drastic jailing changes.
+            // BODY: .NET API was fixed for GetAllNetworkInterfaces was fixed in Dec 2021, but they seems to have forget about NetworkAddressChanged.
+            // TODO: Open an issue about this with a reproducer.
+            if (!OperatingSystem.IsAndroid())
+            {
+                NetworkChange.NetworkAddressChanged += new NetworkAddressChangedEventHandler(LocalInterfaceCacheHandler);
+            }
 
             GeneralServiceManager.Add(_generalServiceDetail);
         }
