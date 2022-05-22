@@ -7,7 +7,6 @@ using Avalonia.Threading;
 using Avalonia.VisualTree;
 using LibHac.Tools.FsSystem;
 using Ryujinx.Audio.Backends.Dummy;
-using Ryujinx.Audio.Backends.OpenAL;
 using Ryujinx.Audio.Integration;
 using Ryujinx.Ava.Common;
 using Ryujinx.Ava.Common.Locale;
@@ -555,14 +554,6 @@ namespace Ryujinx.Rsc
             }
 
             Logger.Info?.PrintMsg(LogClass.Gpu, $"Backend Threading ({threadingMode}): {isGALthreaded}");
-
-             if (ConfigurationState.Instance.System.AudioBackend.Value == AudioBackend.OpenAl)
-            {
-                if (OpenALHardwareDeviceDriver.IsSupported)
-                {
-                    deviceDriver = new OpenALHardwareDeviceDriver();
-                }
-            }
 
             var memoryConfiguration = ConfigurationState.Instance.System.ExpandRam.Value
                 ? HLE.MemoryConfiguration.MemoryConfiguration6GB
