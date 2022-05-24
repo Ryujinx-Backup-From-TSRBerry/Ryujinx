@@ -197,7 +197,7 @@ namespace Ryujinx.Cpu.Nce
             return targetAddress;
         }
 
-        public static uint[] GenerateExceptionHandlerEntry(IntPtr signalHandlerPtr)
+        public static uint[] GenerateExceptionHandlerEntry(IntPtr oldSignalHandlerSegfaultPtr, IntPtr signalHandlerPtr)
         {
             uint[] code = GetCopy(NceAsmTable.ExceptionHandlerEntryCode);
 
@@ -212,6 +212,10 @@ namespace Ryujinx.Cpu.Nce
             int mov3Index = Array.IndexOf(code, 0xd2800000u, mov2Index + 1);
 
             WritePointer(code, mov3Index, (ulong)NceNativeInterface.GetSuspendThreadHandlerFunctionPointer());
+
+            int mov4Index = Array.IndexOf(code, 0xd280001au, mov3Index + 1);
+
+            WritePointer(code, mov4Index, (ulong)oldSignalHandlerSegfaultPtr);
 
             int cmpIndex = Array.IndexOf(code, 0x7100027fu);
 
