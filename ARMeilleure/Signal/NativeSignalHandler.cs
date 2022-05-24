@@ -94,7 +94,7 @@ namespace ARMeilleure.Signal
             JitCache.Initialize(allocator);
         }
 
-        public static void InitializeSignalHandler(Func<IntPtr, IntPtr> customSignalHandlerFactory = null, int userSignal = -1)
+        public static void InitializeSignalHandler(Func<IntPtr, IntPtr, IntPtr> customSignalHandlerFactory = null, int userSignal = -1)
         {
             if (_initialized) return;
 
@@ -116,7 +116,7 @@ namespace ARMeilleure.Signal
 
                     if (customSignalHandlerFactory != null)
                     {
-                        _signalHandlerPtr = customSignalHandlerFactory(_signalHandlerPtr);
+                        _signalHandlerPtr = customSignalHandlerFactory(UnixSignalHandlerRegistration.GetSegfaultExceptionHandler().sa_handler, _signalHandlerPtr);
                     }
 
                     var old = UnixSignalHandlerRegistration.RegisterExceptionHandler(_signalHandlerPtr, userSignal);
@@ -133,7 +133,7 @@ namespace ARMeilleure.Signal
 
                     if (customSignalHandlerFactory != null)
                     {
-                        _signalHandlerPtr = customSignalHandlerFactory(_signalHandlerPtr);
+                        _signalHandlerPtr = customSignalHandlerFactory(AndroidSignalHandlerRegistration.GetSegfaultExceptionHandler().sa_handler, _signalHandlerPtr);
                     }
 
                     var old = AndroidSignalHandlerRegistration.RegisterExceptionHandler(_signalHandlerPtr, userSignal);
@@ -150,7 +150,7 @@ namespace ARMeilleure.Signal
 
                     if (customSignalHandlerFactory != null)
                     {
-                        _signalHandlerPtr = customSignalHandlerFactory(_signalHandlerPtr);
+                        _signalHandlerPtr = customSignalHandlerFactory(IntPtr.Zero, _signalHandlerPtr);
                     }
 
                     _signalHandlerHandle = WindowsSignalHandlerRegistration.RegisterExceptionHandler(_signalHandlerPtr);

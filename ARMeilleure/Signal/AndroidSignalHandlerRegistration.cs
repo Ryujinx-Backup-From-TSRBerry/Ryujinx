@@ -27,7 +27,22 @@ namespace ARMeilleure.Signal
         private static extern int sigaction(int signum, ref SigAction sigAction, out SigAction oldAction);
 
         [DllImport("libc", SetLastError = true)]
+        private static extern int sigaction(int signum, IntPtr sigAction, out SigAction oldAction);
+
+        [DllImport("libc", SetLastError = true)]
         private static extern int sigemptyset(ref SigSet set);
+
+        public static SigAction GetSegfaultExceptionHandler()
+        {
+            int result = sigaction(SIGSEGV, IntPtr.Zero, out SigAction old);
+
+            if (result != 0)
+            {
+                throw new InvalidOperationException($"Could not get SIGSEGV sigaction. Error: {result}");
+            }
+
+            return old;
+        }
 
         public static SigAction RegisterExceptionHandler(IntPtr action, int userSignal = -1)
         {

@@ -78,16 +78,23 @@ namespace Ryujinx.Cpu.Nce
             0xf2a00018u, // movk x24, #0x0, lsl #16
             0xf2c00018u, // movk x24, #0x0, lsl #32
             0xf2e00018u, // movk x24, #0x0, lsl #48
+            0xf85f8319u, // ldur x25, [x24, #-8]
+            0x8b191319u, // add x25, x24, x25, lsl #4
             0xd53bd041u, // mrs x1, tpidr_el0
+            0xeb19031fu, // cmp x24, x25
+            0x540000a0u, // b.eq 12c <ExceptionHandlerEntryCode+0x48>
             0xf8410702u, // ldr x2, [x24], #16
             0xeb02003fu, // cmp x1, x2
-            0x54000040u, // b.eq 11c <ExceptionHandlerEntryCode+0x38>
-            0x17fffffdu, // b 10c <ExceptionHandlerEntryCode+0x28>
+            0x54000080u, // b.eq 134 <ExceptionHandlerEntryCode+0x50>
+            0x17fffffbu, // b 114 <ExceptionHandlerEntryCode+0x30>
+            0xd2800018u, // mov x24, #0x0
+            0x14000002u, // b 138 <ExceptionHandlerEntryCode+0x54>
             0xf85f8318u, // ldur x24, [x24, #-8]
+            0xb40003b8u, // cbz x24, 1ac <ExceptionHandlerEntryCode+0xc8>
             0xf9419300u, // ldr x0, [x24, #800]
             0x9100001fu, // mov sp, x0
             0x7100027fu, // cmp w19, #0x0
-            0x54000180u, // b.eq 15c <ExceptionHandlerEntryCode+0x78>
+            0x54000180u, // b.eq 178 <ExceptionHandlerEntryCode+0x94>
             0x52800020u, // mov w0, #0x1
             0xb9031f00u, // str w0, [x24, #796]
             0xaa1303e0u, // mov x0, x19
@@ -98,9 +105,9 @@ namespace Ryujinx.Cpu.Nce
             0xf2c00008u, // movk x8, #0x0, lsl #32
             0xf2e00008u, // movk x8, #0x0, lsl #48
             0xd63f0100u, // blr x8
-            0x1400000au, // b 180 <ExceptionHandlerEntryCode+0x9c>
+            0x1400000au, // b 19c <ExceptionHandlerEntryCode+0xb8>
             0xb9431f00u, // ldr w0, [x24, #796]
-            0x35000120u, // cbnz w0, 184 <ExceptionHandlerEntryCode+0xa0>
+            0x35000120u, // cbnz w0, 1a0 <ExceptionHandlerEntryCode+0xbc>
             0x52800020u, // mov w0, #0x1
             0xb9031f00u, // str w0, [x24, #796]
             0xd2800000u, // mov x0, #0x0
@@ -112,6 +119,15 @@ namespace Ryujinx.Cpu.Nce
             0x910002dfu, // mov sp, x22
             0xaa1703feu, // mov x30, x23
             0xd65f03c0u, // ret
+            0xaa1303e0u, // mov x0, x19
+            0xaa1403e1u, // mov x1, x20
+            0xaa1503e2u, // mov x2, x21
+            0x910002dfu, // mov sp, x22
+            0xd280001au, // mov x26, #0x0
+            0xf2a0001au, // movk x26, #0x0, lsl #16
+            0xf2c0001au, // movk x26, #0x0, lsl #32
+            0xf2e0001au, // movk x26, #0x0, lsl #48
+            0xd61f0340u, // br x26
         };
 
         public static uint[] SvcPatchCode = new uint[]
@@ -125,8 +141,8 @@ namespace Ryujinx.Cpu.Nce
             0xd53bd054u, // mrs x20, tpidr_el0
             0xf8410675u, // ldr x21, [x19], #16
             0xeb15029fu, // cmp x20, x21
-            0x54000040u, // b.eq 1bc <SvcPatchCode+0x2c>
-            0x17fffffdu, // b 1ac <SvcPatchCode+0x1c>
+            0x54000040u, // b.eq 1fc <SvcPatchCode+0x2c>
+            0x17fffffdu, // b 1ec <SvcPatchCode+0x1c>
             0xf85f8273u, // ldur x19, [x19, #-8]
             0xa9000660u, // stp x0, x1, [x19]
             0xa9010e62u, // stp x2, x3, [x19, #16]
@@ -170,7 +186,7 @@ namespace Ryujinx.Cpu.Nce
             0x52800000u, // mov w0, #0x0
             0xf941aa68u, // ldr x8, [x19, #848]
             0xd63f0100u, // blr x8
-            0x35000280u, // cbnz w0, 2b8 <SvcPatchCode+0x128>
+            0x35000280u, // cbnz w0, 2f8 <SvcPatchCode+0x128>
             0x6d517ffeu, // ldp d30, d31, [sp, #272]
             0x6d5077fcu, // ldp d28, d29, [sp, #256]
             0x6d4f6ffau, // ldp d26, d27, [sp, #240]
@@ -225,7 +241,7 @@ namespace Ryujinx.Cpu.Nce
             0xad56767cu, // ldp q28, q29, [x19, #704]
             0xad577e7eu, // ldp q30, q31, [x19, #736]
             0xf9404e73u, // ldr x19, [x19, #152]
-            0x14000000u, // b 344 <SvcPatchCode+0x1b4>
+            0x14000000u, // b 384 <SvcPatchCode+0x1b4>
         };
 
         public static uint[] MrsTpidrroEl0PatchCode = new uint[]
@@ -239,15 +255,15 @@ namespace Ryujinx.Cpu.Nce
             0xd53bd054u, // mrs x20, tpidr_el0
             0xf8410675u, // ldr x21, [x19], #16
             0xeb15029fu, // cmp x20, x21
-            0x54000040u, // b.eq 374 <MrsTpidrroEl0PatchCode+0x2c>
-            0x17fffffdu, // b 364 <MrsTpidrroEl0PatchCode+0x1c>
+            0x54000040u, // b.eq 3b4 <MrsTpidrroEl0PatchCode+0x2c>
+            0x17fffffdu, // b 3a4 <MrsTpidrroEl0PatchCode+0x1c>
             0xf85f8273u, // ldur x19, [x19, #-8]
             0xf9418673u, // ldr x19, [x19, #776]
             0xf90003f3u, // str x19, [sp]
             0xa94157f4u, // ldp x20, x21, [sp, #16]
             0xf94007f3u, // ldr x19, [sp, #8]
             0xf84207e0u, // ldr x0, [sp], #32
-            0x14000000u, // b 38c <MrsTpidrroEl0PatchCode+0x44>
+            0x14000000u, // b 3cc <MrsTpidrroEl0PatchCode+0x44>
         };
 
         public static uint[] MrsTpidrEl0PatchCode = new uint[]
@@ -261,15 +277,15 @@ namespace Ryujinx.Cpu.Nce
             0xd53bd054u, // mrs x20, tpidr_el0
             0xf8410675u, // ldr x21, [x19], #16
             0xeb15029fu, // cmp x20, x21
-            0x54000040u, // b.eq 3bc <MrsTpidrEl0PatchCode+0x2c>
-            0x17fffffdu, // b 3ac <MrsTpidrEl0PatchCode+0x1c>
+            0x54000040u, // b.eq 3fc <MrsTpidrEl0PatchCode+0x2c>
+            0x17fffffdu, // b 3ec <MrsTpidrEl0PatchCode+0x1c>
             0xf85f8273u, // ldur x19, [x19, #-8]
             0xf9418273u, // ldr x19, [x19, #768]
             0xf90003f3u, // str x19, [sp]
             0xa94157f4u, // ldp x20, x21, [sp, #16]
             0xf94007f3u, // ldr x19, [sp, #8]
             0xf84207e0u, // ldr x0, [sp], #32
-            0x14000000u, // b 3d4 <MrsTpidrEl0PatchCode+0x44>
+            0x14000000u, // b 414 <MrsTpidrEl0PatchCode+0x44>
         };
 
         public static uint[] MsrTpidrEl0PatchCode = new uint[]
@@ -283,14 +299,14 @@ namespace Ryujinx.Cpu.Nce
             0xd53bd054u, // mrs x20, tpidr_el0
             0xf8410675u, // ldr x21, [x19], #16
             0xeb15029fu, // cmp x20, x21
-            0x54000040u, // b.eq 404 <MsrTpidrEl0PatchCode+0x2c>
-            0x17fffffdu, // b 3f4 <MsrTpidrEl0PatchCode+0x1c>
+            0x54000040u, // b.eq 444 <MsrTpidrEl0PatchCode+0x2c>
+            0x17fffffdu, // b 434 <MsrTpidrEl0PatchCode+0x1c>
             0xf85f8273u, // ldur x19, [x19, #-8]
             0xf94007f4u, // ldr x20, [sp, #8]
             0xf9018274u, // str x20, [x19, #768]
             0xa94157f4u, // ldp x20, x21, [sp, #16]
             0xf84207f3u, // ldr x19, [sp], #32
-            0x14000000u, // b 418 <MsrTpidrEl0PatchCode+0x40>
+            0x14000000u, // b 458 <MsrTpidrEl0PatchCode+0x40>
         };
 
         public static uint[] MrsCntpctEl0PatchCode = new uint[]
@@ -314,8 +330,8 @@ namespace Ryujinx.Cpu.Nce
             0xd53bd054u, // mrs x20, tpidr_el0
             0xf8410675u, // ldr x21, [x19], #16
             0xeb15029fu, // cmp x20, x21
-            0x54000040u, // b.eq 470 <MrsCntpctEl0PatchCode+0x54>
-            0x17fffffdu, // b 460 <MrsCntpctEl0PatchCode+0x44>
+            0x54000040u, // b.eq 4b0 <MrsCntpctEl0PatchCode+0x54>
+            0x17fffffdu, // b 4a0 <MrsCntpctEl0PatchCode+0x44>
             0xf85f8273u, // ldur x19, [x19, #-8]
             0x52800020u, // mov w0, #0x1
             0xb9031e60u, // str w0, [x19, #796]
@@ -339,7 +355,7 @@ namespace Ryujinx.Cpu.Nce
             0xa9410fe2u, // ldp x2, x3, [sp, #16]
             0xa8cb07e0u, // ldp x0, x1, [sp], #176
             0xf84107e0u, // ldr x0, [sp], #16
-            0x14000000u, // b 4cc <MrsCntpctEl0PatchCode+0xb0>
+            0x14000000u, // b 50c <MrsCntpctEl0PatchCode+0xb0>
         };
     }
 }

@@ -37,9 +37,9 @@ namespace Ryujinx.Cpu.Nce
 
             NativeSignalHandler.InitializeJitCache(new JitMemoryAllocator());
 
-            NativeSignalHandler.InitializeSignalHandler((IntPtr signalHandlerPtr) =>
+            NativeSignalHandler.InitializeSignalHandler((IntPtr oldSignalHandlerSegfaultPtr, IntPtr signalHandlerPtr) =>
             {
-                uint[] ehEntryCode = NcePatcher.GenerateExceptionHandlerEntry(signalHandlerPtr);
+                uint[] ehEntryCode = NcePatcher.GenerateExceptionHandlerEntry(oldSignalHandlerSegfaultPtr, signalHandlerPtr);
                 codeBlock.Write(enEntryCodeOffset, MemoryMarshal.Cast<uint, byte>(ehEntryCode.AsSpan()));
                 codeBlock.Reprotect(0, size, MemoryPermission.ReadAndExecute, true);
                 return codeBlock.GetPointer(enEntryCodeOffset, ehEntryCodeSize);
