@@ -292,7 +292,7 @@ namespace Ryujinx.Ui.App.Common
 
                                             using (MemoryStream memStream = new MemoryStream())
                                             {
-                                                icon.Get.AsStream().CopyTo(stream);
+                                                icon.Get.AsStream().CopyTo(memStream);
                                                 applicationIcon = memStream.ToArray();
                                             }
                                         }
@@ -311,7 +311,7 @@ namespace Ryujinx.Ui.App.Common
 
                                                 using (MemoryStream memStream = new MemoryStream())
                                                 {
-                                                    icon.Get.AsStream().CopyTo(stream);
+                                                    icon.Get.AsStream().CopyTo(memStream);
                                                     applicationIcon = memStream.ToArray();
                                                 }
 
@@ -618,7 +618,7 @@ namespace Ryujinx.Ui.App.Common
 
                                         using (MemoryStream memStream = new MemoryStream())
                                         {
-                                            icon.Get.AsStream().CopyTo(stream);
+                                            icon.Get.AsStream().CopyTo(memStream);
                                             applicationIcon = memStream.ToArray();
                                         }
                                     }
@@ -637,7 +637,7 @@ namespace Ryujinx.Ui.App.Common
 
                                             using (MemoryStream memStream = new MemoryStream())
                                             {
-                                                icon.Get.AsStream().CopyTo(stream);
+                                                icon.Get.AsStream().CopyTo(memStream);
                                                 applicationIcon = memStream.ToArray();
                                             }
 
