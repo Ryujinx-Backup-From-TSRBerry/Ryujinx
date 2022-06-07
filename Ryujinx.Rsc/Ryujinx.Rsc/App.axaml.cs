@@ -11,15 +11,15 @@ using System.IO;
 using Ryujinx.Rsc.Controls;
 using Ryujinx.Audio.Integration;
 using Ryujinx.Audio.Backends.Dummy;
+using Ryujinx.Ui.Common.Helper;
 
 namespace Ryujinx.Rsc
 {
     public partial class App : Application
     {
-        private static GameState _gameState;
+        private static Orientation _requestedOrientation;
 
         public static bool PreviewerDetached { get; set; }
-        public static string GameDirectory { get; set; }
         public static string BaseDirectory { get; set; }
         public static RenderTimer RenderTimer { get; set; }
 
@@ -30,17 +30,17 @@ namespace Ryujinx.Rsc
             CreateAudioHardwareDeviceDriver = (_) => new DummyHardwareDeviceDriver();
         }
 
-        public static GameState GameState
+        public static Orientation RequestedOrientation
         {
-            get => _gameState; set
+            get => _requestedOrientation; set
             {
-                _gameState = value;
+                _requestedOrientation = value;
 
-                GameStateChaged?.Invoke(null, new GameStateChangedArgs(_gameState));
+                OrientationRequested?.Invoke(null, new OrientationRequestedArgs(_requestedOrientation));
             }
         }
 
-        public static event EventHandler<GameStateChangedArgs> GameStateChaged;
+        public static event EventHandler<OrientationRequestedArgs> OrientationRequested;
 
         public override void Initialize()
         {
@@ -95,16 +95,12 @@ namespace Ryujinx.Rsc
                         Logger.Warning?.PrintMsg(LogClass.Application, $"Failed to load config! Loading the default config instead.\nFailed config location {ConfigurationPath}");
                     }
                 }
-
-                if (OperatingSystem.IsAndroid())
-                {
-                    ConfigurationState.Instance.Ui.GameDirs.Value.Clear();
-                    ConfigurationState.Instance.Ui.GameDirs.Value.Add(GameDirectory);
-                }
             }
         }
 
         public static string ConfigurationPath { get; set; }
+
+        public static Func<IFileSystemHelper> FileSystemHelperFactory{ get; set; }
 
         public override void OnFrameworkInitializationCompleted()
         {

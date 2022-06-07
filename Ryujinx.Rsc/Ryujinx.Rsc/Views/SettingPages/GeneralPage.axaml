@@ -1,0 +1,55 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:locale="clr-namespace:Ryujinx.Rsc.Common.Locale"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="650"
+             x:Class="Ryujinx.Rsc.Views.SettingPages.GeneralPage">
+    <StackPanel HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Orientation="Vertical">
+        <TextBlock FontWeight="Bold" FontSize="18" Margin="10" Text="{locale:Locale SettingsTabGeneralGeneral}" />
+		<TextBlock FontWeight="Bold" FontSize="16" Margin="10" Text="{locale:Locale SettingsTabGeneralGameDirectories}" />
+		<Border HorizontalAlignment="Stretch"
+                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
+			<Grid Background="Transparent" HorizontalAlignment="Stretch">
+				<Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+				<ListBox
+					Name="GameList"
+					Height="300"
+					Items="{Binding GameDirectories}" />
+				<Grid HorizontalAlignment="Stretch" Grid.Row="1" Margin="10, 10, 0, 0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+					<Button
+						Name="AddButton"
+						Grid.Column="1"
+						MinWidth="130"
+						Height="40"
+						Margin="10,0,0,0"
+						Click="AddButton_OnClick">
+						<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+								   Text="{locale:Locale SettingsTabGeneralAdd}" />
+					</Button>
+					<Button
+						Name="RemoveButton"
+						Grid.Column="2"
+						MinWidth="130"
+						Height="40"
+						Margin="10,0,0,0"
+						ToolTip.Tip="{locale:Locale RemoveGameDirTooltip}"
+						Click="RemoveButton_OnClick">
+						<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+								   Text="{locale:Locale SettingsTabGeneralRemove}" />
+					</Button>
+				</Grid>
+			</Grid>
+		</Border>
+    </StackPanel>
+</UserControl>

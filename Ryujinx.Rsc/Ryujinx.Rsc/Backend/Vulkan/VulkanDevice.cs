@@ -6,7 +6,7 @@ using Silk.NET.Vulkan;
 using Silk.NET.Vulkan.Extensions.EXT;
 using Silk.NET.Vulkan.Extensions.KHR;
 
-namespace Ryujinx.Ava.Vulkan
+namespace Ryujinx.Rsc.Vulkan
 {
     public class VulkanDevice : IDisposable
     {
@@ -39,8 +39,8 @@ namespace Ryujinx.Ava.Vulkan
         internal static List<string> RequiredDeviceExtensions { get; } = new()
         {
             KhrSwapchain.ExtensionName,
-            "VK_EXT_shader_subgroup_vote",
-            ExtTransformFeedback.ExtensionName
+            //"VK_EXT_shader_subgroup_vote",
+           // ExtTransformFeedback.ExtensionName
         };
 
         public void Dispose()

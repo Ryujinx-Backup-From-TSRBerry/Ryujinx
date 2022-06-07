@@ -78,21 +78,10 @@ namespace Ryujinx.Graphics.Vulkan
 
                 Set(uLayoutBindings, Constants.MaxUniformBuffersPerStage, DescriptorType.UniformBuffer, 1, 1);
                 SetStorage(sLayoutBindings, Constants.MaxStorageBuffersPerStage);
-<<<<<<< HEAD
                 Set(tLayoutBindings, Constants.MaxTexturesPerStage, DescriptorType.CombinedImageSampler, 0, 2);
                 Set(tLayoutBindings, Constants.MaxTexturesPerStage, DescriptorType.UniformTexelBuffer, Constants.MaxTexturesPerStage, 2);
                 Set(iLayoutBindings, Constants.MaxImagesPerStage, DescriptorType.StorageImage, 0, 2);
                 Set(iLayoutBindings, Constants.MaxImagesPerStage, DescriptorType.StorageTexelBuffer, Constants.MaxImagesPerStage, 2);
-=======
-                Set(tLayoutBindings, Constants.MaxTexturesPerStage, DescriptorType.CombinedImageSampler);
-                Set(iLayoutBindings, Constants.MaxImagesPerStage, DescriptorType.StorageImage);
-
-                if (PipelineBase.DescriptorSetLayouts > 4)
-                {
-                    Set(bTLayoutBindings, Constants.MaxTexturesPerStage, DescriptorType.UniformTexelBuffer);
-                    Set(bILayoutBindings, Constants.MaxImagesPerStage, DescriptorType.StorageTexelBuffer);
-                }
->>>>>>> 6a2cbc5f5 (reduce descriptor set count, add android native handler)
 
                 iter++;
             }
@@ -241,29 +230,6 @@ namespace Ryujinx.Graphics.Vulkan
                 BindingCount = (uint)iCount
             };
 
-<<<<<<< HEAD
-=======
-            if (PipelineBase.DescriptorSetLayouts > 4)
-            {
-                var bTDescriptorSetLayoutCreateInfo = new DescriptorSetLayoutCreateInfo()
-                {
-                    SType = StructureType.DescriptorSetLayoutCreateInfo,
-                    PBindings = bTLayoutBindings,
-                    BindingCount = (uint)bTCount
-                };
-
-                var bIDescriptorSetLayoutCreateInfo = new DescriptorSetLayoutCreateInfo()
-                {
-                    SType = StructureType.DescriptorSetLayoutCreateInfo,
-                    PBindings = bILayoutBindings,
-                    BindingCount = (uint)bICount
-                };
-
-                gd.Api.CreateDescriptorSetLayout(device, bTDescriptorSetLayoutCreateInfo, null, out layouts[PipelineFull.BufferTextureSetIndex]).ThrowOnError();
-                gd.Api.CreateDescriptorSetLayout(device, bIDescriptorSetLayoutCreateInfo, null, out layouts[PipelineFull.BufferImageSetIndex]).ThrowOnError();
-            }
-
->>>>>>> 6a2cbc5f5 (reduce descriptor set count, add android native handler)
             gd.Api.CreateDescriptorSetLayout(device, uDescriptorSetLayoutCreateInfo, null, out layouts[PipelineFull.UniformSetIndex]).ThrowOnError();
             gd.Api.CreateDescriptorSetLayout(device, sDescriptorSetLayoutCreateInfo, null, out layouts[PipelineFull.StorageSetIndex]).ThrowOnError();
             gd.Api.CreateDescriptorSetLayout(device, tDescriptorSetLayoutCreateInfo, null, out layouts[PipelineFull.TextureSetIndex]).ThrowOnError();

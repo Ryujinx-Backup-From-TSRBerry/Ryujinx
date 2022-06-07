@@ -1,0 +1,192 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:locale="clr-namespace:Ryujinx.Rsc.Common.Locale"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Ryujinx.Rsc.Views.SettingPages.LoggingPage">
+    <StackPanel HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Orientation="Vertical">
+        <TextBlock FontWeight="Bold" FontSize="16" Margin="10" Text="{locale:Locale SettingsTabLoggingLogging}" />
+        <Border HorizontalAlignment="Stretch"
+                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
+            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Text="{locale:Locale SettingsTabLoggingEnableLoggingToFile}"
+                           Width="230" />
+                <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableFileLog}"  OffContent="" Content="" OnContent=""/>
+            </Grid>
+        </Border>
+        <Border HorizontalAlignment="Stretch"
+                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
+            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Text="{locale:Locale SettingsTabLoggingEnableStubLogs}"
+                           Width="230" />
+                <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableStub}"  OffContent="" Content="" OnContent=""/>
+            </Grid>
+        </Border>
+        <Border HorizontalAlignment="Stretch"
+                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
+            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Text="{locale:Locale SettingsTabLoggingEnableInfoLogs}"
+                           Width="230" />
+                <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableInfo}"  OffContent="" Content="" OnContent=""/>
+            </Grid>
+        </Border>
+        <Border HorizontalAlignment="Stretch"
+                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
+            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Text="{locale:Locale SettingsTabLoggingEnableWarningLogs}"
+                           Width="230" />
+                <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableWarn}"  OffContent="" Content="" OnContent=""/>
+            </Grid>
+        </Border>
+        <Border HorizontalAlignment="Stretch"
+                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
+            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Text="{locale:Locale SettingsTabLoggingEnableErrorLogs}"
+                           Width="230" />
+                <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableError}"  OffContent="" Content="" OnContent=""/>
+            </Grid>
+        </Border>
+        <Border HorizontalAlignment="Stretch"
+                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
+            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Text="{locale:Locale SettingsTabLoggingEnableTraceLogs}"
+                           Width="230" />
+                <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableTrace}"  OffContent="" Content="" OnContent=""/>
+            </Grid>
+        </Border>
+        <Border HorizontalAlignment="Stretch"
+                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
+            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Text="{locale:Locale SettingsTabLoggingEnableGuestLogs}"
+                           Width="230" />
+                <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableGuest}"  OffContent="" Content="" OnContent=""/>
+            </Grid>
+        </Border>
+        <Separator Height="1" Margin="0,5" />
+        <TextBlock FontWeight="Bold" FontSize="16" TextWrapping="Wrap" Margin="10" Text="{locale:Locale SettingsTabLoggingDeveloperOptions}" />
+        <Border HorizontalAlignment="Stretch"
+                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
+            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Text="{locale:Locale SettingsTabLoggingEnableDebugLogs}"
+                           Width="230" />
+                <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableDebug}"  OffContent="" Content="" OnContent=""/>
+            </Grid>
+        </Border>
+        <Border HorizontalAlignment="Stretch"
+                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
+            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Text="{locale:Locale SettingsTabLoggingEnableFsAccessLogs}"
+                           Width="230" />
+                <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableFsAccessLog}"  OffContent="" Content="" OnContent=""/>
+            </Grid>
+        </Border>
+		<Border HorizontalAlignment="Stretch"
+                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
+			<Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+				<TextBlock VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Text="{locale:Locale SettingsTabLoggingFsGlobalAccessLogMode}"
+                           Width="230" />
+				<NumericUpDown Grid.Column="1"
+							   HorizontalAlignment="Right"
+					Maximum="3"
+					Minimum="0"
+					Width="150"
+					ButtonSpinnerLocation="Right"
+					Increment="1"
+					Value="{Binding FsGlobalAccessLogMode}" />
+			</Grid>
+		</Border>
+		<Border HorizontalAlignment="Stretch"
+                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
+			<Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+				<TextBlock VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Text="{locale:Locale SettingsTabLoggingOpenglLogLevel}"
+                           Width="230" />
+				<ComboBox Grid.Column="1" SelectedIndex="{Binding OpenglDebugLevel}"
+						Width="150"
+						HorizontalContentAlignment="Left">
+					<ComboBoxItem>
+						<TextBlock Text="{locale:Locale SettingsTabLoggingOpenglLogLevelNone}" />
+					</ComboBoxItem>
+					<ComboBoxItem>
+						<TextBlock Text="{locale:Locale SettingsTabLoggingOpenglLogLevelError}" />
+					</ComboBoxItem>
+					<ComboBoxItem>
+						<TextBlock
+							Text="{locale:Locale SettingsTabLoggingOpenglLogLevelPerformance}" />
+					</ComboBoxItem>
+					<ComboBoxItem>
+						<TextBlock Text="{locale:Locale SettingsTabLoggingOpenglLogLevelAll}" />
+					</ComboBoxItem>
+				</ComboBox>
+			</Grid>
+		</Border>
+    </StackPanel>
+</UserControl>

@@ -2,10 +2,12 @@ using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using Avalonia;
-using Ryujinx.Ava.Vulkan.Surfaces;
+using Ryujinx.Common.Configuration;
+using Ryujinx.Ui.Common.Configuration;
+using Ryujinx.Rsc.Vulkan.Surfaces;
 using Silk.NET.Vulkan;
 
-namespace Ryujinx.Ava.Vulkan
+namespace Ryujinx.Rsc.Vulkan
 {
     public class VulkanPlatformInterface : IDisposable
     {
@@ -35,16 +37,15 @@ namespace Ryujinx.Ava.Vulkan
             {
                 _options = AvaloniaLocator.Current.GetService<VulkanOptions>() ?? new VulkanOptions();
 
-#if NET6_0_OR_GREATER
+
             if (OperatingSystem.IsAndroid())
                 Silk.NET.Core.Loader.SearchPathContainer.Platform = Silk.NET.Core.Loader.UnderlyingPlatform.Android;
-#endif
 
                 var instance = VulkanInstance.Create(_options);
 
                 return new VulkanPlatformInterface(instance);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return null;
             }

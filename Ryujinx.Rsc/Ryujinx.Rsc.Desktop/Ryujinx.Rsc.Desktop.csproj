@@ -2,7 +2,6 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
 	<!--Avalonia doesen't support TrimMode=link currently,but we are working on that https://github.com/AvaloniaUI/Avalonia/issues/6892 -->
 	<TrimMode>copyused</TrimMode>
 	<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
@@ -15,12 +14,13 @@
 	<TrimmableAssembly Include="Avalonia.Themes.Default" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.10.999-cibuild0020345-beta" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.10.999-cibuild0020345-beta" />
+    <PackageReference Include="Avalonia" Version="0.10.999-cibuild0021118-beta" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.999-cibuild0021118-beta" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.999-cibuild0020345-beta" />
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.999-cibuild0021118-beta" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Ryujinx.Ui.Common\Ryujinx.Ui.Common.csproj" />
     <ProjectReference Include="..\Ryujinx.Rsc\Ryujinx.Rsc.csproj" />
   </ItemGroup>
 </Project>

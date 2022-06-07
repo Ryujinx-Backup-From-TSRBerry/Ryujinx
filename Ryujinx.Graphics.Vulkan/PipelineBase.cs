@@ -7,10 +7,7 @@ namespace Ryujinx.Graphics.Vulkan
 {
     class PipelineBase : IDisposable
     {
-<<<<<<< HEAD
-=======
         // TODO verify from supported hardware features
->>>>>>> 6a2cbc5f5 (reduce descriptor set count, add android native handler)
         public const int DescriptorSetLayouts = 4;
 
         public const int UniformSetIndex = 0;

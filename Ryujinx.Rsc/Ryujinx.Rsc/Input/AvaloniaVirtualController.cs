@@ -14,10 +14,7 @@ namespace Ryujinx.Rsc
             _driver = driver;
         }
 
-        public void Dispose()
-        {
-            throw new System.NotImplementedException();
-        }
+        public void Dispose() { }
 
         public GamepadFeaturesFlag Features { get; }
         public string Id { get; }

@@ -2,11 +2,11 @@ using System;
 using System.Linq;
 using System.Threading;
 using Avalonia;
-using Ryujinx.Ava.Vulkan.Surfaces;
+using Ryujinx.Rsc.Vulkan.Surfaces;
 using Silk.NET.Vulkan;
 using Silk.NET.Vulkan.Extensions.KHR;
 
-namespace Ryujinx.Ava.Vulkan
+namespace Ryujinx.Rsc.Vulkan
 {
     public class VulkanDisplay : IDisposable
     {
@@ -131,13 +131,32 @@ namespace Ryujinx.Ava.Vulkan
             var modes = presentModes.ToList();
 
             if (modes.Contains(PresentModeKHR.PresentModeImmediateKhr))
+            {
                 presentMode = PresentModeKHR.PresentModeImmediateKhr;
+            }
             else if (modes.Contains(PresentModeKHR.PresentModeMailboxKhr))
+            {
                 presentMode = PresentModeKHR.PresentModeMailboxKhr;
+            }
             else
+            {
                 presentMode = PresentModeKHR.PresentModeFifoKhr;
+            }
 
             var compositeAlphaFlags = CompositeAlphaFlagsKHR.CompositeAlphaOpaqueBitKhr;
+
+            if (capabilities.SupportedCompositeAlpha.HasFlag(CompositeAlphaFlagsKHR.CompositeAlphaPostMultipliedBitKhr))
+            {
+                compositeAlphaFlags = CompositeAlphaFlagsKHR.CompositeAlphaPostMultipliedBitKhr;
+            }
+            else if (capabilities.SupportedCompositeAlpha.HasFlag(CompositeAlphaFlagsKHR.CompositeAlphaPreMultipliedBitKhr))
+            {
+                compositeAlphaFlags = CompositeAlphaFlagsKHR.CompositeAlphaPreMultipliedBitKhr;
+            }
+            else if (capabilities.SupportedCompositeAlpha.HasFlag(CompositeAlphaFlagsKHR.CompositeAlphaInheritBitKhr))
+            {
+                compositeAlphaFlags = CompositeAlphaFlagsKHR.CompositeAlphaInheritBitKhr;
+            }
 
             var swapchainCreateInfo = new SwapchainCreateInfoKHR
             {
@@ -158,13 +177,13 @@ namespace Ryujinx.Ava.Vulkan
                 OldSwapchain = oldDisplay?._swapchain ?? new SwapchainKHR()
             };
 
+            _swapchainExtension.CreateSwapchain(device.InternalHandle, swapchainCreateInfo, null, out var swapchain)
+                .ThrowOnError();
+
             if (oldDisplay != null)
             {
                 _swapchainExtension.DestroySwapchain(device.InternalHandle, oldDisplay._swapchain, null);
             }
-
-            _swapchainExtension.CreateSwapchain(device.InternalHandle, swapchainCreateInfo, null, out var swapchain)
-                .ThrowOnError();
 
             return swapchain;
         }
