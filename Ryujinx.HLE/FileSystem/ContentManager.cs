@@ -37,15 +37,17 @@ namespace Ryujinx.HLE.FileSystem
 
         private struct AocItem
         {
-            public readonly string ContainerPath;
+            public readonly Stream ContainerStream;
             public readonly string NcaPath;
+            public readonly string Extension;
             public bool Enabled;
 
-            public AocItem(string containerPath, string ncaPath, bool enabled)
+            public AocItem(Stream containerStream, string ncaPath, bool enabled, string extension)
             {
-                ContainerPath = containerPath;
+                ContainerStream = containerStream;
                 NcaPath = ncaPath;
                 Enabled = enabled;
+                Extension = extension;
             }
         }
 
@@ -203,7 +205,7 @@ namespace Ryujinx.HLE.FileSystem
         }
 
         // fs must contain AOC nca files in its root
-        public void AddAocData(IFileSystem fs, string containerPath, ulong aocBaseId, IntegrityCheckLevel integrityCheckLevel)
+        public void AddAocData(IFileSystem fs, Stream containerStream, ulong aocBaseId, IntegrityCheckLevel integrityCheckLevel, string extension)
         {
             _virtualFileSystem.ImportTickets(fs);
 
@@ -233,8 +235,9 @@ namespace Ryujinx.HLE.FileSystem
                 }
 
                 string ncaId = BitConverter.ToString(cnmt.ContentEntries[0].NcaId).Replace("-", "").ToLower();
-                if (!_aocData.TryAdd(cnmt.TitleId, new AocItem(containerPath, $"{ncaId}.nca", true)))
+                if (!_aocData.TryAdd(cnmt.TitleId, new AocItem(containerStream, $"{ncaId}.nca", true, extension)))
                 {
+                    containerStream?.Dispose();
                     Logger.Warning?.Print(LogClass.Application, $"Duplicate AddOnContent detected. TitleId {cnmt.TitleId:X16}");
                 }
                 else
@@ -244,25 +247,33 @@ namespace Ryujinx.HLE.FileSystem
             }
         }
 
-        public void AddAocItem(ulong titleId, string containerPath, string ncaPath, bool enabled)
+        public void AddAocItem(ulong titleId, Stream containerStream, string ncaPath, bool enabled, string extension)
         {
-            if (!_aocData.TryAdd(titleId, new AocItem(containerPath, ncaPath, enabled)))
+            if (!_aocData.TryAdd(titleId, new AocItem(containerStream, ncaPath, enabled, extension)))
             {
+                containerStream?.Dispose();
                 Logger.Warning?.Print(LogClass.Application, $"Duplicate AddOnContent detected. TitleId {titleId:X16}");
             }
             else
             {
                 Logger.Info?.Print(LogClass.Application, $"Found AddOnContent with TitleId {titleId:X16}");
 
-                using (FileStream fileStream = File.OpenRead(containerPath))
-                using (PartitionFileSystem pfs = new PartitionFileSystem(fileStream.AsStorage()))
+                using (PartitionFileSystem pfs = new PartitionFileSystem(containerStream.AsStorage()))
                 {
                     _virtualFileSystem.ImportTickets(pfs);
                 }
             }
         }
 
-        public void ClearAocData() => _aocData.Clear();
+        public void ClearAocData()
+        {
+            foreach (var aoc in _aocData)
+            {
+                aoc.Value.ContainerStream?.Dispose();
+            }
+
+            _aocData.Clear();
+        }
 
         public int GetAocCount() => _aocData.Where(e => e.Value.Enabled).Count();
 
@@ -274,18 +285,17 @@ namespace Ryujinx.HLE.FileSystem
 
             if (_aocData.TryGetValue(aocTitleId, out AocItem aoc) && aoc.Enabled)
             {
-                var file = new FileStream(aoc.ContainerPath, FileMode.Open, FileAccess.Read);
                 using var ncaFile = new UniqueRef<IFile>();
                 PartitionFileSystem pfs;
 
-                switch (Path.GetExtension(aoc.ContainerPath))
+                switch (aoc.Extension)
                 {
                     case ".xci":
-                        pfs = new Xci(_virtualFileSystem.KeySet, file.AsStorage()).OpenPartition(XciPartitionType.Secure);
+                        pfs = new Xci(_virtualFileSystem.KeySet, aoc.ContainerStream.AsStorage()).OpenPartition(XciPartitionType.Secure);
                         pfs.OpenFile(ref ncaFile.Ref(), aoc.NcaPath.ToU8Span(), OpenMode.Read);
                         break;
                     case ".nsp":
-                        pfs = new PartitionFileSystem(file.AsStorage());
+                        pfs = new PartitionFileSystem(aoc.ContainerStream.AsStorage());
                         pfs.OpenFile(ref ncaFile.Ref(), aoc.NcaPath.ToU8Span(), OpenMode.Read);
                         break;
                     default:

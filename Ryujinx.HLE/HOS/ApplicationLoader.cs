@@ -216,7 +216,13 @@ namespace Ryujinx.HLE.HOS
         public void LoadXci(string xciFile)
         {
             FileStream file = new FileStream(xciFile, FileMode.Open, FileAccess.Read);
-            Xci xci = new Xci(_device.Configuration.VirtualFileSystem.KeySet, file.AsStorage());
+
+            LoadXci(file);
+        }
+
+        public void LoadXci(Stream xciStream)
+        {
+            Xci xci = new Xci(_device.Configuration.VirtualFileSystem.KeySet, xciStream.AsStorage());
 
             if (!xci.HasPartition(XciPartitionType.Secure))
             {
@@ -253,7 +259,7 @@ namespace Ryujinx.HLE.HOS
 
             _device.Configuration.ContentManager.LoadEntries(_device);
             _device.Configuration.ContentManager.ClearAocData();
-            _device.Configuration.ContentManager.AddAocData(securePartition, xciFile, mainNca.Header.TitleId, _device.Configuration.FsIntegrityCheckLevel);
+            _device.Configuration.ContentManager.AddAocData(securePartition, xciStream, mainNca.Header.TitleId, _device.Configuration.FsIntegrityCheckLevel, "xci");
 
             LoadNca(mainNca, patchNca, controlNca);
         }
@@ -261,7 +267,13 @@ namespace Ryujinx.HLE.HOS
         public void LoadNsp(string nspFile)
         {
             FileStream file = new FileStream(nspFile, FileMode.Open, FileAccess.Read);
-            PartitionFileSystem nsp = new PartitionFileSystem(file.AsStorage());
+
+            LoadNsp(file);
+        }
+
+        public void LoadNsp(Stream nspStream)
+        {
+            PartitionFileSystem nsp = new PartitionFileSystem(nspStream.AsStorage());
 
             Nca mainNca;
             Nca patchNca;
@@ -283,7 +295,7 @@ namespace Ryujinx.HLE.HOS
             if (mainNca != null)
             {
                 _device.Configuration.ContentManager.ClearAocData();
-                _device.Configuration.ContentManager.AddAocData(nsp, nspFile, mainNca.Header.TitleId, _device.Configuration.FsIntegrityCheckLevel);
+                _device.Configuration.ContentManager.AddAocData(nsp, nspStream, mainNca.Header.TitleId, _device.Configuration.FsIntegrityCheckLevel, "nsp");
 
                 LoadNca(mainNca, patchNca, controlNca);
 
@@ -297,7 +309,13 @@ namespace Ryujinx.HLE.HOS
         public void LoadNca(string ncaFile)
         {
             FileStream file = new FileStream(ncaFile, FileMode.Open, FileAccess.Read);
-            Nca nca = new Nca(_device.Configuration.VirtualFileSystem.KeySet, file.AsStorage(false));
+
+            LoadNca(file);
+        }
+
+        public void LoadNca(Stream ncaStream)
+        {
+            Nca nca = new Nca(_device.Configuration.VirtualFileSystem.KeySet, ncaStream.AsStorage(false));
 
             LoadNca(nca, null, null);
         }
@@ -430,7 +448,8 @@ namespace Ryujinx.HLE.HOS
                     {
                         if (File.Exists(dlcContainer.Path))
                         {
-                            _device.Configuration.ContentManager.AddAocItem(dlcNca.TitleId, dlcContainer.Path, dlcNca.Path, dlcNca.Enabled);
+                            var file = File.OpenRead(dlcContainer.Path);
+                            _device.Configuration.ContentManager.AddAocItem(dlcNca.TitleId, file, dlcNca.Path, dlcNca.Enabled, Path.GetExtension(dlcContainer.Path));
                         }
                         else
                         {
@@ -665,27 +684,33 @@ namespace Ryujinx.HLE.HOS
 
         public void LoadProgram(string filePath)
         {
+            FileStream input = new FileStream(filePath, FileMode.Open);
+
+            bool isNro = Path.GetExtension(filePath).ToLower() == ".nro";
+
+            LoadProgram(input, isNro, Path.GetFileNameWithoutExtension(filePath));
+        }
+
+        public void LoadProgram(Stream stream, bool isNro, string name)
+        {
             MetaLoader metaData = GetDefaultNpdm();
             metaData.GetNpdm(out Npdm npdm).ThrowIfFailure();
             ProgramInfo programInfo = new ProgramInfo(in npdm, allowCodeMemoryForJit: true);
-
-            bool isNro = Path.GetExtension(filePath).ToLower() == ".nro";
 
             IExecutable executable;
 
             if (isNro)
             {
-                FileStream input = new FileStream(filePath, FileMode.Open);
-                NroExecutable obj = new NroExecutable(input.AsStorage());
+                NroExecutable obj = new NroExecutable(stream.AsStorage());
 
                 executable = obj;
 
                 // Homebrew NRO can actually have some data after the actual NRO.
-                if (input.Length > obj.FileSize)
+                if (stream.Length > obj.FileSize)
                 {
-                    input.Position = obj.FileSize;
+                    stream.Position = obj.FileSize;
 
-                    BinaryReader reader = new BinaryReader(input);
+                    BinaryReader reader = new BinaryReader(stream);
 
                     uint asetMagic = reader.ReadUInt32();
                     if (asetMagic == 0x54455341)
@@ -704,12 +729,12 @@ namespace Ryujinx.HLE.HOS
 
                             if (romfsSize != 0)
                             {
-                                _device.Configuration.VirtualFileSystem.SetRomFs(new HomebrewRomFsStream(input, obj.FileSize + (long)romfsOffset));
+                                _device.Configuration.VirtualFileSystem.SetRomFs(new HomebrewRomFsStream(stream, obj.FileSize + (long)romfsOffset));
                             }
 
                             if (nacpSize != 0)
                             {
-                                input.Seek(obj.FileSize + (long)nacpOffset, SeekOrigin.Begin);
+                                stream.Seek(obj.FileSize + (long)nacpOffset, SeekOrigin.Begin);
 
                                 reader.Read(ControlData.ByteSpan);
 
@@ -749,7 +774,7 @@ namespace Ryujinx.HLE.HOS
             }
             else
             {
-                executable = new NsoExecutable(new LocalStorage(filePath, FileAccess.Read), Path.GetFileNameWithoutExtension(filePath));
+                executable = new NsoExecutable(new StreamStorage(stream, true), name);
             }
 
             _device.Configuration.ContentManager.LoadEntries(_device);
