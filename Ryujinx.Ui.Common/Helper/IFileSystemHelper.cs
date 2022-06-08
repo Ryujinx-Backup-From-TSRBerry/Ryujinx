@@ -1,4 +1,5 @@
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Ryujinx.Ui.Common.Helper
 {
@@ -10,5 +11,6 @@ namespace Ryujinx.Ui.Common.Helper
         string[] GetDirectories(string directory);
         bool FileExist(string uri);
         bool DirectoryExist(string directory);
+        Task<string> OpenFolder(object parent);
     }
 }

@@ -32,5 +32,10 @@ namespace Ryujinx.Ui.Common.Helper
         {
             return Directory.GetFiles(directory, search);
         }
+
+        public virtual async Task<string> OpenFolder(object parent)
+        {
+            return string.Empty;
+        }
     }
 }
