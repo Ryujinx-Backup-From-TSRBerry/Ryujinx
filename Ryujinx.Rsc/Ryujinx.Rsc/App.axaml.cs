@@ -95,12 +95,6 @@ namespace Ryujinx.Rsc
                         Logger.Warning?.PrintMsg(LogClass.Application, $"Failed to load config! Loading the default config instead.\nFailed config location {ConfigurationPath}");
                     }
                 }
-
-                if (OperatingSystem.IsAndroid())
-                {
-                    ConfigurationState.Instance.Ui.GameDirs.Value.Clear();
-                    ConfigurationState.Instance.Ui.GameDirs.Value.Add(GameDirectory);
-                }
             }
         }
 

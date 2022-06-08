@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Threading;
 using Ryujinx.Ui.Common.Helper;
 using System.Threading.Tasks;
 
@@ -10,7 +11,13 @@ namespace Ryujinx.Rsc.Desktop
         {
             if (parent is Window window)
             {
-                return await new OpenFolderDialog().ShowAsync(window);
+                string path = string.Empty;
+                await Dispatcher.UIThread.InvokeAsync(async () =>
+                 {
+                     path = await new OpenFolderDialog().ShowAsync(window);
+                 });
+
+                return path;
             }
             else
             {

@@ -33,6 +33,11 @@ namespace Ryujinx.Ui.Common.Helper
             return Directory.GetFiles(directory, search);
         }
 
+        public long GetFileLength(string file)
+        {
+            return new FileInfo(file).Length;
+        }
+
         public virtual async Task<string> OpenFolder(object parent)
         {
             return string.Empty;

@@ -146,7 +146,7 @@ namespace Ryujinx.Ui.App.Common
                         return;
                     }
 
-                    if (!Directory.Exists(appDir))
+                    if (!_fileSystemHelper.DirectoryExist(appDir))
                     {
                         Logger.Warning?.Print(LogClass.Application, $"The \"game_dirs\" section in \"Config.json\" contains an invalid directory: \"{appDir}\"");
 
@@ -183,7 +183,7 @@ namespace Ryujinx.Ui.App.Common
                         return;
                     }
 
-                    double fileSize = new FileInfo(applicationPath).Length * 0.000000000931;
+                    double fileSize = _fileSystemHelper.GetFileLength(applicationPath) * 0.000000000931;
                     string titleName = "Unknown";
                     string titleId = "0000000000000000";
                     string developer = "Unknown";

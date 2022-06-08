@@ -423,19 +423,21 @@ namespace Ryujinx.Rsc
 
             Logger.Notice.Print(LogClass.Application, $"Using Firmware Version: {firmwareVersion?.VersionString}");
 
+            var fileSystemHelper = App.FileSystemHelperFactory();
+
             if (_isFirmwareTitle)
             {
                 Logger.Info?.Print(LogClass.Application, "Loading as Firmware Title (NCA).");
 
                 Device.LoadNca(ApplicationPath);
             }
-            else if (Directory.Exists(ApplicationPath))
+            else if (fileSystemHelper.DirectoryExist(ApplicationPath))
             {
-                string[] romFsFiles = Directory.GetFiles(ApplicationPath, "*.istorage");
+                string[] romFsFiles = fileSystemHelper.GetFileEntries(ApplicationPath, "*.istorage");
 
                 if (romFsFiles.Length == 0)
                 {
-                    romFsFiles = Directory.GetFiles(ApplicationPath, "*.romfs");
+                    romFsFiles = fileSystemHelper.GetFileEntries(ApplicationPath, "*.romfs");
                 }
 
                 if (romFsFiles.Length > 0)
@@ -451,15 +453,17 @@ namespace Ryujinx.Rsc
                     Device.LoadCart(ApplicationPath);
                 }
             }
-            else if (File.Exists(ApplicationPath))
+            else if (fileSystemHelper.FileExist(ApplicationPath))
             {
-                switch (System.IO.Path.GetExtension(ApplicationPath).ToLowerInvariant())
+                var stream = fileSystemHelper.GetContentStream(ApplicationPath);
+
+                switch (Path.GetExtension(ApplicationPath).ToLowerInvariant())
                 {
                     case ".xci":
                         {
                             Logger.Info?.Print(LogClass.Application, "Loading as XCI.");
 
-                            Device.LoadXci(ApplicationPath);
+                            Device.LoadXci(stream);
 
                             break;
                         }
@@ -467,7 +471,7 @@ namespace Ryujinx.Rsc
                         {
                             Logger.Info?.Print(LogClass.Application, "Loading as NCA.");
 
-                            Device.LoadNca(ApplicationPath);
+                            Device.LoadNca(stream);
 
                             break;
                         }
@@ -476,7 +480,7 @@ namespace Ryujinx.Rsc
                         {
                             Logger.Info?.Print(LogClass.Application, "Loading as NSP.");
 
-                            Device.LoadNsp(ApplicationPath);
+                            Device.LoadNsp(stream);
 
                             break;
                         }
@@ -486,7 +490,8 @@ namespace Ryujinx.Rsc
 
                             try
                             {
-                                Device.LoadProgram(ApplicationPath);
+                                bool isNro = Path.GetExtension(ApplicationPath).ToLower() == ".nro";
+                                Device.LoadProgram(stream, isNro, Path.GetFileNameWithoutExtension(ApplicationPath));
                             }
                             catch (ArgumentOutOfRangeException)
                             {
