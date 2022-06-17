@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media;
 using Avalonia.Threading;
 using Ryujinx.Input;
 using System;
@@ -36,50 +37,47 @@ namespace Ryujinx.Rsc.Controls
 
         public event EventHandler<IVirtualControl.VirualInputEventArgs> Input;
 
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
-            Key = this.FindControl<Label>("Key");
-        }
-
         protected override void OnPointerPressed(PointerPressedEventArgs e)
         {
             base.OnPointerPressed(e);
             Input?.Invoke(this, new IVirtualControl.VirualInputEventArgs() { IsPressed = true, Button = Key.Content.ToString() });
+            Contact.Classes.Add("pressed");
         }
 
         protected override void OnPointerReleased(PointerReleasedEventArgs e)
         {
             base.OnPointerReleased(e);
             Input?.Invoke(this, new IVirtualControl.VirualInputEventArgs() { IsPressed = false, Button = Key.Content.ToString() });
+            Contact.Classes.Remove("pressed");
         }
 
         public StickInputId StickInputId { get; set; }
         public GamepadButtonInputId ButtonInputId
         {
-            get => gamepadButtonInputId; set
+            get => gamepadButtonInputId;
+            set
             {
                 gamepadButtonInputId = value;
 
                 switch (gamepadButtonInputId)
                 {
                     case GamepadButtonInputId.DpadUp:
-                        FaceLabel = "Up";
+                        FaceLabel = new PathIcon() {Data = Resources["chevron_up_regular"] as StreamGeometry};
                         break;
                     case GamepadButtonInputId.DpadDown:
-                        FaceLabel = "Down";
+                        FaceLabel = new PathIcon() {Data = Resources["chevron_down_regular"] as StreamGeometry};
                         break;
                     case GamepadButtonInputId.DpadLeft:
-                        FaceLabel = "Left";
+                        FaceLabel = new PathIcon() {Data = Resources["chevron_left_regular"] as StreamGeometry};
                         break;
                     case GamepadButtonInputId.DpadRight:
-                        FaceLabel = "Right";
+                        FaceLabel = new PathIcon() {Data = Resources["chevron_right_regular"] as StreamGeometry};
                         break;
                     case GamepadButtonInputId.Minus:
-                        FaceLabel = "-";
+                        FaceLabel = new PathIcon() {Data = Resources["remove_regular"] as StreamGeometry};
                         break;
                     case GamepadButtonInputId.Plus:
-                        FaceLabel = "+";
+                        FaceLabel = new PathIcon() {Data = Resources["add_regular"] as StreamGeometry};
                         break;
                     default:
                         FaceLabel = gamepadButtonInputId.ToString();

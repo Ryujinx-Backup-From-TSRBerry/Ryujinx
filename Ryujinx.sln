@@ -71,11 +71,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Ava", "Ryujinx.Ava\Ryujinx.Ava.csproj", "{7C1B2721-13DA-4B62-B046-C626605ECCE6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Ui.Common", "Ryujinx.Ui.Common\Ryujinx.Ui.Common.csproj", "{BA161CA0-CD65-4E6E-B644-51C8D1E542DC}"
-<<<<<<< HEAD
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ryujinx.Horizon.Generators", "Ryujinx.Horizon.Generators\Ryujinx.Horizon.Generators.csproj", "{6AE2A5E8-4C5A-48B9-997B-E1455C0355C6}"
-=======
->>>>>>> 96db8d259 (Add Android Audio support via Audio Track)
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Horizon.Generators", "Ryujinx.Horizon.Generators\Ryujinx.Horizon.Generators.csproj", "{6AE2A5E8-4C5A-48B9-997B-E1455C0355C6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Graphics.Vulkan", "Ryujinx.Graphics.Vulkan\Ryujinx.Graphics.Vulkan.csproj", "{D4D09B08-D580-4D69-B886-C35D2853F6C8}"
 EndProject
@@ -85,11 +82,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ryujinx.Rsc", "Ryujinx.Rsc"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Rsc", "Ryujinx.Rsc\Ryujinx.Rsc\Ryujinx.Rsc.csproj", "{0C7B8866-6BDA-488A-8CBE-CEC99A072621}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Rsc.Android", "Ryujinx.Rsc\Ryujinx.Rsc.Android\Ryujinx.Rsc.Android.csproj", "{B887ED92-95FE-40DE-BFED-42705814130D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Rsc.Desktop", "Ryujinx.Rsc\Ryujinx.Rsc.Desktop\Ryujinx.Rsc.Desktop.csproj", "{A6F24690-D085-4BF8-8611-56BB93DFD6C8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Audio.Backends.Android", "Ryujinx.Rsc\Ryujinx.Audio.Backends.Android\Ryujinx.Audio.Backends.Android.csproj", "{2A8BB185-81AE-42D6-A4DA-C314AA2D46BB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Rsc.Mobile", "Ryujinx.Rsc\Ryujinx.Rsc.Mobile\Ryujinx.Rsc.Mobile.csproj", "{3D60279E-7520-4619-9CE5-746998AC0E38}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -241,12 +238,6 @@ Global
 		{0C7B8866-6BDA-488A-8CBE-CEC99A072621}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C7B8866-6BDA-488A-8CBE-CEC99A072621}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C7B8866-6BDA-488A-8CBE-CEC99A072621}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B887ED92-95FE-40DE-BFED-42705814130D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B887ED92-95FE-40DE-BFED-42705814130D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B887ED92-95FE-40DE-BFED-42705814130D}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{B887ED92-95FE-40DE-BFED-42705814130D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B887ED92-95FE-40DE-BFED-42705814130D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B887ED92-95FE-40DE-BFED-42705814130D}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{A6F24690-D085-4BF8-8611-56BB93DFD6C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A6F24690-D085-4BF8-8611-56BB93DFD6C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6F24690-D085-4BF8-8611-56BB93DFD6C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -255,15 +246,21 @@ Global
 		{2A8BB185-81AE-42D6-A4DA-C314AA2D46BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A8BB185-81AE-42D6-A4DA-C314AA2D46BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A8BB185-81AE-42D6-A4DA-C314AA2D46BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D60279E-7520-4619-9CE5-746998AC0E38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D60279E-7520-4619-9CE5-746998AC0E38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D60279E-7520-4619-9CE5-746998AC0E38}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{3D60279E-7520-4619-9CE5-746998AC0E38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D60279E-7520-4619-9CE5-746998AC0E38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D60279E-7520-4619-9CE5-746998AC0E38}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{0C7B8866-6BDA-488A-8CBE-CEC99A072621} = {BC28FC31-1E1B-4B23-80BB-32F24DA5BA3B}
-		{B887ED92-95FE-40DE-BFED-42705814130D} = {BC28FC31-1E1B-4B23-80BB-32F24DA5BA3B}
 		{A6F24690-D085-4BF8-8611-56BB93DFD6C8} = {BC28FC31-1E1B-4B23-80BB-32F24DA5BA3B}
 		{2A8BB185-81AE-42D6-A4DA-C314AA2D46BB} = {BC28FC31-1E1B-4B23-80BB-32F24DA5BA3B}
+		{3D60279E-7520-4619-9CE5-746998AC0E38} = {BC28FC31-1E1B-4B23-80BB-32F24DA5BA3B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {110169B3-3328-4730-8AB0-BA05BEF75C1A}

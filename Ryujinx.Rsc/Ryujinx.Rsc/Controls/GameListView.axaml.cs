@@ -14,7 +14,7 @@ namespace Ryujinx.Rsc.Controls
     {
         private ApplicationData _selectedApplication;
         public static readonly RoutedEvent<ApplicationOpenedEventArgs> ApplicationOpenedEvent =
-            RoutedEvent.Register<GameGridView, ApplicationOpenedEventArgs>(nameof(ApplicationOpened), RoutingStrategies.Bubble);
+            RoutedEvent.Register<GameListView, ApplicationOpenedEventArgs>(nameof(ApplicationOpened), RoutingStrategies.Bubble);
 
         public event EventHandler<ApplicationOpenedEventArgs> ApplicationOpened
         {
@@ -50,11 +50,6 @@ namespace Ryujinx.Rsc.Controls
             InitializeComponent();
         }
 
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
-
         private void MenuBase_OnMenuOpened(object sender, EventArgs e)
         {
             var selection = SelectedApplication;
@@ -70,6 +65,17 @@ namespace Ryujinx.Rsc.Controls
                     ((menu.Items as AvaloniaList<object>)[2] as MenuItem).IsEnabled = canHaveUserSave;
                     ((menu.Items as AvaloniaList<object>)[3] as MenuItem).IsEnabled = canHaveDeviceSave;
                     ((menu.Items as AvaloniaList<object>)[4] as MenuItem).IsEnabled = canHaveBcatSave;
+                }
+            }
+        }
+
+        private void ListItem_Tapped(object sender, TappedEventArgs e)
+        {
+            if (OperatingSystem.IsAndroid())
+            {
+                if (GameListBox.SelectedItem is ApplicationData selected)
+                {
+                    RaiseEvent(new ApplicationOpenedEventArgs(selected, ApplicationOpenedEvent));
                 }
             }
         }

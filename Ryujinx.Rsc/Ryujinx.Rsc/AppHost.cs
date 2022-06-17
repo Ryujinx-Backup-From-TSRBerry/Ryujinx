@@ -9,7 +9,6 @@ using LibHac.Tools.FsSystem;
 using Ryujinx.Audio.Backends.Dummy;
 using Ryujinx.Audio.Integration;
 using Ryujinx.Ava.Common;
-using Ryujinx.Ava.Common.Locale;
 using Ryujinx.Rsc.Vulkan;
 using Ryujinx.Rsc.Controls;
 using Ryujinx.Rsc.Models;
@@ -27,6 +26,7 @@ using Ryujinx.HLE.HOS.Services.Account.Acc;
 using Ryujinx.HLE.HOS.SystemState;
 using Ryujinx.Input;
 using Ryujinx.Input.HLE;
+using Ryujinx.Rsc.Common.Locale;
 using Ryujinx.Ui.Common.Configuration;
 using Ryujinx.Rsc.Views;
 using SixLabors.ImageSharp;
@@ -251,6 +251,7 @@ namespace Ryujinx.Rsc
             TouchScreenManager.Initialize(Device);
 
             _parent.ViewModel.IsGameRunning = true;
+            _parent.ViewModel.Volume = ConfigurationState.Instance.System.AudioVolume.Value;
 
             string titleNameSection = string.IsNullOrWhiteSpace(Device.Application.TitleName)
                 ? string.Empty
@@ -657,7 +658,8 @@ namespace Ryujinx.Rsc
                         if (!_renderingStarted)
                         {
                             _renderingStarted = true;
-                            App.GameState = GameState.Running;
+                            App.RequestedOrientation = Orientation.Landscape;
+                            _parent.ViewModel.ShowOverlay = true;
                             _parent.SwitchToGameControl(true);
                         }
 

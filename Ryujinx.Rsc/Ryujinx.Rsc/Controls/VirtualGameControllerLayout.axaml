@@ -2,21 +2,47 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              xmlns:controls="clr-namespace:Ryujinx.Rsc.Controls"
              x:Class="Ryujinx.Rsc.Controls.VirtualGameControllerLayout">
-    <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:Name="ControlLayout">
-		<controls:VirtualStick Width="100" Height="100" Name="StickLeft"/>
-		<controls:VirtualStick Width="100" Height="100" Name="StickRight"/>
-		<controls:VirtualButton Width="50" Height="50" Name="ButtonA"/>
-		<controls:VirtualButton Width="50" Height="50" Name="ButtonB"/>
-		<controls:VirtualButton Width="50" Height="50" Name="ButtonX"/>
-		<controls:VirtualButton Width="50" Height="50" Name="ButtonY"/>
-		<controls:VirtualButton Width="50" Height="50" Name="DpadUp"/>
-		<controls:VirtualButton Width="50" Height="50" Name="DPadDown"/>
-		<controls:VirtualButton Width="50" Height="50" Name="DPadLeft"/>
-		<controls:VirtualButton Width="50" Height="50" Name="DPadRight"/>
-		<controls:VirtualButton Width="50" Height="50" Name="Plus"/>
-		<controls:VirtualButton Width="50" Height="50" Name="Minus"/>
-    </Canvas>
+	<UserControl.Resources>
+		<StreamGeometry x:Key="arrow_left_regular">M12.7347,4.20949 C13.0332,3.92233 13.508,3.93153 13.7952,4.23005 C14.0823,4.52857 14.0731,5.00335 13.7746,5.29051 L5.50039,13.25 L24.2532,13.25 C24.6674,13.25 25.0032,13.5858 25.0032,13.9999982 C25.0032,14.4142 24.6674,14.75 24.2532,14.75 L5.50137,14.75 L13.7746,22.7085 C14.0731,22.9957 14.0823,23.4705 13.7952,23.769 C13.508,24.0675 13.0332,24.0767 12.7347,23.7896 L3.30673,14.7202 C2.89776,14.3268 2.89776,13.6723 3.30673,13.2788 L12.7347,4.20949 Z</StreamGeometry>
+		<StreamGeometry x:Key="save_regular">M3 5.75C3 4.23122 4.23122 3 5.75 3H15.7145C16.5764 3 17.4031 3.34241 18.0126 3.9519L20.0481 5.98744C20.6576 6.59693 21 7.42358 21 8.28553V18.25C21 19.7688 19.7688 21 18.25 21H5.75C4.23122 21 3 19.7688 3 18.25V5.75ZM5.75 4.5C5.05964 4.5 4.5 5.05964 4.5 5.75V18.25C4.5 18.9404 5.05964 19.5 5.75 19.5H6V14.25C6 13.0074 7.00736 12 8.25 12H15.75C16.9926 12 18 13.0074 18 14.25V19.5H18.25C18.9404 19.5 19.5 18.9404 19.5 18.25V8.28553C19.5 7.8214 19.3156 7.37629 18.9874 7.0481L16.9519 5.01256C16.6918 4.75246 16.3582 4.58269 16 4.52344V7.25C16 8.49264 14.9926 9.5 13.75 9.5H9.25C8.00736 9.5 7 8.49264 7 7.25V4.5H5.75ZM16.5 19.5V14.25C16.5 13.8358 16.1642 13.5 15.75 13.5H8.25C7.83579 13.5 7.5 13.8358 7.5 14.25V19.5H16.5ZM8.5 4.5V7.25C8.5 7.66421 8.83579 8 9.25 8H13.75C14.1642 8 14.5 7.66421 14.5 7.25V4.5H8.5Z</StreamGeometry>
+		<StreamGeometry x:Key="arrow_counterclockwise_regular">M5.50999526,3.31842271 C5.12151573,3.31842271 4.80046129,3.60710385 4.74965,3.9816481 L4.74264499,4.08577298 L4.74264499,6.97963208 C4.74264499,7.36811161 5.03132614,7.68916605 5.40587038,7.73997735 L5.50999526,7.74698235 L8.40385436,7.74698235 C8.82765021,7.74698235 9.17120463,7.40342793 9.17120463,6.97963208 C9.17120463,6.59115255 8.88252349,6.27009811 8.50797925,6.21928681 L8.40385436,6.21228181 L7.42512053,6.21182461 C10.3377833,3.87107476 14.6073963,4.05209336 17.3101833,6.75488039 C20.2069829,9.65167996 20.2069829,14.34832 17.3101833,17.2451196 C14.4133838,20.1419192 9.71674369,20.1419192 6.81994412,17.2451196 C5.05698183,15.4821573 4.31886614,12.9925923 4.78189684,10.58925 C4.86207142,10.173107 4.58971523,9.77076216 4.17357228,9.69058758 C3.75742932,9.610413 3.35508446,9.88276918 3.27490988,10.2989121 C2.71652434,13.1971899 3.60781134,16.2033812 5.73474696,18.3303168 C9.23088437,21.8264542 14.8992431,21.8264542 18.3953805,18.3303168 C21.8915179,14.8341794 21.8915179,9.16582064 18.3953805,5.66968323 C15.0747703,2.34907304 9.7945807,2.18235834 6.27720505,5.16953912 L6.27734554,4.08577298 C6.27734554,3.66197713 5.93379112,3.31842271 5.50999526,3.31842271 Z</StreamGeometry>
+		<StreamGeometry x:Key="erase_regular">M15.8698693,2.66881311 L20.838395,7.63733874 C21.7170746,8.5160184 21.7170746,9.9406396 20.838395,10.8193193 L12.1565953,19.4998034 L18.25448,19.5 C18.6341758,19.5 18.947971,19.7821539 18.9976334,20.1482294 L19.00448,20.25 C19.00448,20.6296958 18.7223262,20.943491 18.3562506,20.9931534 L18.25448,21 L9.84446231,21.0012505 C9.22825282,21.0348734 8.60085192,20.8163243 8.13013068,20.345603 L3.16160505,15.3770774 C2.28292539,14.4983977 2.28292539,13.0737765 3.16160505,12.1950969 L12.6878888,2.66881311 C13.5665685,1.79013346 14.9911897,1.79013346 15.8698693,2.66881311 Z M5.70859531,11.7678034 L4.22226522,13.255757 C3.929372,13.5486503 3.929372,14.023524 4.22226522,14.3164172 L9.19079085,19.2849428 C9.33723746,19.4313895 9.5291792,19.5046128 9.72112094,19.5046128 L9.75,19.5 L9.78849588,19.5015989 C9.95740385,19.4864544 10.1221581,19.4142357 10.251451,19.2849428 L11.7375953,17.7978034 L5.70859531,11.7678034 Z M13.748549,3.72947329 L6.76959531,10.7068034 L12.7985953,16.7368034 L19.7777348,9.75865909 C20.070628,9.46576587 20.070628,8.99089214 19.7777348,8.69799892 L14.8092091,3.72947329 C14.5163159,3.43658007 14.0414422,3.43658007 13.748549,3.72947329 Z</StreamGeometry>
+	</UserControl.Resources>
+	<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+		<Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:Name="ControlLayout">
+			<controls:VirtualStick Width="75" Height="75" Name="StickLeft"/>
+			<controls:VirtualStick Width="75" Height="75" Name="StickRight"/>
+			<controls:VirtualButton Width="50" Height="50" Name="ButtonA"/>
+			<controls:VirtualButton Width="50" Height="50" Name="ButtonB"/>
+			<controls:VirtualButton Width="50" Height="50" Name="ButtonX"/>
+			<controls:VirtualButton Width="50" Height="50" Name="ButtonY"/>
+			<controls:VirtualButton Width="50" Height="50" Name="DpadUp"/>
+			<controls:VirtualButton Width="50" Height="50" Name="DPadDown"/>
+			<controls:VirtualButton Width="50" Height="50" Name="DPadLeft"/>
+			<controls:VirtualButton Width="50" Height="50" Name="DPadRight"/>
+			<controls:VirtualButton Width="50" Height="50" Name="Plus"/>
+			<controls:VirtualButton Width="50" Height="50" Name="Minus"/>
+			<controls:VirtualBumper Width="90" Height="40" Name="LeftShoulder"/>
+			<controls:VirtualBumper Width="90" Height="40" Name="RightShoulder"/>
+			<controls:VirtualTrigger Width="90" Height="40" Name="LeftTrigger"/>
+			<controls:VirtualTrigger Width="90" Height="40" Name="RightTrigger"/>
+		</Canvas>
+		<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="5">
+			<Button x:Name="BackButton" Padding="10" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="5" Click="BackButton_Clicked">
+				<PathIcon Height="30" Width="30" Data="{DynamicResource arrow_left_regular}"/>
+			</Button>
+			<Button x:Name="SaveButton" Padding="10" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="5" Click="SaveButton_Clicked">
+				<PathIcon Height="30" Width="30" Data="{DynamicResource save_regular}"/>
+			</Button>
+			<Button x:Name="ResetButton" Padding="10" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="5" Click="ResetButton_Clicked">
+				<PathIcon Height="30" Width="30" Data="{DynamicResource arrow_counterclockwise_regular}"/>
+			</Button>
+			<Button x:Name="DefaultButton" Padding="10" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="5" Click="DefaultButton_Clicked">
+				<PathIcon Height="30" Width="30" Data="{DynamicResource erase_regular}"/>
+			</Button>
+		</StackPanel>
+	</Grid>
 </UserControl>

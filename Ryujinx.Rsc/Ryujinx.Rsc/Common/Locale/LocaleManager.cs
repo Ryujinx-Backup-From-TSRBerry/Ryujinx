@@ -1,14 +1,11 @@
-﻿using Ryujinx.Rsc.ViewModels;
-using Ryujinx.Common;
-using Ryujinx.Ui.Common.Configuration;
+﻿using Ryujinx.Common;
+using Ryujinx.Rsc.ViewModels;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.Json;
-using Ryujinx.Rsc.ViewModels;
 
-
-namespace Ryujinx.Ava.Common.Locale
+namespace Ryujinx.Rsc.Common.Locale
 {
     class LocaleManager : BaseModel
     {
@@ -75,7 +72,7 @@ namespace Ryujinx.Ava.Common.Locale
 
         public void LoadLanguage(string languageCode)
         {
-            string languageJson = EmbeddedResources.ReadAllText($"Ryujinx.Ava/Assets/Locales/{languageCode}.json");
+            string languageJson = EmbeddedResources.ReadAllText($"Ryujinx.Rsc/Assets/Locales/{languageCode}.json");
 
             if (languageJson == null)
             {

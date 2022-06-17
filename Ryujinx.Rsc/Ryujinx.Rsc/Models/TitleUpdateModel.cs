@@ -1,5 +1,5 @@
 ﻿using LibHac.Ns;
-using Ryujinx.Ava.Common.Locale;
+using Ryujinx.Rsc.Common.Locale;
 
 namespace Ryujinx.Rsc.Models
 {

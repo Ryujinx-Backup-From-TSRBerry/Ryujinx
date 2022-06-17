@@ -8,5 +8,21 @@
 
     <Application.Styles>
         <FluentTheme Mode="Dark"/>
+        <Style Selector="Label">
+			<Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontFamily" Value="avares://Ryujinx.Rsc/Assets/Fonts/NotoSansJP-Regular.otf#Noto Sans JP"></Setter>
+        </Style>
+        <Style Selector="TextElement">
+			<Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontFamily" Value="avares://Ryujinx.Rsc/Assets/Fonts/NotoSansJP-Regular.otf#Noto Sans JP"></Setter>
+        </Style>
+        <Style Selector="TextBlock">
+			<Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontFamily" Value="avares://Ryujinx.Rsc/Assets/Fonts/NotoSansJP-Regular.otf#Noto Sans JP"></Setter>
+        </Style>
+        <Style Selector="TemplatedControl">
+			<Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontFamily" Value="avares://Ryujinx.Rsc/Assets/Fonts/NotoSansJP-Regular.otf#Noto Sans JP"></Setter>
+        </Style>
     </Application.Styles>
 </Application>

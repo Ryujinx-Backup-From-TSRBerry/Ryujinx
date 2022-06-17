@@ -86,7 +86,7 @@ namespace Ryujinx.Rsc.Controls
                     var normalized = relativeToCenter.Normalize() * radius;
                     clamped = new Vector(ClampAxis(relativeToCenter.X, normalized.X), ClampAxis(relativeToCenter.Y, normalized.Y));
                 }
-                Input?.Invoke(this, new IVirtualControl.VirualInputEventArgs() { StickValue = clamped / radius});
+                Input?.Invoke(this, new IVirtualControl.VirualInputEventArgs() { StickValue = new Vector(clamped.X, clamped.Y * -1 ) / radius});
                 clamped += (Bounds.Center - Bounds.Position);
                 Canvas.SetLeft(Thumb, clamped.X - halfWidth);
                 Canvas.SetTop(Thumb, clamped.Y - halfWidth);

@@ -1,8 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Layout;
+using Avalonia.Interactivity;
 using Avalonia.Threading;
-using Ryujinx.Ava.Common.Locale;
 using Ryujinx.Common.Logging;
 using Ryujinx.Graphics.Gpu;
 using Ryujinx.HLE.FileSystem;
@@ -17,14 +16,13 @@ using System;
 using System.IO;
 using System.Threading;
 using Avalonia.Media;
-using Ryujinx.Audio.Integration;
+using Ryujinx.Rsc.Models;
 
 namespace Ryujinx.Rsc.Views
 {
     public partial class MainView : UserControl
     {
         private Control _mainViewContent;
-        private string _currentEmulatedGamePath;
         private ManualResetEvent _rendererWaitEvent;
         private bool _isClosing;
         private UserChannelPersistence _userChannelPersistence;
@@ -37,10 +35,13 @@ namespace Ryujinx.Rsc.Views
         public LibHacHorizonManager LibHacHorizonManager { get; private set; }
         public MainViewModel ViewModel { get; set; }
 
+        public SettingsView SettingsView { get; private set; }
+
         public MainView()
         {
             InitializeComponent();
             _rendererWaitEvent = new ManualResetEvent(false);
+            SettingsView = new SettingsView();
         }
 
         protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -52,6 +53,8 @@ namespace Ryujinx.Rsc.Views
                 ViewModel = (MainViewModel) DataContext;
 
                 Initialize();
+                
+                SettingsView = new SettingsView(VirtualFileSystem, ContentManager, this);
 
                 LoadControls();
 
@@ -79,7 +82,7 @@ namespace Ryujinx.Rsc.Views
             LibHacHorizonManager.InitializeBcatServer();
             LibHacHorizonManager.InitializeSystemClients();
 
-            ApplicationLibrary = new ApplicationLibrary(VirtualFileSystem);ApplicationLibrary = new ApplicationLibrary(VirtualFileSystem);
+            ApplicationLibrary = new ApplicationLibrary(VirtualFileSystem, App.FileSystemHelperFactory.Invoke());
 
             VirtualFileSystem.FixExtraData(LibHacHorizonManager.RyujinxClient);
 
@@ -88,13 +91,21 @@ namespace Ryujinx.Rsc.Views
             VirtualFileSystem.ReloadKeySet();
 
             InputManager = new InputManager(new AvaloniaKeyboardDriver(this), AvaloniaVirtualControllerDriver.Instance);
+
+            ConfigurationState.Instance.Ui.GameDirs.Event += (sender, args) =>
+            {
+                if (args.OldValue != args.NewValue)
+                {
+                    ViewModel.ReloadGameList();
+                }
+            };
         }
 
         private void Application_Opened(object sender, ApplicationOpenedEventArgs e)
         {
             if (e.Application != null)
             {
-                string path = new FileInfo(e.Application.Path).FullName;
+                string path = OperatingSystem.IsAndroid() ? e.Application.Path : new FileInfo(e.Application.Path).FullName;
 
                 LoadApplication(path);
             }
@@ -133,8 +144,6 @@ namespace Ryujinx.Rsc.Views
 
             ViewModel.TitleName = string.IsNullOrWhiteSpace(titleName) ? AppHost.Device.Application.TitleName : titleName;
 
-            _currentEmulatedGamePath = path;
-
             SwitchToGameControl();
 
             Thread gameThread = new Thread(InitializeGame)
@@ -151,6 +160,8 @@ namespace Ryujinx.Rsc.Views
             AppHost.StatusUpdatedEvent += AppHost_StatusUpdatedEvent;
 
             _rendererWaitEvent.WaitOne();
+            
+            Dispatcher.UIThread.Post(ControllerLayout.Reload);
 
             AppHost?.Start();
 
@@ -187,6 +198,7 @@ namespace Ryujinx.Rsc.Views
 
             ViewModel.ShowOverlay = false;
             AppHost.StatusUpdatedEvent -= AppHost_StatusUpdatedEvent;
+            AppHost.AppExit -= AppHost_AppExit;
 
             Dispatcher.UIThread.InvokeAsync(() =>
             {
@@ -197,7 +209,7 @@ namespace Ryujinx.Rsc.Views
 
                 ViewModel.EnableVirtualController = false;
                 AppHost = null;
-                App.GameState = GameState.None;
+                App.RequestedOrientation = Orientation.Normal;
             });
 
             VkRenderer.RendererInitialized -= Renderer_Created;
@@ -227,7 +239,7 @@ namespace Ryujinx.Rsc.Views
             GraphicsConfig.ResScale = resScale == -1 ? resScaleCustom : resScale;
             GraphicsConfig.MaxAnisotropy = ConfigurationState.Instance.Graphics.MaxAnisotropy;
             GraphicsConfig.ShadersDumpPath = ConfigurationState.Instance.Graphics.ShadersDumpPath;
-            Graphics.Gpu.GraphicsConfig.EnableShaderCache = ConfigurationState.Instance.Graphics.EnableShaderCache;
+            GraphicsConfig.EnableShaderCache = ConfigurationState.Instance.Graphics.EnableShaderCache;
         }
 
         public void SwitchToGameControl(bool enableVirtualController = false)
@@ -240,5 +252,18 @@ namespace Ryujinx.Rsc.Views
         }
 
         public static double Scaling { get; set; }
+
+        private void GameListTab_OnClick(object? sender, RoutedEventArgs e)
+        {
+            ViewModel.CurrentView = View.GameList;
+
+            ViewFrame.Content = GameGrid;
+        }
+
+        private void SettingsTab_OnClick(object? sender, RoutedEventArgs e)
+        {
+            ViewModel.CurrentView = View.Settings;
+            ViewFrame.Content = SettingsView;
+        }
     }
 }

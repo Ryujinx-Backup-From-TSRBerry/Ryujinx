@@ -1,0 +1,23 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:locale="clr-namespace:Ryujinx.Rsc.Common.Locale"
+             xmlns:models="clr-namespace:Ryujinx.Rsc.Models"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Ryujinx.Rsc.Views.SettingPages.InputPage">
+    <StackPanel HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Orientation="Vertical">
+        <Border HorizontalAlignment="Stretch"
+                Classes="settingsItem" CornerRadius="5" ClipToBounds="True">
+            <Button Command="{Binding MoveToPage}" Background="Transparent" Height="38" HorizontalAlignment="Stretch" CornerRadius="5">
+                <Button.CommandParameter>
+                    <models:SettingPages>VirtualController</models:SettingPages>
+                </Button.CommandParameter>
+                <Label VerticalAlignment="Center" Content="Edit Virtual Controller" FontSize="16"  Padding="0" />
+            </Button>
+        </Border>
+        
+    </StackPanel>
+</UserControl>

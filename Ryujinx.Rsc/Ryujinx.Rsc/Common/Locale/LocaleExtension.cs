@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using System;
 
-namespace Ryujinx.Ava.Common.Locale
+namespace Ryujinx.Rsc.Common.Locale
 {
     public class LocaleExtension : MarkupExtension
     {
