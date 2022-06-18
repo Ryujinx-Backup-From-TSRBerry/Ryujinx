@@ -8,6 +8,8 @@ namespace Ryujinx.Cpu.Nce
     class NceExecutionContext : IExecutionContext
     {
         private readonly NceNativeContext _context;
+        private readonly ExceptionCallbacks _exceptionCallbacks;
+
         internal IntPtr NativeContextPtr => _context.BasePtr;
 
         public ulong Pc => 0UL;
@@ -56,15 +58,10 @@ namespace Ryujinx.Cpu.Nce
 
         public bool Running { get; private set; }
 
-        public event EventHandler<EventArgs> Interrupt;
-        public event EventHandler<InstExceptionEventArgs> Break;
-        public event EventHandler<InstExceptionEventArgs> SupervisorCall;
-        public event EventHandler<InstUndefinedEventArgs> Undefined;
-
         private delegate bool SupervisorCallHandler(int imm);
         private SupervisorCallHandler _svcHandler;
 
-        public NceExecutionContext()
+        public NceExecutionContext(ExceptionCallbacks exceptionCallbacks)
         {
             _svcHandler = OnSupervisorCall;
             IntPtr svcHandlerPtr = Marshal.GetFunctionPointerForDelegate(_svcHandler);
@@ -76,6 +73,7 @@ namespace Ryujinx.Cpu.Nce
             storage.InManaged = 1u;
 
             Running = true;
+            _exceptionCallbacks = exceptionCallbacks;
         }
 
         public ulong GetX(int index) => _context.GetStorage().X[index];
@@ -101,13 +99,13 @@ namespace Ryujinx.Cpu.Nce
 
         public bool OnSupervisorCall(int imm)
         {
-            SupervisorCall?.Invoke(this, new InstExceptionEventArgs(0UL, imm));
+            _exceptionCallbacks.SupervisorCallback?.Invoke(this, 0UL, imm);
             return Running;
         }
 
         public bool OnInterrupt()
         {
-            Interrupt?.Invoke(this, EventArgs.Empty);
+            _exceptionCallbacks.InterruptCallback?.Invoke(this);
             return Running;
         }
 

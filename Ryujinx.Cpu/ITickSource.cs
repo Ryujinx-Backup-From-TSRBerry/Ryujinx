@@ -8,7 +8,14 @@ namespace Ryujinx.Cpu
     /// </summary>
     public interface ITickSource : ICounter
     {
+      /// <summary>
+      /// Time elapsed since the counter was created.
+      /// </summary>
+        TimeSpan ElapsedTime { get; }
 
+        /// <summary>
+        /// Time elapsed since the counter was created, in seconds.
+        /// </summary>
         double ElapsedSeconds { get; }
 
         /// <summary>
