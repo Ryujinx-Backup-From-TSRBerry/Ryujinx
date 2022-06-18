@@ -56,9 +56,9 @@ namespace Ryujinx.Cpu.Nce
             _memoryManager = memory;
         }
 
-        public IExecutionContext CreateExecutionContext()
+        public IExecutionContext CreateExecutionContext(ExceptionCallbacks exceptionCallbacks)
         {
-            return new NceExecutionContext();
+            return new NceExecutionContext(exceptionCallbacks);
         }
 
         public void Execute(IExecutionContext context, ulong address)
