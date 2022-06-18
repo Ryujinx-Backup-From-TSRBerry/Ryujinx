@@ -209,10 +209,7 @@ namespace Ryujinx.Graphics.Vulkan
 
         private void SignalDirty(DirtyFlags flag)
         {
-            if (PipelineBase.DescriptorSetLayouts > 4 || !(flag.HasFlag(DirtyFlags.BufferImage) || flag.HasFlag(DirtyFlags.BufferTexture)))
-            {
-                _dirty |= flag;
-            }
+            _dirty |= flag;
         }
 
         public void UpdateAndBindDescriptorSets(CommandBufferScoped cbs, PipelineBindPoint pbp)
