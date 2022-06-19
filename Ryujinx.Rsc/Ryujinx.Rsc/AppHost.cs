@@ -45,6 +45,8 @@ using MouseButton = Ryujinx.Input.MouseButton;
 using Size = Avalonia.Size;
 using Switch = Ryujinx.HLE.Switch;
 using WindowState = Avalonia.Controls.WindowState;
+using Ryujinx.Common.Configuration.Hid.Controller;
+using Ryujinx.Common.Configuration.Hid.Controller.Motion;
 
 namespace Ryujinx.Rsc
 {
@@ -246,6 +248,22 @@ namespace Ryujinx.Rsc
             }
 
             DisplaySleep.Prevent();
+
+            // Add dummy input config for android
+            if(OperatingSystem.IsAndroid())
+            {
+                ConfigurationState.Instance.Hid.InputConfig.Value = new System.Collections.Generic.List<Ryujinx.Common.Configuration.Hid.InputConfig>()
+                {
+                    new StandardControllerInputConfig()
+                    {
+                        ControllerType = Ryujinx.Common.Configuration.Hid.ControllerType.ProController,
+                        Motion = new StandardMotionConfigController()
+                        {
+                            MotionBackend = MotionInputBackendType.Invalid
+                        }
+                    }
+                };
+            }
 
             NpadManager.Initialize(Device, ConfigurationState.Instance.Hid.InputConfig, ConfigurationState.Instance.Hid.EnableKeyboard, ConfigurationState.Instance.Hid.EnableMouse);
             TouchScreenManager.Initialize(Device);
