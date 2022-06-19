@@ -135,7 +135,7 @@ namespace Ryujinx.Rsc.Controls
                     CurrentQueueFamily = _control._platformInterface.PhysicalDevice.QueueFamilyIndex,
                     Format = (uint)Format.R8G8B8A8Unorm,
                     Image = image.Image.Handle,
-                    ImageLayout = (uint)ImageLayout.ColorAttachmentOptimal,
+                    ImageLayout = (uint)ImageLayout.TransferSrcOptimal,
                     ImageTiling = (uint)ImageTiling.Optimal,
                     ImageUsageFlags = (uint)(ImageUsageFlags.ImageUsageColorAttachmentBit
                                         | ImageUsageFlags.ImageUsageTransferSrcBit | ImageUsageFlags.ImageUsageTransferDstBit),

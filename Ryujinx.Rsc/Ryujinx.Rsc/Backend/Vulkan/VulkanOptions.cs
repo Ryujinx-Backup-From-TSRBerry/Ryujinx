@@ -41,11 +41,6 @@ namespace Ryujinx.Rsc.Vulkan
         public bool PreferDiscreteGpu { get; set; }
         
         /// <summary>
-        /// Sets the initialization object to be use to initialize the logical device.
-        /// </summary>
-        public IVulkanDeviceInitialization VulkanDeviceInitialization { get; set; } = new DefaultVulkanDeviceInitialization();
-        
-        /// <summary>
         /// Sets the device to use if available and suitable.
         /// </summary>
         public uint? PreferredDevice { get; set; }
