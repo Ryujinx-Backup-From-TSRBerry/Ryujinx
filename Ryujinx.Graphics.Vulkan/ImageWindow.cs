@@ -117,7 +117,7 @@ namespace Ryujinx.Graphics.Vulkan
                         0,
                         0,
                         ImageLayout.Undefined,
-                        ImageLayout.ColorAttachmentOptimal);
+                        ImageLayout.TransferSrcOptimal);
                 }
 
                 _gd.CommandBufferPool.Return(cbs);
@@ -169,7 +169,7 @@ namespace Ryujinx.Graphics.Vulkan
                 image.GetUnsafe().Value,
                 0,
                 AccessFlags.AccessTransferWriteBit,
-                ImageLayout.ColorAttachmentOptimal,
+                ImageLayout.TransferSrcOptimal,
                 ImageLayout.General);
 
             var view = (TextureView)texture;
@@ -248,12 +248,12 @@ namespace Ryujinx.Graphics.Vulkan
                 0,
                 0,
                 ImageLayout.General,
-                ImageLayout.ColorAttachmentOptimal);
+                ImageLayout.TransferSrcOptimal);
 
             _gd.CommandBufferPool.Return(
                 cbs,
                 null,
-                new[] { PipelineStageFlags.PipelineStageColorAttachmentOutputBit },
+                new[] { PipelineStageFlags.PipelineStageTransferBit },
                 null);
 
             var memory = _imageAllocationAuto[_nextImage].GetUnsafe().Memory;

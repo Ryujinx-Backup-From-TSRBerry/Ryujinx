@@ -8,7 +8,7 @@ using Silk.NET.Vulkan.Extensions.KHR;
 
 namespace Ryujinx.Rsc.Vulkan
 {
-    public class VulkanDisplay : IDisposable
+    internal class VulkanDisplay : IDisposable
     {
         private static KhrSwapchain _swapchainExtension;
         private readonly VulkanInstance _instance;

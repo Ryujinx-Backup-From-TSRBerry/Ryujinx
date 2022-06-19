@@ -8,7 +8,7 @@ using Silk.NET.Vulkan;
 
 namespace Ryujinx.Rsc.Vulkan
 {
-    public class VulkanImage : IDisposable
+    internal class VulkanImage : IDisposable
     {
         private readonly VulkanDevice _device;
         private readonly VulkanPhysicalDevice _physicalDevice;

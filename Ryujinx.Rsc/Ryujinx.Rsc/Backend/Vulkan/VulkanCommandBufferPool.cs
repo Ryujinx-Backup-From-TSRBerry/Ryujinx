@@ -4,7 +4,7 @@ using Silk.NET.Vulkan;
 
 namespace Ryujinx.Rsc.Vulkan
 {
-    public class VulkanCommandBufferPool : IDisposable
+    internal class VulkanCommandBufferPool : IDisposable
     {
         private readonly VulkanDevice _device;
         private readonly CommandPool _commandPool;
