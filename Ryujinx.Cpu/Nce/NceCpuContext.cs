@@ -17,7 +17,7 @@ namespace Ryujinx.Cpu.Nce
         private static ThreadStart _threadStart;
         private static GetTpidrEl0 _getTpidrEl0;
 
-        private readonly NceTickSource _tickSource;
+        private readonly ITickSource _tickSource;
         private readonly IMemoryManager _memoryManager;
 
         static NceCpuContext()
@@ -50,7 +50,7 @@ namespace Ryujinx.Cpu.Nce
             _codeBlock = codeBlock;
         }
 
-        public NceCpuContext(NceTickSource tickSource, IMemoryManager memory, bool for64Bit)
+        public NceCpuContext(ITickSource tickSource, IMemoryManager memory, bool for64Bit)
         {
             _tickSource = tickSource;
             _memoryManager = memory;

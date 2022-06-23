@@ -12,6 +12,7 @@ using Ryujinx.Audio.Renderer.Device;
 using Ryujinx.Audio.Renderer.Server;
 using Ryujinx.Cpu;
 using Ryujinx.Cpu.Jit;
+using Ryujinx.Cpu.Nce;
 using Ryujinx.HLE.FileSystem;
 using Ryujinx.HLE.HOS.Kernel;
 using Ryujinx.HLE.HOS.Kernel.Memory;
@@ -40,6 +41,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using TimeSpanType = Ryujinx.HLE.HOS.Services.Time.Clock.TimeSpanType;
 
@@ -127,7 +129,9 @@ namespace Ryujinx.HLE.HOS
         public Horizon(Switch device)
         {
             TickSource = new TickSource(KernelConstants.CounterFrequency);
-            CpuEngine = new JitEngine(TickSource);
+
+            CpuEngine = RuntimeInformation.ProcessArchitecture == Architecture.Arm64 ? new NceEngine(TickSource) :
+             new JitEngine(TickSource);
 
             KernelContext = new KernelContext(
                 TickSource,

@@ -20,7 +20,7 @@ namespace Ryujinx.Cpu.Nce
         private static IntPtr _nativeContextPtr;
 
         [ThreadStatic]
-        private static NceTickSource _tickSource;
+        private static ITickSource _tickSource;
 
         static NceNativeInterface()
         {
@@ -30,7 +30,7 @@ namespace Ryujinx.Cpu.Nce
             _suspendThreadHandlerPtr = Marshal.GetFunctionPointerForDelegate(_suspendThreadHandler);
         }
 
-        public static void RegisterThread(NceExecutionContext context, NceTickSource tickSource)
+        public static void RegisterThread(NceExecutionContext context, ITickSource tickSource)
         {
             _context = context;
             _tickSource = tickSource;
