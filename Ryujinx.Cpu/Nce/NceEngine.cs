@@ -4,17 +4,16 @@ namespace Ryujinx.Cpu.Nce
 {
     public class NceEngine : ICpuEngine
     {
-        private readonly NceTickSource _tickSource;
-        public ITickSource TickSource => _tickSource;
+        public ITickSource TickSource{ get; }
 
-        public NceEngine(ulong tickFrequency)
+        public NceEngine(ITickSource tickSource)
         {
-            _tickSource = new NceTickSource(tickFrequency);
+            TickSource = tickSource;
         }
 
         public ICpuContext CreateCpuContext(IMemoryManager memoryManager, bool for64Bit)
         {
-            return new NceCpuContext(_tickSource, memoryManager, for64Bit);
+            return new NceCpuContext(TickSource, memoryManager, for64Bit);
         }
     }
 }
