@@ -142,6 +142,8 @@ namespace Ryujinx.Rsc.Controls
         {
             StickLeft.StickInputId = StickInputId.Left;
             StickRight.StickInputId = StickInputId.Right;
+            StickLeft.ButtonInputId = GamepadButtonInputId.LeftStick;
+            StickRight.ButtonInputId = GamepadButtonInputId.RightStick;
             ButtonA.ButtonInputId = GamepadButtonInputId.A;
             ButtonB.ButtonInputId = GamepadButtonInputId.B;
             ButtonX.ButtonInputId = GamepadButtonInputId.X;
@@ -224,9 +226,24 @@ namespace Ryujinx.Rsc.Controls
 
         private void Stick_Input(object sender, IVirtualControl.VirualInputEventArgs e)
         {
-            if(!IsEditMode && sender is IVirtualControl control)
+            if (!IsEditMode && sender is IVirtualControl control)
             {
-                Controller.SetStickAxis(control.StickInputId, e.StickValue);
+                if (string.IsNullOrWhiteSpace(e.Button))
+                {
+                    Controller.SetStickAxis(control.StickInputId, e.StickValue);
+                }
+                else
+                {
+                    if (e.IsPressed)
+                    {
+                        Controller.SetButtonPressed(control.ButtonInputId);
+                    }
+                    else
+                    {
+                        Controller.SetButtonReleased(control.ButtonInputId);
+
+                    }
+                }
             }
         }
 

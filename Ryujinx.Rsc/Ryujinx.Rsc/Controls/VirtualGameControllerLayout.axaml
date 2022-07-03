@@ -13,8 +13,8 @@
 	</UserControl.Resources>
 	<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 		<Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:Name="ControlLayout">
-			<controls:VirtualStick Width="75" Height="75" Name="StickLeft"/>
-			<controls:VirtualStick Width="75" Height="75" Name="StickRight"/>
+			<controls:VirtualStick Width="120" Height="90" Name="StickLeft"/>
+			<controls:VirtualStick Width="120" Height="90" Name="StickRight"/>
 			<controls:VirtualButton Width="50" Height="50" Name="ButtonA"/>
 			<controls:VirtualButton Width="50" Height="50" Name="ButtonB"/>
 			<controls:VirtualButton Width="50" Height="50" Name="ButtonX"/>

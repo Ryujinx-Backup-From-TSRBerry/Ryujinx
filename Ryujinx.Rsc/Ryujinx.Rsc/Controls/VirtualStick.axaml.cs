@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Ryujinx.Input;
 using System;
@@ -12,6 +13,7 @@ namespace Ryujinx.Rsc.Controls
     {
         private int _id = -1;
         private bool _pressed;
+        private GamepadButtonInputId buttonInputId;
 
         public event EventHandler<IVirtualControl.VirualInputEventArgs> Input;
 
@@ -21,11 +23,42 @@ namespace Ryujinx.Rsc.Controls
             IObservable<Rect> resizeObservable = this.GetObservable(BoundsProperty);
 
             resizeObservable.Subscribe(Resized);
+
+            IObservable<bool> pressedObservable = Button.GetObservable(Button.IsPressedProperty);
+
+            pressedObservable.Subscribe(PressedChanged);
         }
-        
+
+        private void PressedChanged(bool isPressed)
+        {
+            Input?.Invoke(this, new IVirtualControl.VirualInputEventArgs() { IsPressed = isPressed, Button = ButtonInputId.ToString() });
+        }
+
         protected virtual void Resized(Rect rect)
         {
-            MoveThumb(Bounds.Center - Bounds.Position);
+            SetCirclePosition();
+            MoveThumb(Circle.Bounds.Center - Circle.Bounds.Position);
+        }
+
+        private void SetCirclePosition()
+        {
+            if (Circle != null)
+            {
+                var halfSize = Circle.Bounds.Size / 2;
+                var center = Bounds.Center - Bounds.TopLeft;
+                Canvas.SetLeft(Circle, center.X - halfSize.Width);
+                Canvas.SetTop(Circle, center.Y - halfSize.Height);
+
+                switch (StickInputId)
+                {
+                    case StickInputId.Left:
+                        Canvas.SetLeft(Button, 0);
+                        break;
+                    case StickInputId.Right:
+                        Canvas.SetLeft(Button, Bounds.Width - Button.Bounds.Width);
+                        break;
+                }
+            }
         }
 
         protected override void OnPointerPressed(PointerPressedEventArgs e)
@@ -36,7 +69,8 @@ namespace Ryujinx.Rsc.Controls
             {
                 _id = e.Pointer.Id;
                 _pressed = true;
-                MoveThumb(e.GetPosition(Layout));
+                MoveThumb(e.GetPosition(Circle));
+                Button.IsVisible = false;
             }
         }
 
@@ -45,7 +79,8 @@ namespace Ryujinx.Rsc.Controls
             base.OnPointerMoved(e);
             if (_pressed && e.Pointer.Id == _id)
             {
-                MoveThumb(e.GetPosition(Layout));
+                MoveThumb(e.GetPosition(Circle));
+                Button.IsVisible = false;
             }
         }
 
@@ -66,30 +101,34 @@ namespace Ryujinx.Rsc.Controls
             if (e.Pointer.Id == _id)
             {
                 _pressed = false;
-                MoveThumb(Bounds.Center - Bounds.Position);
+                MoveThumb(Circle.Bounds.Center - Circle.Bounds.Position);
                 _id = -1;
+                Button.IsVisible = true;
             }
         }
 
         private void MoveThumb(Point point)
         {
+            SetCirclePosition();
+
             if (Thumb != null)
             {
-                var halfWidth = Thumb.Bounds.Width / 2;
-                var radius = Bounds.Width / 2;
+                var halfWidth = Thumb.Bounds.Size / 2;
+                var radius = Circle.Bounds.Size / 2;
                 var x = point.X;
                 var y = point.Y;
                 var clamped = new Vector();
-                var relativeToCenter = new Vector(x - radius, y - radius);
+                var relativeToCenter = new Vector(x - radius.Width, y - radius.Height);
                 if (relativeToCenter.Length != 0)
                 {
-                    var normalized = relativeToCenter.Normalize() * radius;
-                    clamped = new Vector(ClampAxis(relativeToCenter.X, normalized.X), ClampAxis(relativeToCenter.Y, normalized.Y));
+                    var normalizedX = relativeToCenter.Normalize() * radius.Width;
+                    var normalizedY = relativeToCenter.Normalize() * radius.Height;
+                    clamped = new Vector(ClampAxis(relativeToCenter.X, normalizedX.X), ClampAxis(relativeToCenter.Y, normalizedY.Y));
                 }
-                Input?.Invoke(this, new IVirtualControl.VirualInputEventArgs() { StickValue = new Vector(clamped.X, clamped.Y * -1 ) / radius});
+                Input?.Invoke(this, new IVirtualControl.VirualInputEventArgs() { StickValue = new Vector(clamped.X / radius.Width, clamped.Y * -1 / radius.Height) });
                 clamped += (Bounds.Center - Bounds.Position);
-                Canvas.SetLeft(Thumb, clamped.X - halfWidth);
-                Canvas.SetTop(Thumb, clamped.Y - halfWidth);
+                Canvas.SetLeft(Thumb, clamped.X - halfWidth.Width);
+                Canvas.SetTop(Thumb, clamped.Y - halfWidth.Height);
             }
         }
 
@@ -99,15 +138,25 @@ namespace Ryujinx.Rsc.Controls
             MoveThumb(Bounds.Center - Bounds.Position);
         }
 
-        private void InitializeComponent()
+        public StickInputId StickInputId { get; set; }
+        public GamepadButtonInputId ButtonInputId
         {
-            AvaloniaXamlLoader.Load(this);
-            Thumb = this.FindControl<Ellipse>("Thumb");
-            Layout = this.FindControl<Canvas>("Layout");
+            get => buttonInputId; set
+            {
+                buttonInputId = value;
+
+                switch (StickInputId)
+                {
+                    case StickInputId.Left:
+                        StickLabel.Content = "L";
+                        break;
+                    case StickInputId.Right:
+                        StickLabel.Content = "R";
+                        break;
+                }
+            }
         }
 
-        public StickInputId StickInputId { get; set; }
-        public GamepadButtonInputId ButtonInputId { get; set; }
         public bool IsStick => true;
     }
 }
