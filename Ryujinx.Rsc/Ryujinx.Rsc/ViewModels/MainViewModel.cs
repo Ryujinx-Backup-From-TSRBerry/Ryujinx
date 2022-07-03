@@ -235,6 +235,8 @@ namespace Ryujinx.Rsc.ViewModels
 
             _isLoading = true;
 
+            Applications.Clear();
+
             Thread thread = new(() =>
             {
                 Owner.ApplicationLibrary.LoadApplications(ConfigurationState.Instance.Ui.GameDirs.Value,
