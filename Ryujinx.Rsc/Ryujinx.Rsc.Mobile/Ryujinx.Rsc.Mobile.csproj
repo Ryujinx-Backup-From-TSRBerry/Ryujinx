@@ -35,6 +35,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Mono.Profiler.Android" Version="6.0.0" />
     <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.4.2.1" />
     <PackageReference Include="Xamarin.AndroidX.DocumentFile" Version="1.0.1.14" />
     <PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModel" Version="2.4.1.2" />

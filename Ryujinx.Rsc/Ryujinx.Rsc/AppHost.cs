@@ -143,8 +143,8 @@ namespace Ryujinx.Rsc
 
             ConfigurationState.Instance.HideCursorOnIdle.Event += HideCursorState_Changed;
 
-            _parent.PointerEnter += Parent_PointerEntered;
-            _parent.PointerLeave += Parent_PointerLeft;
+            _parent.PointerEntered += Parent_PointerEntered;
+            _parent.PointerExited += Parent_PointerLeft;
             _parent.PointerMoved += Parent_PointerMoved;
 
             ConfigurationState.Instance.System.IgnoreMissingServices.Event += UpdateIgnoreMissingServicesState;
