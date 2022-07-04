@@ -98,6 +98,11 @@ namespace Ryujinx.HLE
         internal readonly bool EnablePtc;
 
         /// <summary>
+        /// Control if native code execution is preferred on this platform
+        /// </summary>
+        internal readonly bool PreferNativeCodeExecution;
+
+        /// <summary>
         /// Control if the guest application should be told that there is a Internet connection available.
         /// </summary>
         internal readonly bool EnableInternetAccess;
@@ -175,31 +180,33 @@ namespace Ryujinx.HLE
                                 MemoryManagerMode      memoryManagerMode,
                                 bool                   ignoreMissingServices,
                                 AspectRatio            aspectRatio,
-                                float                  audioVolume)
+                                float                  audioVolume,
+                                bool                   preferNativeCodeExecution)
         {
-            VirtualFileSystem      = virtualFileSystem;
-            LibHacHorizonManager   = libHacHorizonManager;
-            AccountManager         = accountManager;
-            ContentManager         = contentManager;
-            UserChannelPersistence = userChannelPersistence;
-            GpuRenderer            = gpuRenderer;
-            AudioDeviceDriver      = audioDeviceDriver;
-            MemoryConfiguration    = memoryConfiguration;
-            HostUiHandler          = hostUiHandler;
-            SystemLanguage         = systemLanguage;
-            Region                 = region;
-            EnableVsync            = enableVsync;
-            EnableDockedMode       = enableDockedMode;
-            EnablePtc              = enablePtc;
-            EnableInternetAccess   = enableInternetAccess;
-            FsIntegrityCheckLevel  = fsIntegrityCheckLevel;
-            FsGlobalAccessLogMode  = fsGlobalAccessLogMode;
-            SystemTimeOffset       = systemTimeOffset;
-            TimeZone               = timeZone;
-            MemoryManagerMode      = memoryManagerMode;
-            IgnoreMissingServices  = ignoreMissingServices;
-            AspectRatio            = aspectRatio;
-            AudioVolume            = audioVolume;
+            VirtualFileSystem         = virtualFileSystem;
+            LibHacHorizonManager      = libHacHorizonManager;
+            AccountManager            = accountManager;
+            ContentManager            = contentManager;
+            UserChannelPersistence    = userChannelPersistence;
+            GpuRenderer               = gpuRenderer;
+            AudioDeviceDriver         = audioDeviceDriver;
+            MemoryConfiguration       = memoryConfiguration;
+            HostUiHandler             = hostUiHandler;
+            SystemLanguage            = systemLanguage;
+            Region                    = region;
+            EnableVsync               = enableVsync;
+            EnableDockedMode          = enableDockedMode;
+            EnablePtc                 = enablePtc;
+            EnableInternetAccess      = enableInternetAccess;
+            FsIntegrityCheckLevel     = fsIntegrityCheckLevel;
+            FsGlobalAccessLogMode     = fsGlobalAccessLogMode;
+            SystemTimeOffset          = systemTimeOffset;
+            TimeZone                  = timeZone;
+            MemoryManagerMode         = memoryManagerMode;
+            IgnoreMissingServices     = ignoreMissingServices;
+            AspectRatio               = aspectRatio;
+            AudioVolume               = audioVolume;
+            PreferNativeCodeExecution = preferNativeCodeExecution;
         }
     }
 }

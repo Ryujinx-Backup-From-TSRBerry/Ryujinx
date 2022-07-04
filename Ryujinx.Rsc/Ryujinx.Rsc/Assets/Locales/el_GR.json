@@ -110,7 +110,7 @@
   "SettingsTabSystemSystemTimeZone": "Ζώνη Ώρας Συστήματος:",
   "SettingsTabSystemSystemTime": "Ώρα Συστήματος:",
   "SettingsTabSystemEnableVsync": "Ενεργοποίηση Κατακόρυφου Συγχρονισμού",
-  "SettingsTabSystemEnablePptc": "Ενεργοποίηση PPTC (Profiled Persistent Translation Cache)",
+  "SettingsTabSystemEnablePptc": "Ενεργοποίηση PPTC",
   "SettingsTabSystemEnableFsIntegrityChecks": "Ενεργοποίηση Ελέγχων Ακεραιότητας FS",
   "SettingsTabSystemAudioBackend": "Backend Ήχου:",
   "SettingsTabSystemAudioBackendDummy": "Απενεργοποιημένο",

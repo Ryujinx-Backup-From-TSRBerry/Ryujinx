@@ -110,7 +110,7 @@
   "SettingsTabSystemSystemTimeZone": "Часовой пояс системы:",
   "SettingsTabSystemSystemTime": "Время системы:",
   "SettingsTabSystemEnableVsync": "Включить вертикальную синхронизацию",
-  "SettingsTabSystemEnablePptc": "Включить PPTC (Profiled Persistent Translation Cache)",
+  "SettingsTabSystemEnablePptc": "Включить PPTC",
   "SettingsTabSystemEnableFsIntegrityChecks": "Включить проверку целостности FS",
   "SettingsTabSystemAudioBackend": "Аудио бэкэнд:",
   "SettingsTabSystemAudioBackendDummy": "Dummy",

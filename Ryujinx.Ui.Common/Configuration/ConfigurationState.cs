@@ -9,6 +9,7 @@ using Ryujinx.Ui.Common.Configuration.Ui;
 using Ryujinx.Ui.Common.Helper;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace Ryujinx.Ui.Common.Configuration
 {
@@ -262,6 +263,11 @@ namespace Ryujinx.Ui.Common.Configuration
             public ReactiveObject<bool> EnablePtc { get; private set; }
 
             /// <summary>
+            /// Enables native code execution in place of jit. Only supported on Arm64 devices
+            /// </summary>
+            public ReactiveObject<bool> PreferNativeExecution { get; private set; }
+
+            /// <summary>
             /// Enables or disables guest Internet access
             /// </summary>
             public ReactiveObject<bool> EnableInternetAccess { get; private set; }
@@ -327,6 +333,8 @@ namespace Ryujinx.Ui.Common.Configuration
                 IgnoreMissingServices.Event   += static (sender, e) => LogValueChange(sender, e, nameof(IgnoreMissingServices));
                 AudioVolume                   = new ReactiveObject<float>();
                 AudioVolume.Event             += static (sender, e) => LogValueChange(sender, e, nameof(AudioVolume));
+                PreferNativeExecution         = new ReactiveObject<bool>();
+                PreferNativeExecution.Event   += static (sender, e) => LogValueChange(sender, e, nameof(PreferNativeExecution));
             }
         }
 
@@ -558,6 +566,7 @@ namespace Ryujinx.Ui.Common.Configuration
                 MemoryManagerMode          = System.MemoryManagerMode,
                 ExpandRam                  = System.ExpandRam,
                 IgnoreMissingServices      = System.IgnoreMissingServices,
+                PreferNativeExecution      = System.PreferNativeExecution,
                 GuiColumns                 = new GuiColumns
                 {
                     FavColumn        = Ui.GuiColumns.FavColumn,
@@ -1123,6 +1132,15 @@ namespace Ryujinx.Ui.Common.Configuration
                 configurationFileUpdated = true;
             }
 
+            if (configurationFileFormat.Version < 39)
+            {
+                Ryujinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 39.");
+
+                configurationFileFormat.PreferNativeExecution = RuntimeInformation.ProcessArchitecture == Architecture.Arm64;
+
+                configurationFileUpdated = true;
+            }
+
             Logger.EnableFileLog.Value                = configurationFileFormat.EnableFileLog;
             Graphics.ResScale.Value                   = configurationFileFormat.ResScale;
             Graphics.ResScaleCustom.Value             = configurationFileFormat.ResScaleCustom;
@@ -1162,6 +1180,7 @@ namespace Ryujinx.Ui.Common.Configuration
             System.AudioVolume.Value                  = configurationFileFormat.AudioVolume;
             System.MemoryManagerMode.Value            = configurationFileFormat.MemoryManagerMode;
             System.ExpandRam.Value                    = configurationFileFormat.ExpandRam;
+            System.PreferNativeExecution.Value        = configurationFileFormat.PreferNativeExecution;
             System.IgnoreMissingServices.Value        = configurationFileFormat.IgnoreMissingServices;
             Ui.GuiColumns.FavColumn.Value             = configurationFileFormat.GuiColumns.FavColumn;
             Ui.GuiColumns.IconColumn.Value            = configurationFileFormat.GuiColumns.IconColumn;

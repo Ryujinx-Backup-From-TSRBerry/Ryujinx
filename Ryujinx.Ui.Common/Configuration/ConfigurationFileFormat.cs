@@ -14,7 +14,7 @@ namespace Ryujinx.Ui.Common.Configuration
         /// <summary>
         /// The current version of the file format
         /// </summary>
-        public const int CurrentVersion = 38;
+        public const int CurrentVersion = 39;
 
         /// <summary>
         /// Version of the configuration file format
@@ -170,6 +170,11 @@ namespace Ryujinx.Ui.Common.Configuration
         /// Enables or disables profiled translation cache persistency
         /// </summary>
         public bool EnablePtc { get; set; }
+
+        /// <summary>
+        /// Enables native code execution in place of jit. Only supported on Arm64 devices
+        /// </summary>
+        public bool PreferNativeExecution { get; set; }
 
         /// <summary>
         /// Enables or disables guest Internet access

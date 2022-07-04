@@ -110,7 +110,7 @@
   "SettingsTabSystemSystemTimeZone": "시스템 시간대 :",
   "SettingsTabSystemSystemTime": "시스템 시간 :",
   "SettingsTabSystemEnableVsync": "수직 동기화 사용",
-  "SettingsTabSystemEnablePptc": "PPTC(Profiled Persistent Translation Cache) 활성화",
+  "SettingsTabSystemEnablePptc": "PPTC 활성화",
   "SettingsTabSystemEnableFsIntegrityChecks": "FS 무결성 검사 활성화",
   "SettingsTabSystemAudioBackend": "오디오 백엔드 :",
   "SettingsTabSystemAudioBackendDummy": "Dummy",

@@ -130,8 +130,8 @@ namespace Ryujinx.HLE.HOS
         {
             TickSource = new TickSource(KernelConstants.CounterFrequency);
 
-            CpuEngine = RuntimeInformation.ProcessArchitecture == Architecture.Arm64 ? new NceEngine(TickSource) :
-             new JitEngine(TickSource);
+            CpuEngine = RuntimeInformation.ProcessArchitecture == Architecture.Arm64 && device.PreferNativeExecution ? new NceEngine(TickSource) :
+                new JitEngine(TickSource);
 
             KernelContext = new KernelContext(
                 TickSource,

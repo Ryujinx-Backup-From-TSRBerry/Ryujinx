@@ -151,6 +151,7 @@ namespace Ryujinx.Rsc.ViewModels
         public bool EnablePptc { get; set; }
         public bool EnableInternetAccess { get; set; }
         public bool EnableFsIntegrityChecks { get; set; }
+        public bool PreferNativeCodeExecution { get; set; }
         public bool IgnoreMissingServices { get; set; }
         public bool ExpandDramSize { get; set; }
         public bool EnableShaderCache { get; set; }
@@ -256,6 +257,7 @@ namespace Ryujinx.Rsc.ViewModels
             EnablePptc = config.System.EnablePtc;
             EnableInternetAccess = config.System.EnableInternetAccess;
             EnableFsIntegrityChecks = config.System.EnableFsIntegrityChecks;
+            PreferNativeCodeExecution = config.System.PreferNativeExecution;
             IgnoreMissingServices = config.System.IgnoreMissingServices;
             ExpandDramSize = config.System.ExpandRam;
             EnableShaderCache = config.Graphics.EnableShaderCache;
@@ -327,6 +329,7 @@ namespace Ryujinx.Rsc.ViewModels
             config.System.EnablePtc.Value = EnablePptc;
             config.System.EnableInternetAccess.Value = EnableInternetAccess;
             config.System.EnableFsIntegrityChecks.Value = EnableFsIntegrityChecks;
+            config.System.PreferNativeExecution.Value = PreferNativeCodeExecution;
             config.System.IgnoreMissingServices.Value = IgnoreMissingServices;
             config.System.ExpandRam.Value = ExpandDramSize;
             config.System.Language.Value = (Language)Language;

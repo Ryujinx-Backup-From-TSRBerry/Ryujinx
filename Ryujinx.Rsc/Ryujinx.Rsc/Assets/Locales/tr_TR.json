@@ -110,7 +110,7 @@
   "SettingsTabSystemSystemTimeZone": "Sistem Saat Dilimi:",
   "SettingsTabSystemSystemTime": "System Time:",
   "SettingsTabSystemEnableVsync": "VSync'i Etkinleştir",
-  "SettingsTabSystemEnablePptc": "PPTC'yi Etkinleştir (Profiled Persistent Translation Cache)",
+  "SettingsTabSystemEnablePptc": "PPTC'yi Etkinleştir",
   "SettingsTabSystemEnableFsIntegrityChecks": "FS Bütünlük Kontrollerini Etkinleştir",
   "SettingsTabSystemAudioBackend": "Ses Motoru:",
   "SettingsTabSystemAudioBackendDummy": "Dummy",

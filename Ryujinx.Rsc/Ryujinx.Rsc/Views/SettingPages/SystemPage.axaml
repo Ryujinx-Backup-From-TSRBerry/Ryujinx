@@ -201,6 +201,34 @@
                 <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableFsIntegrityChecks}"  OffContent="" Content="" OnContent=""/>
             </Grid>
         </Border>
+		<Border HorizontalAlignment="Stretch"
+                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
+			<Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+				<TextBlock VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Text="{locale:Locale SettingsTabSystemEnablePptc}"
+                           Width="230" />
+				<ToggleSwitch Grid.Column="1" IsChecked="{Binding EnablePptc}"  OffContent="" Content="" OnContent=""/>
+			</Grid>
+		</Border>
+		<Border HorizontalAlignment="Stretch"
+                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
+			<Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+				<TextBlock VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Text="Prefer Native Code Execution"
+                           Width="230" />
+				<ToggleSwitch Grid.Column="1" IsChecked="{Binding PreferNativeCodeExecution}"  OffContent="" Content="" OnContent=""/>
+			</Grid>
+		</Border>
         <Border HorizontalAlignment="Stretch"
                 Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
             <Grid Background="Transparent" HorizontalAlignment="Stretch">
@@ -238,7 +266,7 @@
         <Separator Height="1" Margin="0,5" />
         <StackPanel Margin="10" Orientation="Horizontal">
             <TextBlock  FontSize="18" FontWeight="Bold" Text="{locale:Locale SettingsTabSystemHacks}" />
-            <TextBlock Text="{locale:Locale SettingsTabSystemHacksNote}" />
+            <TextBlock VerticalAlignment="Center" Text="{locale:Locale SettingsTabSystemHacksNote}" />
         </StackPanel>
         <Border HorizontalAlignment="Stretch"
                 Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
