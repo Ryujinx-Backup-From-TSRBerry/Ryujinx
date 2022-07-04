@@ -47,6 +47,7 @@ using Switch = Ryujinx.HLE.Switch;
 using WindowState = Avalonia.Controls.WindowState;
 using Ryujinx.Common.Configuration.Hid.Controller;
 using Ryujinx.Common.Configuration.Hid.Controller.Motion;
+using System.Runtime.InteropServices;
 
 namespace Ryujinx.Rsc
 {
@@ -585,6 +586,8 @@ namespace Ryujinx.Rsc
 
             IntegrityCheckLevel fsIntegrityCheckLevel = ConfigurationState.Instance.System.EnableFsIntegrityChecks ? IntegrityCheckLevel.ErrorOnInvalid : IntegrityCheckLevel.None;
 
+            bool preferNce = ConfigurationState.Instance.System.PreferNativeExecution && RuntimeInformation.ProcessArchitecture == Architecture.Arm64;
+
             HLE.HLEConfiguration configuration = new HLE.HLEConfiguration(VirtualFileSystem,
                                                                           _parent.LibHacHorizonManager,
                                                                           ContentManager,
@@ -598,7 +601,7 @@ namespace Ryujinx.Rsc
                                                                           (RegionCode)ConfigurationState.Instance.System.Region.Value,
                                                                           ConfigurationState.Instance.Graphics.EnableVsync,
                                                                           ConfigurationState.Instance.System.EnableDockedMode,
-                                                                          ConfigurationState.Instance.System.EnablePtc,
+                                                                          ConfigurationState.Instance.System.EnablePtc && !preferNce,
                                                                           ConfigurationState.Instance.System.EnableInternetAccess,
                                                                           fsIntegrityCheckLevel,
                                                                           ConfigurationState.Instance.System.FsGlobalAccessLogMode,
@@ -607,7 +610,8 @@ namespace Ryujinx.Rsc
                                                                           ConfigurationState.Instance.System.MemoryManagerMode,
                                                                           ConfigurationState.Instance.System.IgnoreMissingServices,
                                                                           ConfigurationState.Instance.Graphics.AspectRatio,
-                                                                          ConfigurationState.Instance.System.AudioVolume);
+                                                                          ConfigurationState.Instance.System.AudioVolume,
+                                                                          preferNce);
 
             Device = new Switch(configuration);
         }

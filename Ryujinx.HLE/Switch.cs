@@ -30,6 +30,8 @@ namespace Ryujinx.HLE
 
         public bool EnableDeviceVsync { get; set; } = true;
 
+        public bool PreferNativeExecution { get; set; }
+
         public bool IsFrameAvailable => Gpu.Window.IsFrameAvailable;
 
         public Switch(HLEConfiguration configuration)
@@ -49,9 +51,10 @@ namespace Ryujinx.HLE
                 throw new ArgumentNullException(nameof(configuration.UserChannelPersistence));
             }
 
-            Configuration = configuration;
-            FileSystem    = Configuration.VirtualFileSystem;
-            UiHandler     = Configuration.HostUiHandler;
+            Configuration         = configuration;
+            FileSystem            = Configuration.VirtualFileSystem;
+            UiHandler             = Configuration.HostUiHandler;
+            PreferNativeExecution = Configuration.PreferNativeCodeExecution;
 
             MemoryAllocationFlags memoryAllocationFlags = configuration.MemoryManagerMode == MemoryManagerMode.SoftwarePageTable
                 ? MemoryAllocationFlags.Reserve

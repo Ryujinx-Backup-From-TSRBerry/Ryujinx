@@ -110,7 +110,7 @@
   "SettingsTabSystemSystemTimeZone": "System Zeitzone:",
   "SettingsTabSystemSystemTime": "System Zeit:",
   "SettingsTabSystemEnableVsync": "Aktiviere VSync",
-  "SettingsTabSystemEnablePptc": "Aktiviere PPTC Cache (Profiled presistent translastion cache)",
+  "SettingsTabSystemEnablePptc": "Aktiviere PPTC Cache",
   "SettingsTabSystemEnableFsIntegrityChecks": "Aktiviere die FS Integritätsprüfung",
   "SettingsTabSystemAudioBackend": "Audio-Backend:",
   "SettingsTabSystemAudioBackendDummy": "Dummy",
