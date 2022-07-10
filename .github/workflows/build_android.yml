@@ -8,6 +8,8 @@ jobs:
   build:
     name: "Build Android"
     runs-on: ryujinx-ubuntu-latest
+    permissions:
+      contents: write
 
     env:
       POWERSHELL_TELEMETRY_OPTOUT: 1
@@ -56,18 +58,15 @@ jobs:
         run: |
           dotnet restore ./Ryujinx.Rsc/Ryujinx.Rsc.Mobile/Ryujinx.Rsc.Mobile.csproj
           dotnet msbuild ./Ryujinx.Rsc/Ryujinx.Rsc.Mobile/Ryujinx.Rsc.Mobile.csproj /t:PackageForAndroid /p:Configuration=Release /p:OutputPath=$(realpath release_output)/ /p:JavaSdkDirectory="${{ env.JAVA_HOME }}"
-          ls -la release_output
-      # TODO: Should we save to Github Release on the staging repo?
-      #- name: Pushing new release
-      #  uses: ncipollo/release-action@v1
-      #  with:
-      #    name: ${{ steps.version_info.outputs.build_version }}
-      #    artifacts: "release_output/*.tar.gz,release_output/*.zip"
-      #    tag: ${{ steps.version_info.outputs.build_version }}
-      #    body: "For more informations about this release please check out the official [Changelog](https://github.com/Ryujinx/Ryujinx/wiki/Changelog)."
-      #    allowUpdates: true
-      #    removeArtifacts: true
-      #    replacesArtifacts: true
-      #    owner: ${{ env.RYUJINX_TARGET_RELEASE_CHANNEL_OWNER }}
-      #    repo: ${{ env.RYUJINX_TARGET_RELEASE_CHANNEL_REPO }}
-      #    token: ${{ secrets.RELEASE_TOKEN }}
+      - name: Pushing new release
+        uses: ncipollo/release-action@v1
+        with:
+          name: ${{ steps.version_info.outputs.build_version }}
+          commit: ${{ github.sha }}
+          artifacts: "release_output/*.apk"
+          body: "For more informations about this release please check out the official [Changelog](https://github.com/Ryujinx/Ryujinx/wiki/Changelog)."
+          allowUpdates: true
+          removeArtifacts: true
+          replacesArtifacts: true
+          prerelease: true
+          token: ${{ secrets.GITHUB_TOKEN }}
