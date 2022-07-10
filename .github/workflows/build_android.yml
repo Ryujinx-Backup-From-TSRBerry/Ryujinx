@@ -62,11 +62,12 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           name: ${{ steps.version_info.outputs.build_version }}
+          tag: ${{ steps.version_info.outputs.build_version }}
           commit: ${{ github.sha }}
           artifacts: "release_output/*.apk"
           body: "For more informations about this release please check out the official [Changelog](https://github.com/Ryujinx/Ryujinx/wiki/Changelog)."
           allowUpdates: true
-          removeArtifacts: true
+          omitBodyDuringUpdate: true
           replacesArtifacts: true
           prerelease: true
           token: ${{ secrets.GITHUB_TOKEN }}
