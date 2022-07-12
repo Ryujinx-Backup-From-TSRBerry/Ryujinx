@@ -16,6 +16,7 @@ using Ryujinx.Ava.Ui.Models;
 using Ryujinx.Ava.Ui.Windows;
 using Ryujinx.Common;
 using Ryujinx.Common.Configuration;
+using Ryujinx.Common.Configuration.Multiplayer;
 using Ryujinx.Common.Logging;
 using Ryujinx.Common.System;
 using Ryujinx.Graphics.GAL;
@@ -158,6 +159,11 @@ namespace Ryujinx.Ava
             ConfigurationState.Instance.Graphics.AspectRatio.Event += UpdateAspectRatioState;
             ConfigurationState.Instance.System.EnableDockedMode.Event += UpdateDockedModeState;
             ConfigurationState.Instance.System.AudioVolume.Event += UpdateAudioVolumeState;
+
+            ConfigurationState.Instance.Multiplayer.Mode.Event += UpdateMultiplayerModeState;
+            ConfigurationState.Instance.Multiplayer.LdnPassphrase.Event += UpdateLdnPassphraseState;
+            ConfigurationState.Instance.Multiplayer.DisableP2p.Event += UpdateDisableP2pState;
+            ConfigurationState.Instance.Multiplayer.LanInterfaceId.Event += UpdateLanInterfaceIdState;
 
             _gpuCancellationTokenSource = new CancellationTokenSource();
         }
@@ -323,6 +329,26 @@ namespace Ryujinx.Ava
                 var value = e.NewValue;
                 _parent.ViewModel.Volume = e.NewValue;
             });
+        }
+
+        private void UpdateMultiplayerModeState(object sender, ReactiveEventArgs<MultiplayerMode> e)
+        {
+            Device.Configuration.MultiplayerMode = e.NewValue;
+        }
+
+        private void UpdateLdnPassphraseState(object sender, ReactiveEventArgs<string> e)
+        {
+            Device.Configuration.MultiplayerLdnPassphrase = e.NewValue;
+        }
+
+        private void UpdateDisableP2pState(object sender, ReactiveEventArgs<bool> e)
+        {
+            Device.Configuration.MultiplayerDisableP2p = e.NewValue;
+        }
+
+        private void UpdateLanInterfaceIdState(object sender, ReactiveEventArgs<string> e)
+        {
+            Device.Configuration.MultiplayerLanInterfaceId = e.NewValue;
         }
 
         public void Stop()
