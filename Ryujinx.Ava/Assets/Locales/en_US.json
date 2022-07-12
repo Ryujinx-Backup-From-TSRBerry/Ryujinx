@@ -594,5 +594,8 @@
   "SettingsTabHotkeysVolumeDownHotkey": "Decrease Volume:",
   "VolumeShort": "Vol",
   "SettingsEnableMacroHLE": "Enable Macro HLE",
-  "SettingsEnableMacroHLETooltip": "High-level emulation of GPU Macro code.\n\nImproves performance, but may cause graphical glitches in some games.\n\nLeave ON if unsure."
+  "SettingsEnableMacroHLETooltip": "High-level emulation of GPU Macro code.\n\nImproves performance, but may cause graphical glitches in some games.\n\nLeave ON if unsure.",
+  "SettingsTabNetworkInterface": "Network Interface:",
+  "NetworkInterfaceTooltip": "The network interface used for LAN features",
+  "NetworkInterfaceDefault": "Default"
 }

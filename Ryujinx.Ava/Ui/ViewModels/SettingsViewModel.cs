@@ -25,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.NetworkInformation;
 using TimeZone = Ryujinx.Ava.Ui.Models.TimeZone;
 
 namespace Ryujinx.Ava.Ui.ViewModels
@@ -38,6 +39,8 @@ namespace Ryujinx.Ava.Ui.ViewModels
 
         private readonly List<string> _validTzRegions;
 
+        private Dictionary<string, string> _networkInterfaces;
+
         private float _customResolutionScale;
         private int _resolutionScale;
         private int _graphicsBackendMultithreadingIndex;
@@ -48,6 +51,7 @@ namespace Ryujinx.Ava.Ui.ViewModels
         private List<string> _gpuIds = new List<string>();
         private KeyboardHotkeys _keyboardHotkeys;
         private int _graphicsBackendIndex;
+        private int _networkInterfaceIndex;
 
         public int ResolutionScale
         {
@@ -196,6 +200,11 @@ namespace Ryujinx.Ava.Ui.ViewModels
         public AvaloniaList<string> GameDirectories { get; set; }
         public ObservableCollection<ComboBoxItem> AvailableGpus { get; set; }
 
+        public AvaloniaList<string> NetworkInterfaceList
+        {
+            get => new AvaloniaList<string>(_networkInterfaces.Keys);
+        }
+
         public KeyboardHotkeys KeyboardHotkeys
         {
             get => _keyboardHotkeys;
@@ -204,6 +213,16 @@ namespace Ryujinx.Ava.Ui.ViewModels
                 _keyboardHotkeys = value;
 
                 OnPropertyChanged();
+            }
+        }
+
+        public int NetworkInterfaceIndex
+        {
+            get => _networkInterfaceIndex;
+            set
+            {
+                _networkInterfaceIndex = value != -1 ? value : 0;
+                ConfigurationState.Instance.Multiplayer.LanInterfaceId.Value = _networkInterfaces[NetworkInterfaceList[_networkInterfaceIndex]];
             }
         }
 
@@ -227,8 +246,10 @@ namespace Ryujinx.Ava.Ui.ViewModels
             TimeZones = new AvaloniaList<TimeZone>();
             AvailableGpus = new ObservableCollection<ComboBoxItem>();
             _validTzRegions = new List<string>();
+            _networkInterfaces = new Dictionary<string, string>();
 
             CheckSoundBackends();
+            PopulateNetworkInterfaces();
 
             if (Program.PreviewerDetached)
             {
@@ -284,6 +305,16 @@ namespace Ryujinx.Ava.Ui.ViewModels
                 TimeZones.Add(new TimeZone($"UTC{hours:+0#;-0#;+00}:{minutes:D2}", location, abbr2));
 
                 _validTzRegions.Add(location);
+            }
+        }
+
+        private void PopulateNetworkInterfaces()
+        {
+            _networkInterfaces.Clear();
+            _networkInterfaces.Add(LocaleManager.Instance["NetworkInterfaceDefault"], "0");
+            foreach (NetworkInterface nif in NetworkInterface.GetAllNetworkInterfaces())
+            {
+                _networkInterfaces.Add(nif.Name, nif.Id);
             }
         }
 
@@ -384,6 +415,8 @@ namespace Ryujinx.Ava.Ui.ViewModels
 
             KeyboardHotkeys = config.Hid.Hotkeys.Value;
 
+            NetworkInterfaceIndex = _networkInterfaces.Values.ToList().IndexOf(config.Multiplayer.LanInterfaceId.Value);
+
             _previousVolumeLevel = Volume;
         }
 
@@ -468,6 +501,8 @@ namespace Ryujinx.Ava.Ui.ViewModels
             }
 
             config.Hid.Hotkeys.Value = KeyboardHotkeys;
+
+            config.Multiplayer.LanInterfaceId.Value = _networkInterfaces[NetworkInterfaceList[NetworkInterfaceIndex]];
 
             config.ToFileFormat().SaveConfig(Program.ConfigurationPath);
 
