@@ -627,5 +627,8 @@
   "UserProfilesRecoverHeading" : "Saves were found for the following accounts",
   "UserProfilesRecoverEmptyList": "No profiles to recover",
   "UserEditorTitle" : "Edit User",
-  "UserEditorTitleCreate" : "Create User"
+  "UserEditorTitleCreate" : "Create User",
+  "SettingsTabNetworkInterface": "Network Interface:",
+  "NetworkInterfaceTooltip": "The network interface used for LAN features",
+  "NetworkInterfaceDefault": "Default"
 }
