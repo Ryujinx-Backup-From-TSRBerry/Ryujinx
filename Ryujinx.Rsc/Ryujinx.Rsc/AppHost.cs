@@ -560,7 +560,7 @@ namespace Ryujinx.Rsc
             VirtualFileSystem.ReloadKeySet();
 
             var vulkan = AvaloniaLocator.Current.GetService<VulkanPlatformInterface>();
-            IRenderer renderer = new VulkanGraphicsDevice(vulkan.Instance.InternalHandle,
+            IRenderer renderer = new VulkanRenderer(vulkan.Instance.InternalHandle,
                 vulkan.Device.InternalHandle,
                 vulkan.PhysicalDevice.InternalHandle,
                 vulkan.Device.Queue.InternalHandle,
@@ -706,7 +706,7 @@ namespace Ryujinx.Rsc
                 dockedMode += $" ({scale}x)";
             }
 
-            string vendor = _renderer is VulkanGraphicsDevice renderer ? renderer.GpuVendor : "";
+            string vendor = _renderer is VulkanRenderer renderer ? renderer.GpuVendor : "";
 
             StatusUpdatedEvent?.Invoke(this, new StatusUpdatedEventArgs(
                 Device.EnableDeviceVsync,

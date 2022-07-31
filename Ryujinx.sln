@@ -84,9 +84,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Rsc", "Ryujinx.Rsc\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Rsc.Desktop", "Ryujinx.Rsc\Ryujinx.Rsc.Desktop\Ryujinx.Rsc.Desktop.csproj", "{A6F24690-D085-4BF8-8611-56BB93DFD6C8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Audio.Backends.Android", "Ryujinx.Rsc\Ryujinx.Audio.Backends.Android\Ryujinx.Audio.Backends.Android.csproj", "{2A8BB185-81AE-42D6-A4DA-C314AA2D46BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Audio.Backends.Android", "Ryujinx.Rsc\Ryujinx.Audio.Backends.Android\Ryujinx.Audio.Backends.Android.csproj", "{EAF953FF-6AFD-4C9A-AB21-3DD5029394D8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Rsc.Mobile", "Ryujinx.Rsc\Ryujinx.Rsc.Mobile\Ryujinx.Rsc.Mobile.csproj", "{3D60279E-7520-4619-9CE5-746998AC0E38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Rsc.Mobile", "Ryujinx.Rsc\Ryujinx.Rsc.Mobile\Ryujinx.Rsc.Mobile.csproj", "{465B8349-4F3B-4215-94AF-49D07CDA3610}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -242,16 +242,16 @@ Global
 		{A6F24690-D085-4BF8-8611-56BB93DFD6C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6F24690-D085-4BF8-8611-56BB93DFD6C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6F24690-D085-4BF8-8611-56BB93DFD6C8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2A8BB185-81AE-42D6-A4DA-C314AA2D46BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2A8BB185-81AE-42D6-A4DA-C314AA2D46BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2A8BB185-81AE-42D6-A4DA-C314AA2D46BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2A8BB185-81AE-42D6-A4DA-C314AA2D46BB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3D60279E-7520-4619-9CE5-746998AC0E38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3D60279E-7520-4619-9CE5-746998AC0E38}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3D60279E-7520-4619-9CE5-746998AC0E38}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{3D60279E-7520-4619-9CE5-746998AC0E38}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3D60279E-7520-4619-9CE5-746998AC0E38}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3D60279E-7520-4619-9CE5-746998AC0E38}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{EAF953FF-6AFD-4C9A-AB21-3DD5029394D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAF953FF-6AFD-4C9A-AB21-3DD5029394D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAF953FF-6AFD-4C9A-AB21-3DD5029394D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAF953FF-6AFD-4C9A-AB21-3DD5029394D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{465B8349-4F3B-4215-94AF-49D07CDA3610}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{465B8349-4F3B-4215-94AF-49D07CDA3610}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{465B8349-4F3B-4215-94AF-49D07CDA3610}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{465B8349-4F3B-4215-94AF-49D07CDA3610}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{465B8349-4F3B-4215-94AF-49D07CDA3610}.Release|Any CPU.Build.0 = Release|Any CPU
+		{465B8349-4F3B-4215-94AF-49D07CDA3610}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -259,8 +259,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{0C7B8866-6BDA-488A-8CBE-CEC99A072621} = {BC28FC31-1E1B-4B23-80BB-32F24DA5BA3B}
 		{A6F24690-D085-4BF8-8611-56BB93DFD6C8} = {BC28FC31-1E1B-4B23-80BB-32F24DA5BA3B}
-		{2A8BB185-81AE-42D6-A4DA-C314AA2D46BB} = {BC28FC31-1E1B-4B23-80BB-32F24DA5BA3B}
-		{3D60279E-7520-4619-9CE5-746998AC0E38} = {BC28FC31-1E1B-4B23-80BB-32F24DA5BA3B}
+		{465B8349-4F3B-4215-94AF-49D07CDA3610} = {BC28FC31-1E1B-4B23-80BB-32F24DA5BA3B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {110169B3-3328-4730-8AB0-BA05BEF75C1A}
