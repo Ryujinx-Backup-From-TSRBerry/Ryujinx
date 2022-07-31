@@ -28,7 +28,7 @@ namespace Ryujinx.HLE.HOS
         {
             MemoryManagerMode mode = context.Device.Configuration.MemoryManagerMode;
 
-            if (true)
+            if (OperatingSystem.IsAndroid())
             {
                 ulong usableAddressSpaceSize = Math.Min(addressSpaceSize, MaxNativeAddressSpaceSize);
                 bool unsafeMode = mode == MemoryManagerMode.HostMappedUnsafe;
