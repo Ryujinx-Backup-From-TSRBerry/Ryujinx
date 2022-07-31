@@ -73,7 +73,9 @@ namespace Ryujinx.Ava
                     EnableMultiTouch = true,
                     EnableIme = true,
                     UseEGL = false,
-                    UseGpu = !UseVulkan,
+                    UseCompositor = false,
+                    UseDeferredRendering = true,
+                    UseGpu = true,
                     GlProfiles = new List<GlVersion>()
                     {
                         new GlVersion(GlProfileType.OpenGL, 4, 3)
@@ -81,13 +83,14 @@ namespace Ryujinx.Ava
                 })
                 .With(new Win32PlatformOptions
                 {
-                    EnableMultitouch = true,
-                    UseWgl = !UseVulkan,
+                    UseWgl = true,
                     WglProfiles = new List<GlVersion>()
                     {
                         new GlVersion(GlProfileType.OpenGL, 4, 3)
                     },
                     AllowEglInitialization = false,
+                    UseCompositor = false,
+                    UseDeferredRendering = true,
                     CompositionBackdropCornerRadius = 8f,
                 })
                 .UseSkia()
