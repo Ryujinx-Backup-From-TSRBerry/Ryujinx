@@ -45,7 +45,7 @@
     <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.4.2.1" />
     <PackageReference Include="Xamarin.AndroidX.DocumentFile" Version="1.0.1.14" />
     <PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModel" Version="2.4.1.2" />
-    <PackageReference Include="Avalonia.Android" Version="0.10.999-cibuild0021523-beta" />
+    <PackageReference Include="Avalonia.Android" Version="$(AvaloniaVersion)" />
   </ItemGroup>
   
   <ItemGroup>

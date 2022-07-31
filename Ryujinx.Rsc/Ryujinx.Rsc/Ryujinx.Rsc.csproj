@@ -22,12 +22,12 @@
     <ProjectReference Include="..\..\Ryujinx.Graphics.Gpu\Ryujinx.Graphics.Gpu.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.10.999-cibuild0021523-beta" />
+    <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.999-cibuild0021523-beta" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.999-cibuild0021523-beta" />
-    <PackageReference Include="Avalonia.Skia" Version="0.10.999-cibuild0021523-beta" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="0.10.999-cibuild0021523-beta" />
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Avalonia.Skia" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
     <PackageReference Include="OpenTK" Version="4.7.2" />
     <PackageReference Include="Silk.NET.Vulkan" Version="2.15.0" />
     <PackageReference Include="SPB" Version="0.0.4-build17" />
