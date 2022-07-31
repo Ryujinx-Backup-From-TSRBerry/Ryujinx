@@ -6,8 +6,8 @@ using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Ryujinx.Ava.Common.Locale;
 using Ryujinx.Ava.Input;
-using Ryujinx.Ava.Ui.Controls;
-using Ryujinx.Ava.Ui.Models;
+using Ryujinx.Ava.Common.Ui.Controls;
+using Ryujinx.Ava.Common.Ui.Models;
 using Ryujinx.Ava.Ui.Windows;
 using Ryujinx.Common;
 using Ryujinx.Common.Configuration;
@@ -29,6 +29,8 @@ using System.Text.Json;
 using ConfigGamepadInputId = Ryujinx.Common.Configuration.Hid.Controller.GamepadInputId;
 using ConfigStickInputId = Ryujinx.Common.Configuration.Hid.Controller.StickInputId;
 using Key = Ryujinx.Common.Configuration.Hid.Key;
+using Ryujinx.Ava.Common.Ui.ViewModels;
+using Ryujinx.Ava.Common;
 
 namespace Ryujinx.Ava.Ui.ViewModels
 {
@@ -234,7 +236,7 @@ namespace Ryujinx.Ava.Ui.ViewModels
         {
             _owner = owner;
 
-            if (Program.PreviewerDetached)
+            if (AppConfig.PreviewerDetached)
             {
                 _mainWindow =
                     (MainWindow)((IClassicDesktopStyleApplicationLifetime)Avalonia.Application.Current
@@ -853,7 +855,7 @@ namespace Ryujinx.Ava.Ui.ViewModels
             // NOTE: Do not modify InputConfig.Value directly as other code depends on the on-change event.
             ConfigurationState.Instance.Hid.InputConfig.Value = newConfig;
 
-            ConfigurationState.Instance.ToFileFormat().SaveConfig(Program.ConfigurationPath);
+            ConfigurationState.Instance.ToFileFormat().SaveConfig(AppConfig.ConfigurationPath);
         }
 
         public void NotifyChange(string property)

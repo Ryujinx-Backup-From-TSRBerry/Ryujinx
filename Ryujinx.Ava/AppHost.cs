@@ -12,9 +12,9 @@ using Ryujinx.Audio.Integration;
 using Ryujinx.Ava.Common;
 using Ryujinx.Ava.Common.Locale;
 using Ryujinx.Ava.Input;
-using Ryujinx.Ava.Ui.Controls;
-using Ryujinx.Ava.Ui.Models;
-using Ryujinx.Ava.Ui.Vulkan;
+using Ryujinx.Ava.Common.Ui.Controls;
+using Ryujinx.Ava.Common.Ui.Models;
+using Ryujinx.Ava.Common.Ui.Vulkan;
 using Ryujinx.Ava.Ui.Windows;
 using Ryujinx.Common;
 using Ryujinx.Common.Configuration;
@@ -432,7 +432,7 @@ namespace Ryujinx.Ava
                         if (result != UserResult.Yes)
                         {
                             Dispatcher.UIThread.Post(async () => await
-                                UserErrorDialog.ShowUserErrorDialog(userError, _parent));
+                                UserErrorDialog.ShowUserErrorDialog(userError));
                             Device.Dispose();
 
                             return false;
@@ -442,7 +442,7 @@ namespace Ryujinx.Ava
                     if (!SetupValidator.TryFixStartApplication(ContentManager, ApplicationPath, userError, out _))
                     {
                         Dispatcher.UIThread.Post(async () => await
-                            UserErrorDialog.ShowUserErrorDialog(userError, _parent));
+                            UserErrorDialog.ShowUserErrorDialog(userError));
                         Device.Dispose();
 
                         return false;
@@ -468,7 +468,7 @@ namespace Ryujinx.Ava
                 else
                 {
                     Dispatcher.UIThread.Post(async () => await
-                        UserErrorDialog.ShowUserErrorDialog(userError, _parent));
+                        UserErrorDialog.ShowUserErrorDialog(userError));
 
                     Device.Dispose();
 

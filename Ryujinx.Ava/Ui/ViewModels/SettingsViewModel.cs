@@ -7,10 +7,13 @@ using LibHac.Tools.FsSystem;
 using Ryujinx.Audio.Backends.OpenAL;
 using Ryujinx.Audio.Backends.SDL2;
 using Ryujinx.Audio.Backends.SoundIo;
+using Ryujinx.Ava.Common;
 using Ryujinx.Ava.Common.Locale;
+using Ryujinx.Ava.Common.Ui.Controls;
+using Ryujinx.Ava.Common.Ui.ViewModels;
+using Ryujinx.Ava.Common.Ui.Vulkan;
+using Ryujinx.Ava.Common.Ui.Windows;
 using Ryujinx.Ava.Input;
-using Ryujinx.Ava.Ui.Controls;
-using Ryujinx.Ava.Ui.Vulkan;
 using Ryujinx.Ava.Ui.Windows;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Configuration.Hid;
@@ -30,7 +33,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using TimeZone = Ryujinx.Ava.Ui.Models.TimeZone;
+using TimeZone = Ryujinx.Ava.Common.Ui.Models.TimeZone;
 
 namespace Ryujinx.Ava.Ui.ViewModels
 {
@@ -196,7 +199,7 @@ namespace Ryujinx.Ava.Ui.ViewModels
             _virtualFileSystem = virtualFileSystem;
             _contentManager = contentManager;
             _owner = owner;
-            if (Program.PreviewerDetached)
+            if (AppConfig.PreviewerDetached)
             {
                 LoadTimeZones();
                 AvaloniaKeyboardDriver = new AvaloniaKeyboardDriver(owner);
@@ -212,7 +215,7 @@ namespace Ryujinx.Ava.Ui.ViewModels
 
             CheckSoundBackends();
 
-            if (Program.PreviewerDetached)
+            if (AppConfig.PreviewerDetached)
             {
                 LoadAvailableGpus();
                 LoadCurrentConfiguration();
@@ -466,7 +469,7 @@ namespace Ryujinx.Ava.Ui.ViewModels
 
             config.Hid.Hotkeys.Value = KeyboardHotkeys;
 
-            config.ToFileFormat().SaveConfig(Program.ConfigurationPath);
+            config.ToFileFormat().SaveConfig(AppConfig.ConfigurationPath);
 
             MainWindow.UpdateGraphicsConfig();
 

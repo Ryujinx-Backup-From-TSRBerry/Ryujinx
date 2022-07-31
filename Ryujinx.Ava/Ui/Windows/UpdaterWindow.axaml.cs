@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Ryujinx.Ava.Common.Locale;
+using Ryujinx.Ava.Common.Ui.Windows;
 using Ryujinx.Modules;
 using System;
 using System.Diagnostics;

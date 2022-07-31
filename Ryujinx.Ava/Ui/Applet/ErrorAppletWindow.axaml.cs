@@ -1,10 +1,9 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Ryujinx.Ava.Common.Locale;
-using Ryujinx.Ava.Ui.Windows;
+using Ryujinx.Ava.Common.Ui.Windows;
 using System.Threading.Tasks;
 
 namespace Ryujinx.Ava.Ui.Applet

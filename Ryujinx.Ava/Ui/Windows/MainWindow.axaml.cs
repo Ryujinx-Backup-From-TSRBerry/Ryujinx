@@ -9,10 +9,10 @@ using Ryujinx.Ava.Common;
 using Ryujinx.Ava.Common.Locale;
 using Ryujinx.Ava.Input;
 using Ryujinx.Ava.Ui.Applet;
-using Ryujinx.Ava.Ui.Controls;
-using Ryujinx.Ava.Ui.Models;
+using Ryujinx.Ava.Common.Ui.Controls;
+using Ryujinx.Ava.Common.Ui.Models;
 using Ryujinx.Ava.Ui.ViewModels;
-using Ryujinx.Ava.Ui.Vulkan;
+using Ryujinx.Ava.Common.Ui.Vulkan;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Logging;
 using Ryujinx.Graphics.Gpu;
@@ -32,6 +32,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using InputManager = Ryujinx.Input.HLE.InputManager;
+using Ryujinx.Ava.Common.Ui.Windows;
 
 namespace Ryujinx.Ava.Ui.Windows
 {
@@ -91,10 +92,10 @@ namespace Ryujinx.Ava.Ui.Windows
 
             Title = $"Ryujinx {Program.Version}";
 
-            Height = Height / Program.WindowScaleFactor;
-            Width = Width / Program.WindowScaleFactor;
+            Height /= Program.WindowScaleFactor;
+            Width /= Program.WindowScaleFactor;
 
-            if (Program.PreviewerDetached)
+            if (AppConfig.PreviewerDetached)
             {
                 Initialize();
 
@@ -106,6 +107,14 @@ namespace Ryujinx.Ava.Ui.Windows
             }
 
             _rendererWaitEvent = new AutoResetEvent(false);
+
+            GameList.OnSearch += GameList_OnSearch;
+            GameGrid.OnSearch += GameList_OnSearch;
+        }
+
+        private void GameList_OnSearch(object sender, string e)
+        {
+            ViewModel.SearchText = e;
         }
 
         public void LoadGameList()
@@ -440,7 +449,7 @@ namespace Ryujinx.Ava.Ui.Windows
                 ShowKeyErrorOnLoad = false;
 
                 Dispatcher.UIThread.Post(async () => await
-                    UserErrorDialog.ShowUserErrorDialog(UserError.NoKeys, this));
+                    UserErrorDialog.ShowUserErrorDialog(UserError.NoKeys));
             }
 
             if (_deferLoad)
@@ -529,7 +538,7 @@ namespace Ryujinx.Ava.Ui.Windows
 
         public static void SaveConfig()
         {
-            ConfigurationState.Instance.ToFileFormat().SaveConfig(Program.ConfigurationPath);
+            ConfigurationState.Instance.ToFileFormat().SaveConfig(AppConfig.ConfigurationPath);
         }
 
         public void UpdateGameMetadata(string titleId)

@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:viewModels="clr-namespace:Ryujinx.Ava.Ui.ViewModels"
              xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
-             xmlns:locale="clr-namespace:Ryujinx.Ava.Common.Locale"
+             xmlns:locale="clr-namespace:Ryujinx.Ava.Common.Locale;assembly=Ryujinx.Ava.Common"
              mc:Ignorable="d"
              x:Class="Ryujinx.Ava.Ui.Windows.MotionSettingsWindow">
     <Grid Margin="10">

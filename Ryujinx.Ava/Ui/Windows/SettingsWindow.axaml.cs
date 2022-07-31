@@ -7,7 +7,8 @@ using Avalonia.Interactivity;
 using FluentAvalonia.Core;
 using FluentAvalonia.UI.Controls;
 using Ryujinx.Ava.Common.Locale;
-using Ryujinx.Ava.Ui.Controls;
+using Ryujinx.Ava.Common.Ui.Controls;
+using Ryujinx.Ava.Common.Ui.Windows;
 using Ryujinx.Ava.Ui.ViewModels;
 using Ryujinx.HLE.FileSystem;
 using Ryujinx.Input;
@@ -17,7 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using TimeZone = Ryujinx.Ava.Ui.Models.TimeZone;
+using TimeZone = Ryujinx.Ava.Common.Ui.Models.TimeZone;
 
 namespace Ryujinx.Ava.Ui.Windows
 {

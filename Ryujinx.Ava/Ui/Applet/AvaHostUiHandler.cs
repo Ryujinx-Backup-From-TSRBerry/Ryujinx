@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using FluentAvalonia.UI.Controls;
 using Ryujinx.Ava.Common.Locale;
+using Ryujinx.Ava.Common.Ui.Controls;
 using Ryujinx.Ava.Ui.Controls;
 using Ryujinx.Ava.Ui.Windows;
 using Ryujinx.HLE;
@@ -78,7 +79,7 @@ namespace Ryujinx.Ava.Ui.Applet
 
                            _parent.SettingsWindow = new SettingsWindow(_parent.VirtualFileSystem, _parent.ContentManager);
 
-                           await _parent.SettingsWindow.ShowDialog(window);
+                           await _parent.SettingsWindow.ShowDialog(window as Window);
 
                            opened = false;
                        });

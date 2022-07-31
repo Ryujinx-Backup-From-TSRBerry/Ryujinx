@@ -4,8 +4,8 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Ryujinx.Ava.Common.Locale;
-using Ryujinx.Ava.Ui.Controls;
-using Ryujinx.Ava.Ui.Models;
+using Ryujinx.Ava.Common.Ui.Controls;
+using Ryujinx.Ava.Common.Ui.Models;
 using Ryujinx.Ava.Ui.ViewModels;
 using Ryujinx.Common.Configuration.Hid.Controller;
 using Ryujinx.Input;
@@ -104,11 +104,11 @@ namespace Ryujinx.Ava.Ui.Windows
 
             var device = ViewModel.Devices[ViewModel.Device];
 
-            if (device.Type == Models.DeviceType.Keyboard)
+            if (device.Type == DeviceType.Keyboard)
             {
                 assigner = new KeyboardKeyAssigner((IKeyboard)ViewModel.SelectedGamepad);
             }
-            else if (device.Type == Models.DeviceType.Controller)
+            else if (device.Type == DeviceType.Controller)
             {
                 assigner = new GamepadButtonAssigner(ViewModel.SelectedGamepad, (ViewModel.Config as StandardControllerInputConfig).TriggerThreshold, forStick);
             }

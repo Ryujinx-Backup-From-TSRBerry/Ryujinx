@@ -4,8 +4,9 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using FluentAvalonia.Styling;
+using Ryujinx.Ava.Common;
 using Ryujinx.Ava.Common.Locale;
-using Ryujinx.Ava.Ui.Controls;
+using Ryujinx.Ava.Common.Ui.Controls;
 using Ryujinx.Ava.Ui.Windows;
 using Ryujinx.Common;
 using Ryujinx.Common.Logging;
@@ -32,7 +33,7 @@ namespace Ryujinx.Ava
 
             base.OnFrameworkInitializationCompleted();
 
-            if (Program.PreviewerDetached)
+            if (AppConfig.PreviewerDetached)
             {
                 ApplyConfiguredTheme();
 
@@ -87,7 +88,7 @@ namespace Ryujinx.Ava
                 string themePath = ConfigurationState.Instance.Ui.CustomThemePath;
                 bool enableCustomTheme = ConfigurationState.Instance.Ui.EnableCustomTheme;
 
-                const string BaseStyleUrl = "avares://Ryujinx.Ava/Assets/Styles/Base{0}.xaml";
+                const string BaseStyleUrl = "avares://Ryujinx.Ava.Common/Assets/Styles/Base{0}.xaml";
 
                 if (string.IsNullOrWhiteSpace(baseStyle))
                 {

@@ -10,8 +10,8 @@ using LibHac.Ns;
 using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
 using Ryujinx.Ava.Common.Locale;
-using Ryujinx.Ava.Ui.Controls;
-using Ryujinx.Ava.Ui.Models;
+using Ryujinx.Ava.Common.Ui.Controls;
+using Ryujinx.Ava.Common.Ui.Models;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Utilities;
 using Ryujinx.HLE.FileSystem;
@@ -24,6 +24,7 @@ using System.Linq;
 using System.Text;
 using Path = System.IO.Path;
 using SpanHelpers = LibHac.Common.SpanHelpers;
+using Ryujinx.Ava.Common.Ui.Windows;
 
 namespace Ryujinx.Ava.Ui.Windows
 {

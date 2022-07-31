@@ -1,0 +1,108 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\Fonts\SegoeFluentIcons.ttf" />
+    <None Remove="Assets\Locales\de_DE.json" />
+    <None Remove="Assets\Locales\el_GR.json" />
+    <None Remove="Assets\Locales\en_US.json" />
+    <None Remove="Assets\Locales\es_ES.json" />
+    <None Remove="Assets\Locales\fr_FR.json" />
+    <None Remove="Assets\Locales\it_IT.json" />
+    <None Remove="Assets\Locales\ko_KR.json" />
+    <None Remove="Assets\Locales\pt_BR.json" />
+    <None Remove="Assets\Locales\ru_RU.json" />
+    <None Remove="Assets\Locales\tr_TR.json" />
+    <None Remove="Assets\Locales\zh_CN.json" />
+    <None Remove="Assets\Locales\zh_TW.json" />
+    <None Remove="Assets\Styles\BaseDark.xaml" />
+    <None Remove="Assets\Styles\BaseLight.xaml" />
+    <None Remove="Assets\Styles\Styles.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\Fonts\SegoeFluentIcons.ttf" />
+    <AvaloniaResource Include="Assets\Styles\BaseDark.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </AvaloniaResource>
+    <AvaloniaResource Include="Assets\Styles\BaseLight.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </AvaloniaResource>
+    <AvaloniaResource Include="Assets\Styles\Styles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </AvaloniaResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Locales\de_DE.json" />
+    <EmbeddedResource Include="Assets\Locales\el_GR.json" />
+    <EmbeddedResource Include="Assets\Locales\en_US.json" />
+    <EmbeddedResource Include="Assets\Locales\es_ES.json" />
+    <EmbeddedResource Include="Assets\Locales\fr_FR.json" />
+    <EmbeddedResource Include="Assets\Locales\it_IT.json" />
+    <EmbeddedResource Include="Assets\Locales\ko_KR.json" />
+    <EmbeddedResource Include="Assets\Locales\pt_BR.json" />
+    <EmbeddedResource Include="Assets\Locales\ru_RU.json" />
+    <EmbeddedResource Include="Assets\Locales\tr_TR.json" />
+    <EmbeddedResource Include="Assets\Locales\zh_CN.json" />
+    <EmbeddedResource Include="Assets\Locales\zh_TW.json" />
+  </ItemGroup>
+    
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Avalonia.Controls.DataGrid" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Avalonia.Svg" Version="0.10.14" />
+    <PackageReference Include="Avalonia.Svg.Skia" Version="0.10.14" />
+    <PackageReference Include="FluentAvaloniaUI" Version="1.999.1" />
+    <PackageReference Include="DynamicData" Version="7.9.4" />
+    <PackageReference Include="SPB" Version="0.0.4-build17" />
+    <PackageReference Include="XamlNameReferenceGenerator" Version="1.3.4" />
+    <PackageReference Include="OpenTK.Graphics" Version="4.7.2" />
+  </ItemGroup>    
+    
+  <ItemGroup>
+    <ProjectReference Include="..\Ryujinx.Graphics.Vulkan\Ryujinx.Graphics.Vulkan.csproj" />
+    <ProjectReference Include="..\Ryujinx.Input\Ryujinx.Input.csproj" />
+    <ProjectReference Include="..\Ryujinx.Input.SDL2\Ryujinx.Input.SDL2.csproj" />
+    <ProjectReference Include="..\Ryujinx.Ui.Common\Ryujinx.Ui.Common.csproj" />
+    <ProjectReference Include="..\Ryujinx.Graphics.OpenGL\Ryujinx.Graphics.OpenGL.csproj" />
+  </ItemGroup>
+    
+  <ItemGroup>
+    <Compile Update="Ui\Controls\GameGridView.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Ui\Controls\GameListView.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Ui\Controls\InputDialog.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Ui\Controls\NavigationDialogHost.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Ui\Controls\ProfileImageSelectionDialog.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Ui\Controls\UpdateWaitWindow.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Ui\Controls\UserEditor.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Ui\Controls\UserSelector.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Ui\Windows\AvatarWindow.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>

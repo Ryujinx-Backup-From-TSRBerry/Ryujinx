@@ -88,6 +88,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Audio.Backends.Andr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Rsc.Mobile", "Ryujinx.Rsc\Ryujinx.Rsc.Mobile\Ryujinx.Rsc.Mobile.csproj", "{465B8349-4F3B-4215-94AF-49D07CDA3610}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ryujinx.Ava.Common", "Ryujinx.Ava.Common\Ryujinx.Ava.Common.csproj", "{75349ECE-4B47-4843-84A1-B6632132BED5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -252,6 +254,10 @@ Global
 		{465B8349-4F3B-4215-94AF-49D07CDA3610}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{465B8349-4F3B-4215-94AF-49D07CDA3610}.Release|Any CPU.Build.0 = Release|Any CPU
 		{465B8349-4F3B-4215-94AF-49D07CDA3610}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{75349ECE-4B47-4843-84A1-B6632132BED5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75349ECE-4B47-4843-84A1-B6632132BED5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75349ECE-4B47-4843-84A1-B6632132BED5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75349ECE-4B47-4843-84A1-B6632132BED5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

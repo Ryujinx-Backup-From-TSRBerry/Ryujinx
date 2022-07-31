@@ -3,7 +3,9 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
+using Ryujinx.Ava.Common;
 using Ryujinx.Ava.Common.Locale;
+using Ryujinx.Ava.Common.Ui.Windows;
 using Ryujinx.Common.Utilities;
 using Ryujinx.Ui.Common.Helper;
 using System.Net.Http;
@@ -16,7 +18,7 @@ namespace Ryujinx.Ava.Ui.Windows
     {
         public AboutWindow()
         {
-            if (Program.PreviewerDetached)
+            if (AppConfig.PreviewerDetached)
             {
                 Title = $"Ryujinx {Program.Version} - " + LocaleManager.Instance["MenuBarHelpAbout"];
             }

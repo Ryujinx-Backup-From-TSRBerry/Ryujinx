@@ -3,8 +3,9 @@ using Avalonia;
 using Avalonia.OpenGL;
 using Avalonia.Rendering;
 using Avalonia.Threading;
-using Ryujinx.Ava.Ui.Backend;
-using Ryujinx.Ava.Ui.Controls;
+using Ryujinx.Ava.Common;
+using Ryujinx.Ava.Common.Ui.Backend;
+using Ryujinx.Ava.Common.Ui.Controls;
 using Ryujinx.Ava.Ui.Windows;
 using Ryujinx.Common;
 using Ryujinx.Common.Configuration;
@@ -16,26 +17,20 @@ using Ryujinx.Graphics.Vulkan;
 using Ryujinx.Modules;
 using Ryujinx.Ui.Common;
 using Ryujinx.Ui.Common.Configuration;
-using Silk.NET.Vulkan.Extensions.EXT;
-using Silk.NET.Vulkan.Extensions.KHR;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using static Ryujinx.Ava.Common.AppConfig;
 
 namespace Ryujinx.Ava
 {
     internal class Program
     {
         public static double WindowScaleFactor { get; set; }
-        public static double ActualScaleFactor { get; set; }
         public static string Version { get; private set; }
-        public static string ConfigurationPath { get; private set; }
         public static string CommandLineProfile { get; set; }
-        public static bool PreviewerDetached { get; private set; }
-
-        public static RenderTimer RenderTimer { get; private set; }
         public static bool UseVulkan { get; private set; }
 
         [DllImport("user32.dll", SetLastError = true)]
@@ -57,11 +52,9 @@ namespace Ryujinx.Ava
 
             Initialize(args);
 
-            RenderTimer = new RenderTimer();
-
             BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
 
-            RenderTimer.Dispose();
+            Common.AppConfig.RenderTimer.Dispose();
         }
 
         public static AppBuilder BuildAvaloniaApp()
@@ -94,7 +87,7 @@ namespace Ryujinx.Ava
                     CompositionBackdropCornerRadius = 8f,
                 })
                 .UseSkia()
-                .With(new Ui.Vulkan.VulkanOptions()
+                .With(new Common.Ui.Vulkan.VulkanOptions()
                 {
                     ApplicationName = "Ryujinx.Graphics.Vulkan",
                     VulkanVersion = new Version(1, 2),
@@ -110,8 +103,8 @@ namespace Ryujinx.Ava
                 .AfterSetup(_ =>
                 {
                     AvaloniaLocator.CurrentMutable
-                        .Bind<IRenderTimer>().ToConstant(RenderTimer)
-                        .Bind<IRenderLoop>().ToConstant(new RenderLoop(RenderTimer, Dispatcher.UIThread));
+                        .Bind<IRenderTimer>().ToConstant(Common.AppConfig.RenderTimer)
+                        .Bind<IRenderLoop>().ToConstant(new RenderLoop(Common.AppConfig.RenderTimer, Dispatcher.UIThread));
                 })
                 .LogToTrace();
         }
@@ -192,7 +185,7 @@ namespace Ryujinx.Ava
             }
 
             WindowScaleFactor = ForceDpiAware.GetWindowScaleFactor();
-            ActualScaleFactor = ForceDpiAware.GetActualScaleFactor() / BaseDpi;
+            Common.AppConfig.ActualScaleFactor = ForceDpiAware.GetActualScaleFactor() / BaseDpi;
 
             // Logging system information.
             PrintSystemInfo();

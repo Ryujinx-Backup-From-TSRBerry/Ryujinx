@@ -12,8 +12,9 @@ using LibHac.Ncm;
 using Ryujinx.Ava.Common;
 using Ryujinx.Ava.Common.Locale;
 using Ryujinx.Ava.Input;
-using Ryujinx.Ava.Ui.Controls;
+using Ryujinx.Ava.Common.Ui.Controls;
 using Ryujinx.Ava.Ui.Windows;
+using Ryujinx.Ava.Common.Ui.ViewModels;
 using Ryujinx.Common;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Logging;
@@ -87,7 +88,7 @@ namespace Ryujinx.Ava.Ui.ViewModels
                 .Sort(GetComparer())
                 .Bind(out _appsObservableList).AsObservableList();
 
-            if (Program.PreviewerDetached)
+            if (AppConfig.PreviewerDetached)
             {
                 LoadConfigurableHotKeys();
 
@@ -486,11 +487,11 @@ namespace Ryujinx.Ava.Ui.ViewModels
             switch (SortMode)
             {
                 case ApplicationSort.LastPlayed:
-                    return new Models.Generic.LastPlayedSortComparer(IsAscending);
+                    return new Common.Ui.Models.Generic.LastPlayedSortComparer(IsAscending);
                 case ApplicationSort.FileSize:
-                    return new Models.Generic.FileSizeSortComparer(IsAscending);
+                    return new Common.Ui.Models.Generic.FileSizeSortComparer(IsAscending);
                 case ApplicationSort.TotalTimePlayed:
-                    return new Models.Generic.TimePlayedSortComparer(IsAscending);
+                    return new Common.Ui.Models.Generic.TimePlayedSortComparer(IsAscending);
                 case ApplicationSort.Title:
                     return IsAscending ? SortExpressionComparer<ApplicationData>.Ascending(app => app.TitleName) : SortExpressionComparer<ApplicationData>.Descending(app => app.TitleName);
                 case ApplicationSort.Favorite:
@@ -528,7 +529,7 @@ namespace Ryujinx.Ava.Ui.ViewModels
             {
                 ConfigurationState.Instance.Ui.StartFullscreen.Value = value;
 
-                ConfigurationState.Instance.ToFileFormat().SaveConfig(Program.ConfigurationPath);
+                ConfigurationState.Instance.ToFileFormat().SaveConfig(AppConfig.ConfigurationPath);
 
                 OnPropertyChanged();
             }
@@ -541,7 +542,7 @@ namespace Ryujinx.Ava.Ui.ViewModels
             {
                 ConfigurationState.Instance.Ui.ShowConsole.Value = value;
 
-                ConfigurationState.Instance.ToFileFormat().SaveConfig(Program.ConfigurationPath);
+                ConfigurationState.Instance.ToFileFormat().SaveConfig(AppConfig.ConfigurationPath);
 
                 OnPropertyChanged();
             }
@@ -574,7 +575,7 @@ namespace Ryujinx.Ava.Ui.ViewModels
                 OnPropertyChanged(nameof(IsGrid));
                 OnPropertyChanged(nameof(IsList));
 
-                ConfigurationState.Instance.ToFileFormat().SaveConfig(Program.ConfigurationPath);
+                ConfigurationState.Instance.ToFileFormat().SaveConfig(AppConfig.ConfigurationPath);
             }
         }
 
@@ -588,7 +589,7 @@ namespace Ryujinx.Ava.Ui.ViewModels
                 OnPropertyChanged(nameof(GridItemPadding));
                 OnPropertyChanged(nameof(GridSizeScale));
 
-                ConfigurationState.Instance.ToFileFormat().SaveConfig(Program.ConfigurationPath);
+                ConfigurationState.Instance.ToFileFormat().SaveConfig(AppConfig.ConfigurationPath);
             }
         }
 
@@ -602,7 +603,7 @@ namespace Ryujinx.Ava.Ui.ViewModels
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(SortName));
 
-                ConfigurationState.Instance.ToFileFormat().SaveConfig(Program.ConfigurationPath);
+                ConfigurationState.Instance.ToFileFormat().SaveConfig(AppConfig.ConfigurationPath);
             }
         }
 
@@ -654,7 +655,7 @@ namespace Ryujinx.Ava.Ui.ViewModels
                 OnPropertyChanged(nameof(SortMode));
                 OnPropertyChanged(nameof(SortName));
 
-                ConfigurationState.Instance.ToFileFormat().SaveConfig(Program.ConfigurationPath);
+                ConfigurationState.Instance.ToFileFormat().SaveConfig(AppConfig.ConfigurationPath);
             }
         }
 
@@ -710,7 +711,7 @@ namespace Ryujinx.Ava.Ui.ViewModels
                 OnPropertyChanged(nameof(ShowNames));
                 OnPropertyChanged(nameof(GridItemPadding));
 
-                ConfigurationState.Instance.ToFileFormat().SaveConfig(Program.ConfigurationPath);
+                ConfigurationState.Instance.ToFileFormat().SaveConfig(AppConfig.ConfigurationPath);
             }
         }
 
@@ -1498,7 +1499,7 @@ namespace Ryujinx.Ava.Ui.ViewModels
             {
                 Logger.Error?.Print(LogClass.Application, ex.ToString());
                 Dispatcher.UIThread.Post(async () => await
-                    UserErrorDialog.ShowUserErrorDialog(UserError.NoKeys, _owner));
+                    UserErrorDialog.ShowUserErrorDialog(UserError.NoKeys));
             }
             catch (Exception ex)
             {

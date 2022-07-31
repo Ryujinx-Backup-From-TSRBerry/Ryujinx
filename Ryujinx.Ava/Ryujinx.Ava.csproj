@@ -40,6 +40,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Ryujinx.Audio.Backends.SDL2\Ryujinx.Audio.Backends.SDL2.csproj" />
+    <ProjectReference Include="..\Ryujinx.Ava.Common\Ryujinx.Ava.Common.csproj" />
     <ProjectReference Include="..\Ryujinx.Graphics.Vulkan\Ryujinx.Graphics.Vulkan.csproj" />
     <ProjectReference Include="..\Ryujinx.Input\Ryujinx.Input.csproj" />
     <ProjectReference Include="..\Ryujinx.Input.SDL2\Ryujinx.Input.SDL2.csproj" />
@@ -68,14 +69,6 @@
     <AvaloniaResource Include="Ui\**\*.xaml">
       <SubType>Designer</SubType>
     </AvaloniaResource>
-    <AvaloniaResource Include="Assets\Fonts\SegoeFluentIcons.ttf" />
-    <AvaloniaResource Include="Assets\Styles\BaseLight.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </AvaloniaResource>
-    <AvaloniaResource Include="Assets\Styles\BaseDark.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </AvaloniaResource>
-    <AvaloniaResource Include="Assets\Styles\Styles.xaml" />
 
     <Compile Update="App.axaml.cs">
       <DependentUpon>App.axaml</DependentUpon>
@@ -97,50 +90,8 @@
       <DependentUpon>ProfileWindow.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Ui\Controls\InputDialog.axaml.cs">
-      <DependentUpon>InputDialog.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="Ui\Windows\ContentDialogOverlay.xaml.cs">
       <DependentUpon>ContentDialogOverlay.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Ui\Controls\GameListView.axaml.cs">
-      <DependentUpon>GameListView.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Assets\Locales\el_GR.json" />
-    <None Remove="Assets\Locales\en_US.json" />
-    <None Remove="Assets\Locales\es_ES.json" />
-    <None Remove="Assets\Locales\fr_FR.json" />
-    <None Remove="Assets\Locales\de_DE.json" />
-    <None Remove="Assets\Locales\it_IT.json" />
-    <None Remove="Assets\Locales\ko_KR.json" />
-    <None Remove="Assets\Locales\pt_BR.json" />
-    <None Remove="Assets\Locales\ru_RU.json" />
-    <None Remove="Assets\Locales\tr_TR.json" />
-    <None Remove="Assets\Locales\zh_CN.json" />
-    <None Remove="Assets\Locales\zh_TW.json" />
-    <None Remove="Assets\Styles\Styles.xaml" />
-    <None Remove="Assets\Styles\BaseDark.xaml" />
-    <None Remove="Assets\Styles\BaseLight.xaml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Assets\Locales\el_GR.json" />
-    <EmbeddedResource Include="Assets\Locales\en_US.json" />
-    <EmbeddedResource Include="Assets\Locales\es_ES.json" />
-    <EmbeddedResource Include="Assets\Locales\fr_FR.json" />
-    <EmbeddedResource Include="Assets\Locales\de_DE.json" />
-    <EmbeddedResource Include="Assets\Locales\it_IT.json" />
-    <EmbeddedResource Include="Assets\Locales\ko_KR.json" />
-    <EmbeddedResource Include="Assets\Locales\pt_BR.json" />
-    <EmbeddedResource Include="Assets\Locales\ru_RU.json" />
-    <EmbeddedResource Include="Assets\Locales\tr_TR.json" />
-    <EmbeddedResource Include="Assets\Locales\zh_CN.json" />
-    <EmbeddedResource Include="Assets\Locales\zh_TW.json" />
-    <EmbeddedResource Include="Assets\Styles\Styles.xaml" />
   </ItemGroup>
 </Project>
