@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Ryujinx.Rsc.ViewModels;
 using System;
-using TimeZone = Ryujinx.Rsc.Models.TimeZone;
+using TimeZone = Ryujinx.Ava.Common.Ui.Models.TimeZone;
 
 namespace Ryujinx.Rsc.Views.SettingPages
 {

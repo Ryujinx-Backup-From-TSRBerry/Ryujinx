@@ -17,6 +17,10 @@ using System.IO;
 using System.Threading;
 using Avalonia.Media;
 using Ryujinx.Rsc.Models;
+using Ryujinx.Ava.Common.Ui.Controls;
+using Ryujinx.Ava.Common.Input;
+using Ryujinx.Ava.Common.Ui.Models;
+using Ryujinx.Ava.Common;
 
 namespace Ryujinx.Rsc.Views
 {
@@ -48,7 +52,7 @@ namespace Ryujinx.Rsc.Views
         {
             base.OnAttachedToVisualTree(e);
 
-            if (ViewModel == null && App.PreviewerDetached)
+            if (ViewModel == null && AppConfig.PreviewerDetached)
             {
                 ViewModel = (MainViewModel) DataContext;
 
@@ -168,7 +172,7 @@ namespace Ryujinx.Rsc.Views
             AppHost.DisposeContext();
         }
 
-        private void AppHost_StatusUpdatedEvent(object sender, Models.StatusUpdatedEventArgs e)
+        private void AppHost_StatusUpdatedEvent(object sender, StatusUpdatedEventArgs e)
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {

@@ -9,9 +9,8 @@ using LibHac.Tools.FsSystem;
 using Ryujinx.Audio.Backends.Dummy;
 using Ryujinx.Audio.Integration;
 using Ryujinx.Ava.Common;
-using Ryujinx.Rsc.Vulkan;
+using Ryujinx.Ava.Common.Ui.Vulkan;
 using Ryujinx.Rsc.Controls;
-using Ryujinx.Rsc.Models;
 using Ryujinx.Common;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Logging;
@@ -26,7 +25,7 @@ using Ryujinx.HLE.HOS.Services.Account.Acc;
 using Ryujinx.HLE.HOS.SystemState;
 using Ryujinx.Input;
 using Ryujinx.Input.HLE;
-using Ryujinx.Rsc.Common.Locale;
+using Ryujinx.Ava.Common.Locale;
 using Ryujinx.Ui.Common.Configuration;
 using Ryujinx.Rsc.Views;
 using SixLabors.ImageSharp;
@@ -48,6 +47,9 @@ using WindowState = Avalonia.Controls.WindowState;
 using Ryujinx.Common.Configuration.Hid.Controller;
 using Ryujinx.Common.Configuration.Hid.Controller.Motion;
 using System.Runtime.InteropServices;
+using Ryujinx.Ava.Common.Ui.Models;
+using Ryujinx.Ava.Common.Ui.Controls;
+using Ryujinx.Ava.Common.Input;
 
 namespace Ryujinx.Rsc
 {
@@ -711,6 +713,7 @@ namespace Ryujinx.Rsc
             StatusUpdatedEvent?.Invoke(this, new StatusUpdatedEventArgs(
                 Device.EnableDeviceVsync,
                 Device.GetVolume(),
+                "Vulkan",
                 dockedMode,
                 ConfigurationState.Instance.Graphics.AspectRatio.Value.ToText(),
                 LocaleManager.Instance["Game"] + $": {Device.Statistics.GetGameFrameRate():00.00} FPS ({Device.Statistics.GetGameFrameTime():00.00} ms)",

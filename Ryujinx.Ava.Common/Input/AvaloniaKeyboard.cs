@@ -8,7 +8,7 @@ using System.Numerics;
 using ConfigKey = Ryujinx.Common.Configuration.Hid.Key;
 using Key = Ryujinx.Input.Key;
 
-namespace Ryujinx.Rsc
+namespace Ryujinx.Ava.Common.Input
 {
     public class AvaloniaKeyboard : IKeyboard
     {

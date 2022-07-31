@@ -17,6 +17,7 @@ using Ryujinx.Ui.Common.Configuration;
 using Ryujinx.Audio.Backends.Dummy;
 using Ryujinx.Audio.Backends.Android.AAudio;
 using Ryujinx.Audio.Backends.Android.Track;
+using Ryujinx.Ava.Common;
 
 namespace Ryujinx.Rsc.Mobile
 {
@@ -67,9 +68,9 @@ namespace Ryujinx.Rsc.Mobile
 
         private void Load()
         {
-            if (!App.PreviewerDetached)
+            if (!AppConfig.PreviewerDetached)
             {
-                App.PreviewerDetached = true;
+                AppConfig.PreviewerDetached = true;
 
                 var appPath = GetExternalFilesDir(null).AbsolutePath;
 

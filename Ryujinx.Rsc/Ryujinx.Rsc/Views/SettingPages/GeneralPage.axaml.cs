@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TimeZone = Ryujinx.Rsc.Models.TimeZone;
+using TimeZone = Ryujinx.Ava.Common.Ui.Models.TimeZone;
 
 namespace Ryujinx.Rsc.Views.SettingPages
 {

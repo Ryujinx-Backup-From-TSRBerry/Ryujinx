@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:viewModels="clr-namespace:Ryujinx.Rsc.ViewModels"
              xmlns:control="clr-namespace:Ryujinx.Rsc.Controls"
+             xmlns:controls="clr-namespace:Ryujinx.Ava.Common.Ui.Controls;assembly=Ryujinx.Ava.Common"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 Foreground="White"
              x:Class="Ryujinx.Rsc.Views.MainView">
@@ -38,7 +39,7 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <ContentControl x:Name="ViewFrame" Grid.ColumnSpan="2">
-                    <control:GameListView
+                    <controls:GameListView
                         x:Name="GameGrid"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch" />

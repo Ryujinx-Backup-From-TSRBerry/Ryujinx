@@ -5,7 +5,7 @@ using Avalonia.Svg.Skia;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Ryujinx.Ava.Common.Locale;
-using Ryujinx.Ava.Input;
+using Ryujinx.Ava.Common.Input;
 using Ryujinx.Ava.Common.Ui.Controls;
 using Ryujinx.Ava.Common.Ui.Models;
 using Ryujinx.Ava.Ui.Windows;

@@ -1,8 +1,6 @@
 ﻿using System;
 using Avalonia;
 using Ryujinx.Common.Configuration;
-using Ryujinx.Rsc.Backend;
-using Ryujinx.Rsc.Controls;
 using Ryujinx.Ui.Common.Configuration;
 using Silk.NET.Vulkan.Extensions.EXT;
 using Silk.NET.Vulkan.Extensions.KHR;
@@ -11,13 +9,13 @@ using System.IO;
 using Avalonia.Rendering;
 using Avalonia.Threading;
 using Ryujinx.Ui.Common.Helper;
-
+using Ryujinx.Ava.Common;
+using Ryujinx.Ava.Common.Ui.Backend;
 
 namespace Ryujinx.Rsc.Desktop
 {
     class Program
     {
-        public static RenderTimer RenderTimer { get; private set; }
 
         // Initialization code. Don't use any Avalonia, third-party APIs or any
         // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
@@ -25,16 +23,13 @@ namespace Ryujinx.Rsc.Desktop
         [STAThread]
         public static void Main(string[] args)
         {
-
-            RenderTimer = new RenderTimer();
-            App.RenderTimer = RenderTimer;
-            App.PreviewerDetached = true;
+            AppConfig.PreviewerDetached = true;
             App.BaseDirectory =  Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Ryujinx");
             App.FileSystemHelperFactory = () => new ExtendedFileSystemHelper();
             App.LoadConfiguration();
             BuildAvaloniaApp()
                 .StartWithClassicDesktopLifetime(args);
-            RenderTimer.Dispose();
+            AppConfig.RenderTimer.Dispose();
         }
 
         // Avalonia configuration, don't remove; also used by visual designer.
@@ -42,26 +37,13 @@ namespace Ryujinx.Rsc.Desktop
             => AppBuilder.Configure<App>()
                 .UsePlatformDetect()
                 .UseSkia()
-                .With(new Vulkan.VulkanOptions()
+                .With(new Ava.Common.Ui.Vulkan.VulkanOptions()
                 {
                     ApplicationName = "Ryujinx.Graphics.Vulkan",
                     VulkanVersion = new Version(1, 2),
-                    DeviceExtensions = new List<string>
-                    {
-                        ExtConditionalRendering.ExtensionName,
-                        ExtExtendedDynamicState.ExtensionName,
-                        KhrDrawIndirectCount.ExtensionName,
-                        "VK_EXT_custom_border_color",
-                        "VK_EXT_fragment_shader_interlock",
-                        "VK_EXT_index_type_uint8",
-                        "VK_EXT_robustness2",
-                        "VK_EXT_shader_subgroup_ballot",
-                        "VK_EXT_subgroup_size_control",
-                        "VK_NV_geometry_shader_passthrough"
-                    },
                     MaxQueueCount = 2,
                     PreferDiscreteGpu = true,
-                    UseDebug = !App.PreviewerDetached ? false : ConfigurationState.Instance.Logger.GraphicsDebugLevel.Value > GraphicsDebugLevel.None,
+                    UseDebug = !AppConfig.PreviewerDetached ? false : ConfigurationState.Instance.Logger.GraphicsDebugLevel.Value > GraphicsDebugLevel.None,
                 })
                 .With(new SkiaOptions()
                 {
@@ -70,8 +52,8 @@ namespace Ryujinx.Rsc.Desktop
                 .AfterSetup(_ =>
                 {
                     AvaloniaLocator.CurrentMutable
-                        .Bind<IRenderTimer>().ToConstant(RenderTimer)
-                        .Bind<IRenderLoop>().ToConstant(new RenderLoop(RenderTimer, Dispatcher.UIThread));
+                        .Bind<IRenderTimer>().ToConstant(AppConfig.RenderTimer)
+                        .Bind<IRenderLoop>().ToConstant(new RenderLoop(AppConfig.RenderTimer, Dispatcher.UIThread));
                 })
                 .LogToTrace();
     }

@@ -2,7 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Threading;
-using Ryujinx.Ava.Input;
+using Ryujinx.Ava.Common.Input;
 using Ryujinx.Ava.Common.Ui.Controls;
 using Ryujinx.Ava.Ui.Windows;
 using Ryujinx.HLE.Ui;

@@ -1,6 +1,7 @@
 using Avalonia.Collections;
 using LibHac.Tools.FsSystem;
 using ReactiveUI;
+using Ryujinx.Ava.Common;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.GraphicsDriver;
 using Ryujinx.HLE.FileSystem;
@@ -40,11 +41,11 @@ namespace Ryujinx.Rsc.ViewModels
 
         public SettingsViewModel()
         {
-            TimeZones = new AvaloniaList<Models.TimeZone>();
+            TimeZones = new AvaloniaList<Ryujinx.Ava.Common.Ui.Models.TimeZone>();
             _validTzRegions = new List<string>();
             GameDirectories = new AvaloniaList<string>();
 
-            if (App.PreviewerDetached)
+            if (AppConfig.PreviewerDetached)
             {
                 LoadCurrentConfiguration();
             }
@@ -60,11 +61,11 @@ namespace Ryujinx.Rsc.ViewModels
             _virtualFileSystem = virtualFileSystem;
             _contentManager = contentManager;
             _owner = owner;
-            TimeZones = new AvaloniaList<Models.TimeZone>();
+            TimeZones = new AvaloniaList<Ryujinx.Ava.Common.Ui.Models.TimeZone>();
             _validTzRegions = new List<string>();
             GameDirectories = new AvaloniaList<string>();
 
-            if (App.PreviewerDetached)
+            if (AppConfig.PreviewerDetached)
             {
                 LoadCurrentConfiguration();
             }
@@ -202,7 +203,7 @@ namespace Ryujinx.Rsc.ViewModels
 
         public DateTimeOffset DateOffset { get; set; }
         public TimeSpan TimeOffset { get; set; }
-        public AvaloniaList<Models.TimeZone> TimeZones { get; set; }
+        public AvaloniaList<Ava.Common.Ui.Models.TimeZone> TimeZones { get; set; }
 
         public bool ShowToolbar
         {
@@ -228,7 +229,7 @@ namespace Ryujinx.Rsc.ViewModels
 
                 string abbr2 = abbr.StartsWith('+') || abbr.StartsWith('-') ? string.Empty : abbr;
 
-                TimeZones.Add(new Models.TimeZone($"UTC{hours:+0#;-0#;+00}:{minutes:D2}", location, abbr2));
+                TimeZones.Add(new Ava.Common.Ui.Models.TimeZone($"UTC{hours:+0#;-0#;+00}:{minutes:D2}", location, abbr2));
 
                 _validTzRegions.Add(location);
             }
@@ -358,7 +359,7 @@ namespace Ryujinx.Rsc.ViewModels
             config.Graphics.ResScaleCustom.Value = CustomResolutionScale;
             config.System.AudioVolume.Value = Volume / 100;
 
-            config.ToFileFormat().SaveConfig(App.ConfigurationPath);
+            config.ToFileFormat().SaveConfig(AppConfig.ConfigurationPath);
 
             _previousVolumeLevel = Volume;
 

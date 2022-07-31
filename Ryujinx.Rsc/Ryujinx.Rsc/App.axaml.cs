@@ -12,16 +12,16 @@ using Ryujinx.Rsc.Controls;
 using Ryujinx.Audio.Integration;
 using Ryujinx.Audio.Backends.Dummy;
 using Ryujinx.Ui.Common.Helper;
+using static Ryujinx.Ava.Common.AppConfig;
+using Ryujinx.Ava.Common;
+using Ryujinx.Common;
 
 namespace Ryujinx.Rsc
 {
     public partial class App : Application
     {
         private static Orientation _requestedOrientation;
-
-        public static bool PreviewerDetached { get; set; }
         public static string BaseDirectory { get; set; }
-        public static RenderTimer RenderTimer { get; set; }
 
         public static Func<AudioBackend, IHardwareDeviceDriver> CreateAudioHardwareDeviceDriver { get; set; }
 
@@ -98,8 +98,6 @@ namespace Ryujinx.Rsc
             }
         }
 
-        public static string ConfigurationPath { get; set; }
-
         public static Func<IFileSystemHelper> FileSystemHelperFactory{ get; set; }
 
         public override void OnFrameworkInitializationCompleted()
@@ -120,6 +118,19 @@ namespace Ryujinx.Rsc
             }
 
             base.OnFrameworkInitializationCompleted();
+
+            if (AppConfig.PreviewerDetached)
+            {
+                ApplyConfiguredTheme(this);
+
+                ConfigurationState.Instance.Ui.BaseStyle.Event += ThemeChanged_Event;
+                ConfigurationState.Instance.Ui.CustomThemePath.Event += ThemeChanged_Event;
+            }
+        }
+
+        private void ThemeChanged_Event(object sender, ReactiveEventArgs<string> e)
+        {
+            ApplyConfiguredTheme(this);
         }
     }
 }

@@ -33,6 +33,11 @@ namespace Ryujinx.Ava.Common.Ui.Vulkan
         {
             _options = AvaloniaLocator.Current.GetService<VulkanOptions>() ?? new VulkanOptions();
 
+            if (OperatingSystem.IsAndroid())
+            {
+                Silk.NET.Core.Loader.SearchPathContainer.Platform = Silk.NET.Core.Loader.UnderlyingPlatform.Android;
+            }
+
             var instance = VulkanInstance.Create(_options);
 
             return new VulkanPlatformInterface(instance);

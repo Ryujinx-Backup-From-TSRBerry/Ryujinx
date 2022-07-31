@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using AvaKey = Avalonia.Input.Key;
 
-namespace Ryujinx.Rsc
+namespace Ryujinx.Ava.Common.Input
 {
     public static class AvaloniaMappingHelper
     {

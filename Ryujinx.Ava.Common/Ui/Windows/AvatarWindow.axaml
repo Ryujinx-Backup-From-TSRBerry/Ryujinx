@@ -7,7 +7,7 @@
         x:Class="Ryujinx.Ava.Common.Ui.Windows.AvatarWindow"
 		Margin="0"
 		Padding="0"
-        xmlns:Locale="clr-namespace:Ryujinx.Ava.Common.Locale"
+        xmlns:locale="clr-namespace:Ryujinx.Ava.Common.Locale"
         xmlns:viewModels="clr-namespace:Ryujinx.Ava.Common.Ui.ViewModels"
         xmlns:controls="clr-namespace:Ryujinx.Ava.Common.Ui.Controls"
         x:CompileBindings="True"
@@ -42,9 +42,9 @@
         <ProgressBar Grid.Row="2" IsIndeterminate="{Binding IsIndeterminate}" Value="{Binding ImagesLoaded}" HorizontalAlignment="Stretch" Margin="5"
                      Maximum="{Binding ImageCount}" Minimum="0" />
         <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="10" Margin="10" HorizontalAlignment="Center">
-            <Button Content="{Locale:Locale AvatarChoose}" Width="200" Name="ChooseButton" Click="ChooseButton_OnClick" />
+            <Button Content="{locale:Locale AvatarChoose}" Width="200" Name="ChooseButton" Click="ChooseButton_OnClick" />
             <ui:ColorPickerButton Color="{Binding BackgroundColor, Mode=TwoWay}" Name="ColorButton" />
-            <Button HorizontalAlignment="Right" Content="{Locale:Locale Discard}" Click="CloseButton_OnClick"
+            <Button HorizontalAlignment="Right" Content="{locale:Locale Discard}" Click="CloseButton_OnClick"
                     Name="CloseButton"
                     Width="200" />
         </StackPanel>

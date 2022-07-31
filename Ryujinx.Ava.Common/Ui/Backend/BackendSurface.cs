@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Platform;
 using System;
 using System.Runtime.InteropServices;
 using static Ryujinx.Ava.Common.Ui.Backend.Interop;
@@ -18,11 +19,11 @@ namespace Ryujinx.Ava.Common.Ui.Backend
         public static extern int XCloseDisplay(IntPtr display);
 
         private PixelSize _currentSize;
-        public IntPtr Handle { get; protected set; }
+        public IPlatformNativeSurfaceHandle Handle { get; protected set; }
 
         public bool IsDisposed { get; private set; }
 
-        public BackendSurface(IntPtr handle)
+        public BackendSurface(IPlatformNativeSurfaceHandle handle)
         {
             Handle = handle;
 
@@ -36,23 +37,7 @@ namespace Ryujinx.Ava.Common.Ui.Backend
         {
             get
             {
-                PixelSize size = new PixelSize();
-                if (OperatingSystem.IsWindows())
-                {
-                    GetClientRect(Handle, out var rect);
-                    size = new PixelSize(rect.right, rect.bottom);
-                }
-                else if (OperatingSystem.IsLinux())
-                {
-                    XWindowAttributes attributes = new XWindowAttributes();
-                    XGetWindowAttributes(Display, Handle, ref attributes);
-
-                    size = new PixelSize(attributes.width, attributes.height);
-                }
-
-                _currentSize = size;
-
-                return size;
+                return Handle.Size;
             }
         }
 

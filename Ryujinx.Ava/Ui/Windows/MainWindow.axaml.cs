@@ -7,7 +7,7 @@ using Avalonia.Threading;
 using FluentAvalonia.UI.Controls;
 using Ryujinx.Ava.Common;
 using Ryujinx.Ava.Common.Locale;
-using Ryujinx.Ava.Input;
+using Ryujinx.Ava.Common.Input;
 using Ryujinx.Ava.Ui.Applet;
 using Ryujinx.Ava.Common.Ui.Controls;
 using Ryujinx.Ava.Common.Ui.Models;

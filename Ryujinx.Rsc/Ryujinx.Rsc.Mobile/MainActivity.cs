@@ -3,7 +3,6 @@ using Android.Content.PM;
 using Avalonia.Android;
 using Avalonia;
 using Ryujinx.Common.Configuration;
-using Ryujinx.Rsc.Backend;
 using Ryujinx.Rsc.Controls;
 using Silk.NET.Vulkan.Extensions.EXT;
 using Silk.NET.Vulkan.Extensions.KHR;
@@ -19,13 +18,14 @@ using Android.Runtime;
 using Android.Content;
 using Android.OS;
 using Ryujinx.Rsc.Mobile.Helper;
+using Ryujinx.Ava.Common.Ui.Backend;
+using Ryujinx.Ava.Common;
 
 namespace Ryujinx.Rsc.Mobile
 {
     [Activity(Label = "Ryujinx.Rsc.Mobile", Theme = "@style/MyTheme.NoActionBar", Icon = "@drawable/ryujinx", WindowSoftInputMode=SoftInput.AdjustResize, LaunchMode = LaunchMode.SingleInstance, ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize)]
     public class MainActivity : AvaloniaActivity<App>
     {
-        public RenderTimer RenderTimer { get; private set; }
         public event EventHandler<FileSystemResultEventArgs> FileSystemResult;
         private AndroidFileSystemHelper _fileSystemHelper;
 
@@ -42,27 +42,11 @@ namespace Ryujinx.Rsc.Mobile
         {
             App.OrientationRequested += App_GameStateChanged;
 
-            RenderTimer = new RenderTimer();
-            App.RenderTimer = RenderTimer;
-
             builder.UseSkia()
-                .With(new Vulkan.VulkanOptions()
+                .With(new Ava.Common.Ui.Vulkan.VulkanOptions()
                 {
                     ApplicationName = "Ryujinx.Graphics.Vulkan",
                     VulkanVersion = new Version(1, 2),
-                    DeviceExtensions = new List<string>
-                    {
-                        ExtConditionalRendering.ExtensionName,
-                        ExtExtendedDynamicState.ExtensionName,
-                        KhrDrawIndirectCount.ExtensionName,
-                        "VK_EXT_custom_border_color",
-                        "VK_EXT_fragment_shader_interlock",
-                        "VK_EXT_index_type_uint8",
-                        "VK_EXT_robustness2",
-                        "VK_EXT_shader_subgroup_ballot",
-                        "VK_EXT_subgroup_size_control",
-                        "VK_NV_geometry_shader_passthrough"
-                    },
                     MaxQueueCount = 2,
                     PreferDiscreteGpu = true,
                     UseDebug = ConfigurationState.Instance.Logger.GraphicsDebugLevel.Value > GraphicsDebugLevel.None,
@@ -78,8 +62,8 @@ namespace Ryujinx.Rsc.Mobile
                 .AfterSetup(_ =>
                 {
                     AvaloniaLocator.CurrentMutable
-                        .Bind<IRenderTimer>().ToConstant(RenderTimer)
-                        .Bind<IRenderLoop>().ToConstant(new RenderLoop(RenderTimer, Dispatcher.UIThread));
+                        .Bind<IRenderTimer>().ToConstant(AppConfig.RenderTimer)
+                        .Bind<IRenderLoop>().ToConstant(new RenderLoop(AppConfig.RenderTimer, Dispatcher.UIThread));
                 });
                 
             return base.CustomizeAppBuilder(builder);
@@ -128,7 +112,7 @@ namespace Ryujinx.Rsc.Mobile
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            RenderTimer.Dispose();
+            AppConfig.RenderTimer.Dispose();
             _fileSystemHelper.Dispose();
         }
     }

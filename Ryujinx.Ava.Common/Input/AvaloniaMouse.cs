@@ -4,7 +4,7 @@ using System;
 using System.Drawing;
 using System.Numerics;
 
-namespace Ryujinx.Rsc
+namespace Ryujinx.Ava.Common.Input
 {
     public class AvaloniaMouse : IMouse
     {

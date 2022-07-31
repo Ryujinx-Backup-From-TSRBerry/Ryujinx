@@ -3,7 +3,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
-namespace Ryujinx.Rsc.Common.Helper
+namespace Ryujinx.Ava.Common.Helper
 {
     public static class ConsoleHelper
     {

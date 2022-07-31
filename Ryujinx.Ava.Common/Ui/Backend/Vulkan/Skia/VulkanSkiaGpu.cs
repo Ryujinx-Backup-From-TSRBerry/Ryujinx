@@ -86,18 +86,9 @@ namespace Ryujinx.Ava.Common.Ui.Backend.Vulkan
             {
                 VulkanWindowSurface window;
 
-                if (surface is IPlatformHandle handle)
+                if (surface is IPlatformNativeSurfaceHandle handle)
                 {
-                    window = new VulkanWindowSurface(handle.Handle);
-                }
-                else if (surface is X11FramebufferSurface x11FramebufferSurface)
-                {
-                    // As of Avalonia 0.10.13, an IPlatformHandle isn't passed for linux, so use reflection to otherwise get the window id
-                    var xId = (IntPtr)x11FramebufferSurface.GetType().GetField(
-                        "_xid",
-                        System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(x11FramebufferSurface);
-
-                    window = new VulkanWindowSurface(xId);
+                    window = new VulkanWindowSurface(handle);
                 }
                 else
                 {

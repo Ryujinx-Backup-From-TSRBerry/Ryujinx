@@ -13,7 +13,7 @@ using Ryujinx.Ava.Common.Ui.Controls;
 using Ryujinx.Ava.Common.Ui.ViewModels;
 using Ryujinx.Ava.Common.Ui.Vulkan;
 using Ryujinx.Ava.Common.Ui.Windows;
-using Ryujinx.Ava.Input;
+using Ryujinx.Ava.Common.Input;
 using Ryujinx.Ava.Ui.Windows;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Configuration.Hid;

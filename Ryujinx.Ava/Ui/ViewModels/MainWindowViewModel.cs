@@ -11,7 +11,7 @@ using LibHac.FsSystem;
 using LibHac.Ncm;
 using Ryujinx.Ava.Common;
 using Ryujinx.Ava.Common.Locale;
-using Ryujinx.Ava.Input;
+using Ryujinx.Ava.Common.Input;
 using Ryujinx.Ava.Common.Ui.Controls;
 using Ryujinx.Ava.Ui.Windows;
 using Ryujinx.Ava.Common.Ui.ViewModels;

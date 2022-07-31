@@ -11,7 +11,7 @@ using Ryujinx.Audio.Backends.SoundIo;
 using Ryujinx.Audio.Integration;
 using Ryujinx.Ava.Common;
 using Ryujinx.Ava.Common.Locale;
-using Ryujinx.Ava.Input;
+using Ryujinx.Ava.Common.Input;
 using Ryujinx.Ava.Common.Ui.Controls;
 using Ryujinx.Ava.Common.Ui.Models;
 using Ryujinx.Ava.Common.Ui.Vulkan;

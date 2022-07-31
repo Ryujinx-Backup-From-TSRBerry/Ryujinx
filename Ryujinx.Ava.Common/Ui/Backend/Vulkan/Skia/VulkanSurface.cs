@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Platform;
 using Ryujinx.Ava.Common.Ui.Vulkan;
 using Ryujinx.Ava.Common.Ui.Vulkan.Surfaces;
 using Silk.NET.Vulkan;
@@ -9,11 +10,11 @@ namespace Ryujinx.Ava.Common.Ui.Backend.Vulkan
 {
     internal class VulkanWindowSurface : BackendSurface, IVulkanPlatformSurface
     {
-        public float Scaling => (float)AppConfig.ActualScaleFactor;
+        public float Scaling => (float)Handle.Scaling;
 
         public PixelSize SurfaceSize => Size;
 
-        public VulkanWindowSurface(IntPtr handle) : base(handle)
+        public VulkanWindowSurface(IPlatformNativeSurfaceHandle handle) : base(handle)
         {
         }
 
@@ -23,7 +24,7 @@ namespace Ryujinx.Ava.Common.Ui.Backend.Vulkan
             {
                 if (instance.Api.TryGetInstanceExtension(new Instance(instance.Handle), out KhrWin32Surface surfaceExtension))
                 {
-                    var createInfo = new Win32SurfaceCreateInfoKHR() { Hinstance = 0, Hwnd = Handle, SType = StructureType.Win32SurfaceCreateInfoKhr };
+                    var createInfo = new Win32SurfaceCreateInfoKHR() { Hinstance = 0, Hwnd = Handle.Handle, SType = StructureType.Win32SurfaceCreateInfoKhr };
 
                     surfaceExtension.CreateWin32Surface(new Instance(instance.Handle), createInfo, null, out var surface).ThrowOnError();
 
@@ -38,10 +39,25 @@ namespace Ryujinx.Ava.Common.Ui.Backend.Vulkan
                     {
                         SType = StructureType.XlibSurfaceCreateInfoKhr,
                         Dpy = (nint*)Display,
-                        Window = Handle
+                        Window = Handle.Handle
                     };
 
                     surfaceExtension.CreateXlibSurface(new Instance(instance.Handle), createInfo, null, out var surface).ThrowOnError();
+
+                    return surface;
+                }
+            }
+            else if (OperatingSystem.IsAndroid())
+            {
+                if (instance.Api.TryGetInstanceExtension(new Instance(instance.Handle), out KhrAndroidSurface surfaceExtension))
+                {
+                    var createInfo = new AndroidSurfaceCreateInfoKHR()
+                    {
+                        SType = StructureType.XlibSurfaceCreateInfoKhr,
+                        Window = (nint*)Handle.Handle
+                    };
+
+                    surfaceExtension.CreateAndroidSurface(new Instance(instance.Handle), createInfo, null, out var surface).ThrowOnError();
 
                     return surface;
                 }

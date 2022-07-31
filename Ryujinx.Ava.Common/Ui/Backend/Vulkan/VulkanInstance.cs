@@ -36,6 +36,10 @@ namespace Ryujinx.Ava.Common.Ui.Vulkan
                 {
                     yield return "VK_KHR_win32_surface";
                 }
+                else if (OperatingSystem.IsAndroid())
+                {
+                    yield return "VK_KHR_android_surface";
+                }
             }
         }
 

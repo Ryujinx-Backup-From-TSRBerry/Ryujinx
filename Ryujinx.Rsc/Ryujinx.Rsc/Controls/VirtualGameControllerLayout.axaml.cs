@@ -4,6 +4,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
+using Ryujinx.Ava.Common;
 using Ryujinx.Common.Logging;
 using Ryujinx.Input;
 using System;
@@ -16,7 +17,7 @@ namespace Ryujinx.Rsc.Controls
 {
     public partial class VirtualGameControllerLayout : UserControl
     {
-        private static string MapPath => Path.Combine(new FileInfo(App.ConfigurationPath).Directory.FullName,
+        private static string MapPath => Path.Combine(new FileInfo(AppConfig.ConfigurationPath).Directory.FullName,
         "virtualpad.json");
         public AvaloniaVirtualControllerDriver Controller => AvaloniaVirtualControllerDriver.Instance;
         public bool IsEditMode { get; set; }
