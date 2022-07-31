@@ -42,8 +42,6 @@ namespace Ryujinx.Rsc.ViewModels
                 .Bind(out _appsObservableList).AsObservableList();
 
             _vsyncColor = new SolidColorBrush(Colors.White);
-
-            ConfigurationState.Instance.Ui.GridSize.Value = 1;
         }
 
         public ObservableCollection<ApplicationData> Applications

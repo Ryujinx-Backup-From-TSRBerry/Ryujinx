@@ -4,8 +4,10 @@ using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Threading;
+using FluentAvalonia.UI.Controls;
 using Ryujinx.Input;
 using System;
+using PathIcon = Avalonia.Controls.PathIcon;
 
 namespace Ryujinx.Rsc.Controls
 {
@@ -62,22 +64,22 @@ namespace Ryujinx.Rsc.Controls
                 switch (gamepadButtonInputId)
                 {
                     case GamepadButtonInputId.DpadUp:
-                        FaceLabel = new PathIcon() {Data = Resources["chevron_up_regular"] as StreamGeometry};
+                        FaceLabel = new SymbolIcon() {Symbol = Symbol.ChevronUp};
                         break;
                     case GamepadButtonInputId.DpadDown:
-                        FaceLabel = new PathIcon() {Data = Resources["chevron_down_regular"] as StreamGeometry};
+                        FaceLabel = new SymbolIcon() {Symbol = Symbol.ChevronDown};
                         break;
                     case GamepadButtonInputId.DpadLeft:
-                        FaceLabel = new PathIcon() {Data = Resources["chevron_left_regular"] as StreamGeometry};
+                        FaceLabel = new SymbolIcon() {Symbol = Symbol.ChevronLeft};
                         break;
                     case GamepadButtonInputId.DpadRight:
-                        FaceLabel = new PathIcon() {Data = Resources["chevron_right_regular"] as StreamGeometry};
+                        FaceLabel = new SymbolIcon() {Symbol = Symbol.ChevronRight};
                         break;
                     case GamepadButtonInputId.Minus:
-                        FaceLabel = new PathIcon() {Data = Resources["remove_regular"] as StreamGeometry};
+                        FaceLabel = new SymbolIcon() {Symbol = Symbol.Remove};
                         break;
                     case GamepadButtonInputId.Plus:
-                        FaceLabel = new PathIcon() {Data = Resources["add_regular"] as StreamGeometry};
+                        FaceLabel = new SymbolIcon() {Symbol = Symbol.Add};
                         break;
                     default:
                         FaceLabel = gamepadButtonInputId.ToString();
