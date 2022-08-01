@@ -96,7 +96,7 @@ namespace Ryujinx.Cpu.Nce
             MemoryAllocationFlags asFlags = MemoryAllocationFlags.Reserve | MemoryAllocationFlags.ViewCompatible;
 
             _addressSpace = new MemoryBlock(usableAddressSpaceSize, asFlags);
-            _addressSpaceMirror = new MemoryBlock(usableAddressSpaceSize, asFlags | MemoryAllocationFlags.ForceWindows4KBViewMapping);
+            _addressSpaceMirror = new MemoryBlock(usableAddressSpaceSize, asFlags);
 
             Tracking = new MemoryTracking(this, PageSize, invalidAccessHandler);
             _memoryEh = new MemoryEhMeilleure(asSize, Tracking);

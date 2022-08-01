@@ -91,7 +91,7 @@
             HorizontalAlignment="Center"
             Orientation="Horizontal"
             Spacing="10">
-            <Button Command="{Binding AddUser}" Content="{Locale:Locale UserProfilesAddNewProfile}" />
+            <Button Command="{Binding AddUser}" Content="{locale:Locale UserProfilesAddNewProfile}" />
             <Button
                 Command="{Binding EditUser}"
                 Content="{locale:Locale UserProfilesEditProfile}"
