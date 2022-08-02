@@ -8,10 +8,10 @@
     <StackPanel HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 Orientation="Vertical">
-        <TextBlock FontWeight="Bold" FontSize="18" Margin="10" Text="{locale:Locale SettingsTabSystemCore}" />
+        <TextBlock FontWeight="Bold" FontSize="16" Margin="10" Text="{locale:Locale SettingsTabSystemCore}" />
         <Border HorizontalAlignment="Stretch"
                 Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+            <Grid Background="Transparent" Height="40" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
@@ -20,7 +20,7 @@
                            HorizontalAlignment="Left"
                            Text="{locale:Locale SettingsTabSystemSystemRegion}"
                            Width="230" />
-                <ComboBox Grid.Column="1" VerticalAlignment="Stretch" SelectedIndex="{Binding Region}"
+                <ComboBox Grid.Column="1" VerticalAlignment="Center" SelectedIndex="{Binding Region}"
                           Width="200"
                           HorizontalContentAlignment="Right">
                     <ComboBoxItem>
@@ -47,19 +47,18 @@
                 </ComboBox>
             </Grid>
         </Border>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}" />
         <Border HorizontalAlignment="Stretch"
                 Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+            <Grid Background="Transparent" Height="40" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock VerticalAlignment="Center"
                            HorizontalAlignment="Left"
-                           Text="{locale:Locale SettingsTabSystemSystemLanguage}"
-                           Width="230" />
-                <ComboBox Grid.Column="1" VerticalAlignment="Stretch" SelectedIndex="{Binding Language}"
+                           Text="{locale:Locale SettingsTabSystemSystemLanguage}" />
+                <ComboBox Grid.Column="1" VerticalAlignment="Center" SelectedIndex="{Binding Language}"
                           Width="200"
                           HorizontalContentAlignment="Right">
                     <ComboBoxItem>
@@ -126,9 +125,10 @@
                 </ComboBox>
             </Grid>
         </Border>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}" />
         <Border HorizontalAlignment="Stretch"
                 Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+            <Grid Background="Transparent" Height="40" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
@@ -139,7 +139,7 @@
                            Width="230" />
                 <AutoCompleteBox Grid.Column="1"
                                  Name="TimeZoneBox"
-                                 Width="350"
+                                 Width="300"
                                  FilterMode="Contains"
                                  Items="{Binding TimeZones}"
                                  SelectionChanged="TimeZoneBox_OnSelectionChanged"
@@ -149,9 +149,10 @@
                                  ToolTip.Tip="{locale:Locale TimezoneTooltip}" />
             </Grid>
         </Border>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}" />
         <Border HorizontalAlignment="Stretch"
                 Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent"  HorizontalAlignment="Stretch">
+            <Grid Background="Transparent" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
@@ -160,22 +161,22 @@
                            HorizontalAlignment="Left"
                            Text="{locale:Locale SettingsTabSystemSystemTime}"
                            Width="230" />
-                <StackPanel Grid.Column="1" Orientation="Vertical" Spacing="10">
+                <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Right" Spacing="10">
                     <DatePicker Grid.Column="1" VerticalAlignment="Center" SelectedDate="{Binding DateOffset}"
-                                ToolTip.Tip="{locale:Locale TimeTooltip}"
-                                Width="350" />
+                                ToolTip.Tip="{locale:Locale TimeTooltip}" />
                     <TimePicker
                         VerticalAlignment="Center"
                         ClockIdentifier="24HourClock"
-                        SelectedTime="{Binding TimeOffset}"
-                        Width="350"
+                        HorizontalAlignment="Right"
+                        SelectedTime="{Binding TimeOffset}" 
                         ToolTip.Tip="{locale:Locale TimeTooltip}" />
                 </StackPanel>
             </Grid>
         </Border>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}" />
         <Border HorizontalAlignment="Stretch"
                 Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+            <Grid Background="Transparent" Height="40" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
@@ -184,12 +185,13 @@
                            HorizontalAlignment="Left"
                            Text="{locale:Locale SettingsTabSystemEnableVsync}"
                            Width="230" />
-                <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableVsync}"  OffContent="" Content="" OnContent=""/>
+                <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableVsync}" OffContent="" Content="" OnContent="" />
             </Grid>
         </Border>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}" />
         <Border HorizontalAlignment="Stretch"
                 Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+            <Grid Background="Transparent" Height="40" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
@@ -198,37 +200,42 @@
                            HorizontalAlignment="Left"
                            Text="{locale:Locale SettingsTabSystemEnableFsIntegrityChecks}"
                            Width="230" />
-                <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableFsIntegrityChecks}"  OffContent="" Content="" OnContent=""/>
+                <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableFsIntegrityChecks}" OffContent="" Content=""
+                              OnContent="" />
             </Grid>
         </Border>
-		<Border HorizontalAlignment="Stretch"
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}" />
+        <Border HorizontalAlignment="Stretch"
                 Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-			<Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition />
-					<ColumnDefinition Width="Auto" />
-				</Grid.ColumnDefinitions>
-				<TextBlock VerticalAlignment="Center"
+            <Grid Background="Transparent" Height="40" HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock VerticalAlignment="Center"
                            HorizontalAlignment="Left"
                            Text="{locale:Locale SettingsTabSystemEnablePptc}"
                            Width="230" />
-				<ToggleSwitch Grid.Column="1" IsChecked="{Binding EnablePptc}"  OffContent="" Content="" OnContent=""/>
-			</Grid>
-		</Border>
-		<Border HorizontalAlignment="Stretch"
+                <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnablePptc}" OffContent="" Content="" OnContent="" />
+            </Grid>
+        </Border>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}" />
+        <Border HorizontalAlignment="Stretch"
                 Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-			<Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition />
-					<ColumnDefinition Width="Auto" />
-				</Grid.ColumnDefinitions>
-				<TextBlock VerticalAlignment="Center"
+            <Grid Background="Transparent" Height="40" HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock VerticalAlignment="Center"
                            HorizontalAlignment="Left"
                            Text="Prefer Native Code Execution"
                            Width="230" />
-				<ToggleSwitch Grid.Column="1" IsChecked="{Binding PreferNativeCodeExecution}"  OffContent="" Content="" OnContent=""/>
-			</Grid>
-		</Border>
+                <ToggleSwitch Grid.Column="1" IsChecked="{Binding PreferNativeCodeExecution}" OffContent="" Content=""
+                              OnContent="" />
+            </Grid>
+        </Border>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}" />
         <Border HorizontalAlignment="Stretch"
                 Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
             <Grid Background="Transparent" HorizontalAlignment="Stretch">
@@ -242,7 +249,7 @@
                            Width="230" />
                 <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Right">
                     <NumericUpDown Value="{Binding Volume}"
-								   HorizontalAlignment="Right"
+                                   HorizontalAlignment="Right"
                                    ToolTip.Tip="{locale:Locale AudioVolumeTooltip}"
                                    Width="150"
                                    Increment="1"
@@ -265,12 +272,12 @@
         </Border>
         <Separator Height="1" Margin="0,5" />
         <StackPanel Margin="10" Orientation="Horizontal">
-            <TextBlock  FontSize="18" FontWeight="Bold" Text="{locale:Locale SettingsTabSystemHacks}" />
+            <TextBlock FontSize="16" FontWeight="Bold" Text="{locale:Locale SettingsTabSystemHacks}" />
             <TextBlock VerticalAlignment="Center" Text="{locale:Locale SettingsTabSystemHacksNote}" />
         </StackPanel>
         <Border HorizontalAlignment="Stretch"
                 Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+            <Grid Background="Transparent" Height="40" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
@@ -279,11 +286,14 @@
                            HorizontalAlignment="Left"
                            Text="{locale:Locale SettingsTabSystemExpandDramSize}"
                            Width="230" />
-                <ToggleSwitch Grid.Column="1" IsChecked="{Binding ExpandDramSize}"  OffContent="" Content="" OnContent=""/>
+                <ToggleSwitch Grid.Column="1" IsChecked="{Binding ExpandDramSize}" OffContent="" Content=""
+                              OnContent="" />
             </Grid>
-        </Border><Border HorizontalAlignment="Stretch"
-                         Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+        </Border>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}" />
+        <Border HorizontalAlignment="Stretch"
+                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
+            <Grid Background="Transparent" Height="40" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
@@ -292,8 +302,10 @@
                            HorizontalAlignment="Left"
                            Text="{locale:Locale SettingsTabSystemIgnoreMissingServices}"
                            Width="230" />
-                <ToggleSwitch Grid.Column="1" IsChecked="{Binding IgnoreMissingServices}"  OffContent="" Content="" OnContent=""/>
+                <ToggleSwitch Grid.Column="1" IsChecked="{Binding IgnoreMissingServices}" OffContent="" Content=""
+                              OnContent="" />
             </Grid>
         </Border>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}" />
     </StackPanel>
 </UserControl>

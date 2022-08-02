@@ -12,50 +12,45 @@
     <StackPanel HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 Orientation="Vertical">
-		<Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" ClipToBounds="True">
-			<Button Command="{Binding MoveToPage}" Background="Transparent" Height="38" HorizontalAlignment="Stretch" CornerRadius="5">
-				<Button.CommandParameter>
-					<models:SettingPages>General</models:SettingPages>
-				</Button.CommandParameter>
-				<Label VerticalAlignment="Center" Padding="0" Content="General" FontSize="16"/>
-			</Button>
-		</Border>
-        <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" ClipToBounds="True">
-            <Button Command="{Binding MoveToPage}" Background="Transparent" Height="38" HorizontalAlignment="Stretch" CornerRadius="5">
-                <Button.CommandParameter>
-                    <models:SettingPages>Graphics</models:SettingPages>
-                </Button.CommandParameter>
-                <Label VerticalAlignment="Center" Padding="0" Content="Graphics" FontSize="16"/>
-            </Button>
-        </Border>
-        <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" ClipToBounds="True">
-            <Button Command="{Binding MoveToPage}" Background="Transparent" Height="38" HorizontalAlignment="Stretch" CornerRadius="5">
-                <Button.CommandParameter>
-                    <models:SettingPages>System</models:SettingPages>
-                </Button.CommandParameter>
-                <Label VerticalAlignment="Center" Content="System" FontSize="16"  Padding="0" />
-            </Button>
-        </Border>
-        <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" ClipToBounds="True">
-            <Button Command="{Binding MoveToPage}" Background="Transparent" Height="38" HorizontalAlignment="Stretch" CornerRadius="5">
-                <Button.CommandParameter>
-                    <models:SettingPages>Log</models:SettingPages>
-                </Button.CommandParameter>
-                <Label VerticalAlignment="Center" Content="Logging" FontSize="16"  Padding="1" />
-            </Button>
-        </Border>
-        <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" ClipToBounds="True">
-            <Button Command="{Binding MoveToPage}" Background="Transparent" Height="38" HorizontalAlignment="Stretch" CornerRadius="5">
-                <Button.CommandParameter>
-                    <models:SettingPages>Input</models:SettingPages>
-                </Button.CommandParameter>
-                <Label VerticalAlignment="Center" Content="Input" FontSize="16"  Padding="0" />
-            </Button>
-        </Border>
+        <Button BorderBrush="Transparent" Command="{Binding MoveToPage}" HorizontalContentAlignment="Left"
+                Background="Transparent" Height="38" HorizontalAlignment="Stretch" CornerRadius="5">
+            <Button.CommandParameter>
+                <models:SettingPages>General</models:SettingPages>
+            </Button.CommandParameter>
+            <Label VerticalAlignment="Center" Padding="0" Content="General" FontSize="16" />
+        </Button>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
+        <Button BorderBrush="Transparent" Command="{Binding MoveToPage}" HorizontalContentAlignment="Left"
+                Background="Transparent" Height="38" HorizontalAlignment="Stretch" CornerRadius="5">
+            <Button.CommandParameter>
+                <models:SettingPages>Graphics</models:SettingPages>
+            </Button.CommandParameter>
+            <Label VerticalAlignment="Center" Padding="0" Content="Graphics" FontSize="16" />
+        </Button>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
+        <Button BorderBrush="Transparent" Command="{Binding MoveToPage}" HorizontalContentAlignment="Left"
+                Background="Transparent" Height="38" HorizontalAlignment="Stretch" CornerRadius="5">
+            <Button.CommandParameter>
+                <models:SettingPages>System</models:SettingPages>
+            </Button.CommandParameter>
+            <Label VerticalAlignment="Center" Content="System" FontSize="16" Padding="0" />
+        </Button>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
+        <Button BorderBrush="Transparent" Command="{Binding MoveToPage}" HorizontalContentAlignment="Left"
+                Background="Transparent" Height="38" HorizontalAlignment="Stretch" CornerRadius="5">
+            <Button.CommandParameter>
+                <models:SettingPages>Log</models:SettingPages>
+            </Button.CommandParameter>
+            <Label VerticalAlignment="Center" Content="Logging" FontSize="16" Padding="1" />
+        </Button>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
+        <Button BorderBrush="Transparent" Command="{Binding MoveToPage}" HorizontalContentAlignment="Left"
+                Background="Transparent" Height="38" HorizontalAlignment="Stretch" CornerRadius="5">
+            <Button.CommandParameter>
+                <models:SettingPages>Input</models:SettingPages>
+            </Button.CommandParameter>
+            <Label VerticalAlignment="Center" Content="Input" FontSize="16" Padding="0" />
+        </Button>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
     </StackPanel>
 </UserControl>

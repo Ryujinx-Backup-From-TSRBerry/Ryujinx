@@ -26,10 +26,9 @@ namespace Ryujinx.Rsc.Views
 {
     public partial class MainView : UserControl
     {
-        private Control _mainViewContent;
         private ManualResetEvent _rendererWaitEvent;
         private bool _isClosing;
-        private UserChannelPersistence _userChannelPersistence;
+        public UserChannelPersistence ChannelPersistence { get; private set; }
         public ApplicationLibrary ApplicationLibrary { get; set; }
 
         public VirtualFileSystem VirtualFileSystem { get; private set; }
@@ -39,13 +38,10 @@ namespace Ryujinx.Rsc.Views
         public LibHacHorizonManager LibHacHorizonManager { get; private set; }
         public MainViewModel ViewModel { get; set; }
 
-        public SettingsView SettingsView { get; private set; }
-
         public MainView()
         {
             InitializeComponent();
             _rendererWaitEvent = new ManualResetEvent(false);
-            SettingsView = new SettingsView();
         }
 
         protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -57,26 +53,39 @@ namespace Ryujinx.Rsc.Views
                 ViewModel = (MainViewModel) DataContext;
 
                 Initialize();
-                
-                SettingsView = new SettingsView(VirtualFileSystem, ContentManager, this);
 
                 LoadControls();
 
                 ViewModel.Owner = this;
                 ViewModel.Initialize();
             }
+            
+            Navigate(typeof(HomePage), ViewModel);
+        }
+
+        public void Navigate(Type sourcePageType, object parameter)
+        {
+            ViewFrame.Navigate(sourcePageType, parameter);
+        }
+
+        public void GoBack(object parameter = null)
+        {
+            if (ViewFrame.BackStack.Count > 0)
+            {
+                ViewFrame.GoBack();
+            }
         }
 
         private void LoadControls()
         {
-            GameGrid.ApplicationOpened += Application_Opened;
+            //GameGrid.ApplicationOpened += Application_Opened;
 
-            GameGrid.DataContext = ViewModel;
+            //GameGrid.DataContext = ViewModel;
         }
 
         private void Initialize()
         {
-            _userChannelPersistence = new UserChannelPersistence();
+            ChannelPersistence = new UserChannelPersistence();
             VirtualFileSystem = VirtualFileSystem.CreateInstance();
             LibHacHorizonManager = new LibHacHorizonManager();
             ContentManager = new ContentManager(VirtualFileSystem);
@@ -105,6 +114,8 @@ namespace Ryujinx.Rsc.Views
             };
         }
 
+        public InputManager InputManager { get; set; }
+
         private void Application_Opened(object sender, ApplicationOpenedEventArgs e)
         {
             if (e.Application != null)
@@ -121,119 +132,8 @@ namespace Ryujinx.Rsc.Views
         public async void LoadApplication(string path, bool startFullscreen = false, string titleName = "")
 #pragma warning restore CS1998
         {
-            if (AppHost != null)
-            {
-                return;
-            }
-
-#if RELEASE
-            //await PerformanceCheck();
-#endif
-
-            Logger.RestartTime();
-
-            Scaling = VisualRoot.RenderScaling;
-
-            _mainViewContent = ContentFrame.Content as Control;
-
-            VkRenderer = new VulkanRendererControl(ConfigurationState.Instance.Logger.GraphicsDebugLevel);
-            AppHost = new AppHost(VkRenderer, InputManager, path, VirtualFileSystem, ContentManager, AccountManager, _userChannelPersistence, this);
-
-            if (!AppHost.LoadGuestApplication().Result)
-            {
-                AppHost.DisposeContext();
-
-                return;
-            }
-
-            ViewModel.TitleName = string.IsNullOrWhiteSpace(titleName) ? AppHost.Device.Application.TitleName : titleName;
-
-            SwitchToGameControl();
-
-            Thread gameThread = new Thread(InitializeGame)
-            {
-                Name = "GUI.WindowThread"
-            };
-            gameThread.Start();
-        }
-
-        private void InitializeGame()
-        {
-            VkRenderer.RendererInitialized += Renderer_Created;
-            AppHost.AppExit += AppHost_AppExit;
-            AppHost.StatusUpdatedEvent += AppHost_StatusUpdatedEvent;
-
-            _rendererWaitEvent.WaitOne();
             
-            Dispatcher.UIThread.Post(ControllerLayout.Reload);
-
-            AppHost?.Start();
-
-            AppHost.DisposeContext();
         }
-
-        private void AppHost_StatusUpdatedEvent(object sender, StatusUpdatedEventArgs e)
-        {
-            Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                if (e.VSyncEnabled)
-                {
-                    ViewModel.VsyncColor = new SolidColorBrush(Color.Parse("#ff2eeac9"));
-                }
-                else
-                {
-                    ViewModel.VsyncColor = new SolidColorBrush(Color.Parse("#ffff4554"));
-                }
-
-                ViewModel.GameStatusText = e.GameStatus;
-                ViewModel.FifoStatusText = e.FifoStatus;
-                ViewModel.GpuStatusText = e.GpuName;
-            });
-        }
-
-        private void AppHost_AppExit(object sender, EventArgs e)
-        {
-            if (_isClosing)
-            {
-                return;
-            }
-
-            ViewModel.IsGameRunning = false;
-
-            ViewModel.ShowOverlay = false;
-            AppHost.StatusUpdatedEvent -= AppHost_StatusUpdatedEvent;
-            AppHost.AppExit -= AppHost_AppExit;
-
-            Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                if (ContentFrame.Content != _mainViewContent)
-                {
-                    ContentFrame.Content = _mainViewContent;
-                }
-
-                ViewModel.EnableVirtualController = false;
-                AppHost = null;
-                App.RequestedOrientation = Orientation.Normal;
-            });
-
-            VkRenderer.RendererInitialized -= Renderer_Created;
-            VkRenderer = null;
-
-            Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                ViewModel.Title = $"Ryujinx Test";
-            });
-        }
-
-        private void Renderer_Created(object sender, EventArgs e)
-        {
-            _rendererWaitEvent.Set();
-        }
-
-        public VulkanRendererControl VkRenderer { get; set; }
-        public InputManager InputManager { get; private set; }
-
-        public AppHost AppHost { get; set; }
 
         public static void UpdateGraphicsConfig()
         {
@@ -246,28 +146,13 @@ namespace Ryujinx.Rsc.Views
             GraphicsConfig.EnableShaderCache = ConfigurationState.Instance.Graphics.EnableShaderCache;
         }
 
-        public void SwitchToGameControl(bool enableVirtualController = false)
-        {
-            Dispatcher.UIThread.Post(() =>
-            {
-                ViewModel.EnableVirtualController = enableVirtualController;
-                ContentFrame.Content = VkRenderer;
-            });
-        }
-
         public static double Scaling { get; set; }
 
         private void GameListTab_OnClick(object? sender, RoutedEventArgs e)
         {
             ViewModel.CurrentView = View.GameList;
 
-            ViewFrame.Content = GameGrid;
-        }
-
-        private void SettingsTab_OnClick(object? sender, RoutedEventArgs e)
-        {
-            ViewModel.CurrentView = View.Settings;
-            ViewFrame.Content = SettingsView;
+            //ViewFrame.Content = GameGrid;
         }
     }
 }

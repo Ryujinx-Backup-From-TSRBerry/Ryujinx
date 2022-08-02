@@ -2,7 +2,10 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using FluentAvalonia.UI.Controls;
+using FluentAvalonia.UI.Navigation;
 using ReactiveUI;
+using Ryujinx.Ava.Common;
 using Ryujinx.HLE.FileSystem;
 using Ryujinx.Rsc.Models;
 using Ryujinx.Rsc.ViewModels;
@@ -14,26 +17,40 @@ namespace Ryujinx.Rsc.Views
     public partial class SettingsView : UserControl
     {
         public Stack<UserControl> Pages { get; }
-        public SettingsViewModel Viewmodel { get; set; }
+        public SettingsViewModel ViewModel { get; set; }
         
-        public MainView Owner { get; }
-
-        public SettingsView(VirtualFileSystem fileSystem, ContentManager contentManager, MainView owner)
-        {
-            Pages = new Stack<UserControl>();
-            Viewmodel = new SettingsViewModel(fileSystem, contentManager ,this);
-            DataContext = Viewmodel;
-            InitializeComponent();
-            Pages.Push(new SettingsHome(Viewmodel));
-            Owner = owner;
-        }
+        public MainView Owner { get; private set; }
 
         public SettingsView()
         {
             Pages = new Stack<UserControl>();
-            Viewmodel = new SettingsViewModel();
-            DataContext = Viewmodel;
+            ViewModel = new SettingsViewModel();
+            DataContext = ViewModel;
             InitializeComponent();
+
+            if (AppConfig.PreviewerDetached)
+            {
+                AddHandler(Frame.NavigatedToEvent, (s, e) =>
+                {
+                    NavigatedTo(e);
+                }, RoutingStrategies.Direct);
+            }
+        }
+
+        private void NavigatedTo(NavigationEventArgs arg)
+        {
+            if (AppConfig.PreviewerDetached)
+            {
+                if (arg.NavigationMode == NavigationMode.New)
+                {
+                    Owner = (MainView)arg.Parameter;
+                    ViewModel = new SettingsViewModel(Owner.VirtualFileSystem, Owner.ContentManager, this);
+                }
+
+                DataContext = ViewModel;
+                
+                ViewModel.NotifyPageChanged();
+            }
         }
 
         protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -41,14 +58,14 @@ namespace Ryujinx.Rsc.Views
             base.OnAttachedToVisualTree(e);
             if (Pages.Count > 0)
             {
-                Frame.Content = Pages.Peek();
+                ContentFrame.Content = Pages.Peek();
             }
             else
             {
                 NavigateToPage(new SettingsHome());
             }
             
-            Viewmodel.NotifyPageChanged();
+            ViewModel.NotifyPageChanged();
         }
 
         public void NavigateToPage(UserControl page)
@@ -56,10 +73,10 @@ namespace Ryujinx.Rsc.Views
             if (page != null)
             {
                 Pages.Push(page);
-                Frame.Content = page;
+                ContentFrame.Content = page;
             }
             
-            Viewmodel.NotifyPageChanged();
+            ViewModel.NotifyPageChanged();
         }
 
         public void MoveBack()
@@ -71,10 +88,10 @@ namespace Ryujinx.Rsc.Views
                     Pages.Pop();
                 }
 
-                Frame.Content = Pages.Peek();
+                ContentFrame.Content = Pages.Peek();
             }
             
-            Viewmodel.NotifyPageChanged();
+            ViewModel.NotifyPageChanged();
         }
 
         private void BackButton_OnClick(object sender, RoutedEventArgs e)
@@ -84,7 +101,12 @@ namespace Ryujinx.Rsc.Views
 
         private void SaveButton_OnClick(object sender, RoutedEventArgs e)
         {
-            Viewmodel.SaveSettings();
+            ViewModel.SaveSettings();
+        }
+
+        private void HomeButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Owner.GoBack();
         }
     }
 }

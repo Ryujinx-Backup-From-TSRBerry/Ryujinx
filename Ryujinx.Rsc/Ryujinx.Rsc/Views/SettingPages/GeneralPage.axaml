@@ -8,7 +8,7 @@
     <StackPanel HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 Orientation="Vertical">
-        <TextBlock FontWeight="Bold" FontSize="18" Margin="10" Text="{locale:Locale SettingsTabGeneralGeneral}" />
+        <TextBlock FontWeight="Bold" FontSize="16" Margin="10" Text="{locale:Locale SettingsTabGeneralGeneral}" />
 		<TextBlock FontWeight="Bold" FontSize="16" Margin="10" Text="{locale:Locale SettingsTabGeneralGameDirectories}" />
 		<Border HorizontalAlignment="Stretch"
                 Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">

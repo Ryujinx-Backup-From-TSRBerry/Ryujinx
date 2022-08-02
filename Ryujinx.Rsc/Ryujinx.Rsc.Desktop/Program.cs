@@ -36,6 +36,17 @@ namespace Ryujinx.Rsc.Desktop
         public static AppBuilder BuildAvaloniaApp()
             => AppBuilder.Configure<App>()
                 .UsePlatformDetect()
+                .With(new X11PlatformOptions
+                {
+                    EnableMultiTouch = true,
+                    EnableIme = true,
+                    UseDBusFilePicker = false,
+                    UseCompositor = false
+                })
+                .With(new Win32PlatformOptions()
+                {
+                    UseCompositor = false
+                })
                 .UseSkia()
                 .With(new Ava.Common.Ui.Vulkan.VulkanOptions()
                 {

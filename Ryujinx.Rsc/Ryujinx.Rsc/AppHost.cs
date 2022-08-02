@@ -106,7 +106,7 @@ namespace Ryujinx.Rsc
         public bool ScreenshotRequested { get; set; }
 
         private object _lockObject = new();
-        private readonly MainView _parent;
+        private readonly GamePage _parent;
 
         public AppHost(
             RendererControl renderer,
@@ -116,7 +116,7 @@ namespace Ryujinx.Rsc
             ContentManager contentManager,
             AccountManager accountManager,
             UserChannelPersistence userChannelPersistence,
-            MainView parent)
+            GamePage parent)
         {
             _parent = parent;
             _inputManager = inputManager;
@@ -139,7 +139,7 @@ namespace Ryujinx.Rsc
 
             if (ApplicationPath.StartsWith("@SystemContent"))
             {
-                ApplicationPath = _parent.VirtualFileSystem.SwitchPathToSystemPath(ApplicationPath);
+                ApplicationPath = _parent.ViewModel.Owner.VirtualFileSystem.SwitchPathToSystemPath(ApplicationPath);
 
                 _isFirmwareTitle = true;
             }
@@ -537,7 +537,7 @@ namespace Ryujinx.Rsc
                 return false;
             }
 
-            _parent.ApplicationLibrary.LoadAndSaveMetaData(Device.Application.TitleIdText, appMetadata =>
+            _parent.ViewModel.Owner.ApplicationLibrary.LoadAndSaveMetaData(Device.Application.TitleIdText, appMetadata =>
             {
                 appMetadata.LastPlayed = DateTime.UtcNow.ToString();
             });
@@ -591,7 +591,7 @@ namespace Ryujinx.Rsc
             bool preferNce = ConfigurationState.Instance.System.PreferNativeExecution && RuntimeInformation.ProcessArchitecture == Architecture.Arm64;
 
             HLE.HLEConfiguration configuration = new HLE.HLEConfiguration(VirtualFileSystem,
-                                                                          _parent.LibHacHorizonManager,
+                                                                          _parent.ViewModel.Owner.LibHacHorizonManager,
                                                                           ContentManager,
                                                                           _accountManager,
                                                                           _userChannelPersistence,
@@ -684,7 +684,6 @@ namespace Ryujinx.Rsc
                             _renderingStarted = true;
                             App.RequestedOrientation = Orientation.Landscape;
                             _parent.ViewModel.ShowOverlay = true;
-                            _parent.SwitchToGameControl(true);
                         }
 
                         Device.PresentFrame(Present);

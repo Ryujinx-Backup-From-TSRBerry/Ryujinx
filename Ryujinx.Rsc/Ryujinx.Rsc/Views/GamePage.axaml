@@ -1,0 +1,119 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:viewModels="clr-namespace:Ryujinx.Rsc.ViewModels"
+             xmlns:control="clr-namespace:Ryujinx.Rsc.Controls"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             xmlns:controls="clr-namespace:Ryujinx.Ava.Common.Ui.Controls;assembly=Ryujinx.Ava.Common"
+             x:Class="Ryujinx.Rsc.Views.GamePage">
+    <UserControl.Resources>
+        <Color x:Key="OverlayBackgroundColor">#98414141</Color>
+    </UserControl.Resources>
+    <Grid>
+        <ContentControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                        Name="ContentFrame"/>
+        <control:VirtualGameControllerLayout Name="ControllerLayout" HorizontalAlignment="Stretch"
+                                             VerticalAlignment="Stretch"
+                                             IsVisible="{Binding EnableVirtualController}" />
+        <Border MinWidth="150" Background="{DynamicResource OverlayBackgroundColor}" IsVisible="{Binding ShowOverlay}"
+                CornerRadius="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Label Foreground="{Binding VsyncColor}" Content="VSync" />
+                <Label Grid.Row="1" Content="{Binding GameStatusText}" />
+                <Label Grid.Row="2" Content="{Binding FifoStatusText}" />
+                <Label Grid.Row="3" Content="{Binding GpuStatusText}" />
+            </Grid>
+        </Border>
+        <Button VerticalAlignment="Bottom" HorizontalAlignment="Center" Padding="5" CornerRadius="15" Opacity="0.5"
+                Background="{DynamicResource OverlayBackgroundColor}" Margin="5" IsVisible="{Binding IsGameRunning}">
+            <Button.Flyout>
+                <Flyout Placement="Top">
+                    <Border Background="{DynamicResource OverlayBackgroundColor}" Padding="0" CornerRadius="10">
+                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Button Padding="5" CornerRadius="15" HorizontalAlignment="Center"
+                                        Background="Transparent" Margin="5"
+                                        Command="{Binding ToggleVirtualController}">
+                                    <ui:SymbolIcon FontSize="20" Symbol="Games" Foreground="White"
+                                                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                                </Button>
+                                <Button Padding="5" CornerRadius="15" HorizontalAlignment="Center"
+                                        Background="Transparent" Margin="5"
+                                        Command="{Binding ToggleVSync}">
+                                    VSync
+                                </Button>
+                                <Button Padding="5" CornerRadius="15" HorizontalAlignment="Center"
+                                        Background="Transparent" Margin="5"
+                                        IsVisible="{Binding IsPaused}"
+                                        Command="{Binding Resume}">
+                                    <ui:SymbolIcon FontSize="20" Symbol="Play" HorizontalAlignment="Stretch"
+                                                   VerticalAlignment="Stretch"
+                                                   Height="20" Width="20" />
+                                </Button>
+                                <Button Padding="5" CornerRadius="15" HorizontalAlignment="Center"
+                                        Background="Transparent" Margin="5"
+                                        IsVisible="{Binding !IsPaused}"
+                                        Command="{Binding Pause}">
+                                    <ui:SymbolIcon FontSize="20" Symbol="Pause" HorizontalAlignment="Stretch"
+                                                   VerticalAlignment="Stretch"
+                                                   Height="20" Width="20" />
+                                </Button>
+                                <Button Padding="5" CornerRadius="15" HorizontalAlignment="Center"
+                                        Background="Transparent" Margin="5"
+                                        Command="{Binding Stop}">
+                                    <ui:SymbolIcon FontSize="20" Symbol="Stop" HorizontalAlignment="Stretch"
+                                                   VerticalAlignment="Stretch"
+                                                   Height="20" Width="20" />
+                                </Button>
+                            </StackPanel>
+                            <Grid Grid.Row="1" HorizontalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Column="0" Command="{Binding ToggleMute}" Background="Transparent"
+                                        IsVisible="{Binding !VolumeMuted}" Padding="5">
+                                    <ui:SymbolIcon FontSize="20" Symbol="Speaker2" HorizontalAlignment="Stretch"
+                                                   VerticalAlignment="Stretch"
+                                                   Height="20" Width="20" />
+                                </Button>
+                                <Button Grid.Column="0" Command="{Binding ToggleMute}" Background="Transparent"
+                                        IsVisible="{Binding VolumeMuted}" Padding="10">
+                                    <ui:SymbolIcon FontSize="20" Symbol="Speaker0" HorizontalAlignment="Stretch"
+                                                   VerticalAlignment="Stretch"
+                                                   Height="20" Width="20" />
+                                </Button>
+                                <Slider Grid.Column="1" Value="{Binding Volume}"
+                                        Minimum="0"
+                                        Maximum="1"
+                                        TickFrequency="0.05"
+                                        IsSnapToTickEnabled="True"
+                                        Padding="0"
+                                        Margin="10, 5"
+                                        SmallChange="0.01"
+                                        LargeChange="0.05"
+                                        HorizontalAlignment="Stretch"
+                                        Width="150" />
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </Flyout>
+            </Button.Flyout>
+            <ui:SymbolIcon FontSize="25" Symbol="Repair" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                           Height="25" Width="25" />
+        </Button>
+    </Grid>
+</UserControl>

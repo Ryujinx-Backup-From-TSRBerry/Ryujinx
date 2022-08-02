@@ -17,7 +17,7 @@
         <Ellipse Classes="Circle" Stroke="White" StrokeThickness="2" Width="75" Height="75" x:Name="Circle"
                 />
         <Ellipse  Fill="Gray" Width="30" Height="30" x:Name="Thumb"/>
-		<Button Background="Gray" CornerRadius="15" Width="30" Height="30" x:Name="Button"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="0"  HorizontalAlignment="Left">
+		<Button Background="Gray" MinWidth="30" MinHeight="30" CornerRadius="15" Width="30" Height="30" x:Name="Button"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="0"  HorizontalAlignment="Left">
 			<Label x:Name="StickLabel" Content="L" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 		</Button>
     </Canvas>

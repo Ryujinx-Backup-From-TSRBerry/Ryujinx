@@ -8,10 +8,10 @@
     <StackPanel HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 Orientation="Vertical">
-        <TextBlock FontWeight="Bold" FontSize="18" Margin="10" Text="{locale:Locale SettingsTabGraphicsEnhancements}" />
+        <TextBlock FontWeight="Bold" FontSize="16" Margin="10" Text="{locale:Locale SettingsTabGraphicsEnhancements}" />
 		<Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-			<Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+                Classes="settingsItem" CornerRadius="5"   Padding="10, 0"  Height="40" ClipToBounds="True">
+			<Grid Background="Transparent"  HorizontalAlignment="Stretch">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition />
 					<ColumnDefinition Width="Auto" />
@@ -23,9 +23,10 @@
 				<ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableShaderCache}"  OffContent="" Content="" OnContent=""/>
 			</Grid>
 		</Border>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
         <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+                Classes="settingsItem" CornerRadius="5"   Padding="10, 0" Height="40"  ClipToBounds="True">
+            <Grid Background="Transparent"  HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
@@ -34,7 +35,7 @@
                            HorizontalAlignment="Left"
                            Text="{locale:Locale SettingsTabGraphicsAnisotropicFiltering}"
                            Width="230" />
-                <ComboBox Grid.Column="1" VerticalAlignment="Stretch" SelectedIndex="{Binding MaxAnisotropy}"
+                <ComboBox Grid.Column="1" VerticalAlignment="Center" SelectedIndex="{Binding MaxAnisotropy}"
                           Width="200"
                           HorizontalContentAlignment="Right">
                     <ComboBoxItem>
@@ -57,9 +58,10 @@
                 </ComboBox>
             </Grid>
         </Border>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
         <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+                Classes="settingsItem" CornerRadius="5"   Padding="10, 0" Height="40"  ClipToBounds="True">
+            <Grid Background="Transparent"  HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
@@ -69,7 +71,7 @@
                            HorizontalAlignment="Left"
                            Text="{locale:Locale SettingsTabGraphicsResolutionScale}"
                            Width="230" />
-                <ComboBox Grid.Column="1" VerticalAlignment="Stretch" SelectedIndex="{Binding ResolutionScale}"
+                <ComboBox Grid.Column="1" VerticalAlignment="Center" SelectedIndex="{Binding ResolutionScale}"
                           Width="200"
                           HorizontalContentAlignment="Right">
                     <ComboBoxItem>
@@ -101,9 +103,10 @@
                     Value="{Binding CustomResolutionScale}" />
             </Grid>
         </Border>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
         <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+                Classes="settingsItem" CornerRadius="5"   Padding="10, 0" Height="40"  ClipToBounds="True">
+            <Grid Background="Transparent"  HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
@@ -112,7 +115,7 @@
                            HorizontalAlignment="Left"
                            Text="{locale:Locale SettingsTabGraphicsAspectRatio}"
                            Width="230" />
-                <ComboBox Grid.Column="1" VerticalAlignment="Stretch" SelectedIndex="{Binding AspectRatio}"
+                <ComboBox Grid.Column="1" VerticalAlignment="Center" SelectedIndex="{Binding AspectRatio}"
                           Width="200"
                           HorizontalContentAlignment="Right">
                     <ComboBoxItem>
@@ -136,11 +139,12 @@
                 </ComboBox>
             </Grid>
         </Border>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
         <Separator Height="1" Margin="0,5" />
-        <TextBlock FontSize="18" Margin="10" FontWeight="Bold" Text="{locale:Locale SettingsTabGraphicsFeatures}" />
+        <TextBlock FontSize="16" Margin="10" FontWeight="Bold" Text="{locale:Locale SettingsTabGraphicsFeatures}" />
         <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+                Classes="settingsItem" CornerRadius="5"   Padding="10, 0" Height="40"  ClipToBounds="True">
+            <Grid Background="Transparent"  HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
@@ -148,7 +152,7 @@
                 <TextBlock VerticalAlignment="Center"
                            HorizontalAlignment="Left"
                            Text="{locale:Locale SettingsTabGraphicsBackendMultithreading}" />
-                <ComboBox Grid.Column="1" VerticalAlignment="Stretch" SelectedIndex="{Binding GraphicsBackendMultithreadingIndex}"
+                <ComboBox Grid.Column="1" VerticalAlignment="Center" SelectedIndex="{Binding GraphicsBackendMultithreadingIndex}"
                           Width="200"
                           HorizontalContentAlignment="Right">
                     <ComboBoxItem>
@@ -163,5 +167,6 @@
                 </ComboBox>
             </Grid>
         </Border>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
     </StackPanel>
 </UserControl>

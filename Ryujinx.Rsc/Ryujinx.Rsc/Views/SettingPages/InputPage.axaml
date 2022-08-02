@@ -9,15 +9,12 @@
     <StackPanel HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 Orientation="Vertical">
-        <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" ClipToBounds="True">
-            <Button Command="{Binding MoveToPage}" Background="Transparent" Height="38" HorizontalAlignment="Stretch" CornerRadius="5">
+            <Button BorderBrush="Transparent" HorizontalContentAlignment="Left" Command="{Binding MoveToPage}" Background="Transparent" Height="38" HorizontalAlignment="Stretch" CornerRadius="5">
                 <Button.CommandParameter>
                     <models:SettingPages>VirtualController</models:SettingPages>
                 </Button.CommandParameter>
                 <Label VerticalAlignment="Center" Content="Edit Virtual Controller" FontSize="16"  Padding="0" />
             </Button>
-        </Border>
-        
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
     </StackPanel>
 </UserControl>

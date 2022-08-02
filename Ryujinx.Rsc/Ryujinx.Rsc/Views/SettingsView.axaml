@@ -13,11 +13,17 @@
              x:Class="Ryujinx.Rsc.Views.SettingsView">
     <UserControl.Styles>
         <Style Selector="Border.settingsItem">
-            <Setter Property="Padding" Value="0" />
-            <Setter Property="Margin" Value="5" />
-            <Setter Property="CornerRadius" Value="5" />
-            <Setter Property="BorderBrush" Value="{DynamicResource SystemAccentColorDark1}" />
-            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="Padding" Value="2" />
+            <Setter Property="Margin" Value="0, 2" />
+            <Setter Property="CornerRadius" Value="0" />
+        </Style>
+        <Style Selector="ToggleSwitch">
+            <Setter Property="MinWidth" Value="0"/>
+            <Setter Property="MinHeight" Value="0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="ToggleSwitch /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="IsVisible" Value="False"/>
         </Style>
     </UserControl.Styles>
     <Design.DataContext>
@@ -35,19 +41,19 @@
                 <ColumnDefinition/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Button Click="BackButton_OnClick" Height="30" Width="30" Margin="10,5" IsVisible="{Binding HasBackStack}">
-                <ui:SymbolIcon FontSize="25" Symbol="Back" />
+            <Button Grid.Column="0" VerticalAlignment="Stretch" Margin="2,2,10,2" Click="BackButton_OnClick" IsVisible="{Binding HasBackStack}">
+                <ui:SymbolIcon Symbol="Back" />
             </Button>
-            <Border Grid.Column="0" Height="30" Width="30" Margin="10,5" IsVisible="{Binding !HasBackStack}">
-                <ui:SymbolIcon FontSize="25" Symbol="Setting" />
-            </Border>
+            <Button Grid.Column="0" Click="HomeButton_OnClick" VerticalAlignment="Stretch" Margin="2,2,10,2" IsVisible="{Binding !HasBackStack}">
+                <ui:SymbolIcon FontSize="25" Symbol="Home" />
+            </Button>
             <Label Grid.Column="1" Content="{Binding Title}" VerticalAlignment="Center" FontSize="16"  Padding="0"  />
             <Button Grid.Column="2" Click="SaveButton_OnClick" Margin="10,5">
                 <ui:SymbolIcon FontSize="20" Symbol="Save" />
             </Button>
         </Grid>
         <ScrollViewer Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <ContentControl x:Name="Frame" />
+            <ContentControl x:Name="ContentFrame" />
         </ScrollViewer>
     </Grid>
 </UserControl>

@@ -35,7 +35,6 @@ namespace Ryujinx.Rsc.Views.SettingPages
         
         protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
         {
-            ViewModel.ShowMainViewTabs = false;
             ViewModel.ShowToolbar = false;
             App.RequestedOrientation = Controls.Orientation.Landscape;
             base.OnAttachedToVisualTree(e);

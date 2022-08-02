@@ -7,133 +7,14 @@
              xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
              xmlns:controls="clr-namespace:Ryujinx.Ava.Common.Ui.Controls;assembly=Ryujinx.Ava.Common"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 Foreground="White"
+             Foreground="White"
              x:Class="Ryujinx.Rsc.Views.MainView">
     <Design.DataContext>
         <viewModels:MainViewModel />
     </Design.DataContext>
-    <UserControl.Resources>
-        <Color x:Key="OverlayBackgroundColor">#98414141</Color>
-	</UserControl.Resources>
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <ContentControl HorizontalAlignment="Stretch"
-                        VerticalContentAlignment="Stretch"
-                        HorizontalContentAlignment="Stretch"
-                        x:Name="ContentFrame"
-                        VerticalAlignment="Stretch">
-            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <ContentControl x:Name="ViewFrame" Grid.ColumnSpan="2">
-                    <controls:GameListView
-                        x:Name="GameGrid"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch" />
-                </ContentControl>
-                <ToggleButton IsVisible="{Binding ShowTabs}" IsChecked="{Binding  IsGameListActive}"  Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" Height="35" Click="GameListTab_OnClick">
-                    <ui:SymbolIcon Symbol="Library" Foreground="White" FontSize="25" />
-                </ToggleButton>
-                <ToggleButton IsVisible="{Binding ShowTabs}" IsChecked="{Binding IsSettingsActive}" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Stretch" Height="35" Click="SettingsTab_OnClick">
-	                <ui:SymbolIcon Symbol="Setting" Foreground="White" FontSize="25" />
-                </ToggleButton>
-            </Grid>
-        </ContentControl>
-        <control:VirtualGameControllerLayout x:Name="ControllerLayout" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                             IsVisible="{Binding EnableVirtualController}" />
-        <Border MinWidth="150" Background="{DynamicResource OverlayBackgroundColor}" IsVisible="{Binding ShowOverlay}"
-                CornerRadius="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <Label Foreground="{Binding VsyncColor}" Content="VSync" />
-                <Label Grid.Row="1" Content="{Binding GameStatusText}" />
-                <Label Grid.Row="2" Content="{Binding FifoStatusText}" />
-                <Label Grid.Row="3" Content="{Binding GpuStatusText}" />
-            </Grid>
-        </Border>
-        <Button VerticalAlignment="Bottom" HorizontalAlignment="Center" Padding="5" CornerRadius="15" Opacity="0.5"
-                Background="{DynamicResource OverlayBackgroundColor}" Margin="5"  IsVisible="{Binding IsGameRunning}">
-			<Button.Flyout>
-				<Flyout Placement="Top">
-					<Border Background="{DynamicResource OverlayBackgroundColor}" Padding="0" CornerRadius="10">
-						<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
-							<Grid.RowDefinitions>
-								<RowDefinition/>
-								<RowDefinition/>
-							</Grid.RowDefinitions>
-							<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-								<Button  Padding="5" CornerRadius="15" HorizontalAlignment="Center"
-									Background="Transparent" Margin="5"
-									Command="{Binding ToggleVirtualController}">
-									<ui:SymbolIcon FontSize="20" Symbol="Games" Foreground="White" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-								</Button>
-								<Button  Padding="5" CornerRadius="15" HorizontalAlignment="Center"
-									Background="Transparent" Margin="5"
-									Command="{Binding ToggleVSync}">
-									VSync
-								</Button>
-								<Button  Padding="5" CornerRadius="15" HorizontalAlignment="Center"
-									Background="Transparent" Margin="5"
-										 IsVisible="{Binding IsPaused}"
-									Command="{Binding Resume}">
-									<ui:SymbolIcon FontSize="20" Symbol="Play" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-									               Height="20" Width="20" />
-								</Button>
-								<Button  Padding="5" CornerRadius="15" HorizontalAlignment="Center"
-									Background="Transparent" Margin="5"
-									 IsVisible="{Binding !IsPaused}"
-									Command="{Binding Pause}">
-									<ui:SymbolIcon FontSize="20" Symbol="Pause" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-									               Height="20" Width="20" />
-								</Button>
-								<Button  Padding="5" CornerRadius="15" HorizontalAlignment="Center"
-									Background="Transparent" Margin="5"
-									Command="{Binding Stop}">
-									<ui:SymbolIcon FontSize="20" Symbol="Stop" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-									               Height="20" Width="20" />
-								</Button>
-							</StackPanel>
-							<Grid Grid.Row="1" HorizontalAlignment="Center">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="Auto"/>
-									<ColumnDefinition Width="*"/>
-								</Grid.ColumnDefinitions>
-								<Button Grid.Column="0" Command="{Binding ToggleMute}"  Background="Transparent" IsVisible="{Binding !VolumeMuted}" Padding="5">
-									<ui:SymbolIcon FontSize="20" Symbol="Speaker2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-											  Height="20" Width="20" />									
-								</Button>
-								<Button Grid.Column="0" Command="{Binding ToggleMute}" Background="Transparent" IsVisible="{Binding VolumeMuted}" Padding="10">
-									<ui:SymbolIcon FontSize="20" Symbol="Speaker0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-									               Height="20" Width="20" />
-								</Button>
-								<Slider Grid.Column="1" Value="{Binding Volume}"
-                                            Minimum="0"
-                                            Maximum="1"
-                                            TickFrequency="0.05"
-                                            IsSnapToTickEnabled="True"
-                                            Padding="0"
-                                            Margin="10, 5"
-                                            SmallChange="0.01"
-                                            LargeChange="0.05"
-										HorizontalAlignment="Stretch"
-                                            Width="150" />
-							</Grid>
-						</Grid>
-					</Border>
-				</Flyout>
-			</Button.Flyout>
-            <ui:SymbolIcon FontSize="25" Symbol="Repair" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                      Height="25" Width="25" />
-        </Button>
+        <ui:Frame x:Name="ViewFrame" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                  HorizontalContentAlignment="Stretch"
+                  VerticalContentAlignment="Stretch" />
     </Grid>
 </UserControl>

@@ -10,22 +10,22 @@
                 Orientation="Vertical">
         <TextBlock FontWeight="Bold" FontSize="16" Margin="10" Text="{locale:Locale SettingsTabLoggingLogging}" />
         <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+                Classes="settingsItem" CornerRadius="5" Padding="10, 0" ClipToBounds="True">
+            <Grid Background="Transparent" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock VerticalAlignment="Center"
-                           HorizontalAlignment="Left"
-                           Text="{locale:Locale SettingsTabLoggingEnableLoggingToFile}"
-                           Width="230" />
+                           HorizontalAlignment="Stretch"
+                           Text="{locale:Locale SettingsTabLoggingEnableLoggingToFile}" />
                 <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableFileLog}"  OffContent="" Content="" OnContent=""/>
             </Grid>
         </Border>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
         <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+                Classes="settingsItem" CornerRadius="5" Padding="10, 0" ClipToBounds="True">
+            <Grid Background="Transparent" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
@@ -37,9 +37,10 @@
                 <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableStub}"  OffContent="" Content="" OnContent=""/>
             </Grid>
         </Border>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
         <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+                Classes="settingsItem" CornerRadius="5" Padding="10, 0" ClipToBounds="True">
+            <Grid Background="Transparent" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
@@ -51,9 +52,10 @@
                 <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableInfo}"  OffContent="" Content="" OnContent=""/>
             </Grid>
         </Border>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
         <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+                Classes="settingsItem" CornerRadius="5" Padding="10, 0" ClipToBounds="True">
+            <Grid Background="Transparent" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
@@ -65,9 +67,10 @@
                 <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableWarn}"  OffContent="" Content="" OnContent=""/>
             </Grid>
         </Border>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
         <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+                Classes="settingsItem" CornerRadius="5" Padding="10, 0" ClipToBounds="True">
+            <Grid Background="Transparent" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
@@ -79,9 +82,10 @@
                 <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableError}"  OffContent="" Content="" OnContent=""/>
             </Grid>
         </Border>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
         <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+                Classes="settingsItem" CornerRadius="5" Padding="10, 0" ClipToBounds="True">
+            <Grid Background="Transparent" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
@@ -93,9 +97,10 @@
                 <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableTrace}"  OffContent="" Content="" OnContent=""/>
             </Grid>
         </Border>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
         <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+                Classes="settingsItem" CornerRadius="5" Padding="10, 0" ClipToBounds="True">
+            <Grid Background="Transparent" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
@@ -107,11 +112,12 @@
                 <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableGuest}"  OffContent="" Content="" OnContent=""/>
             </Grid>
         </Border>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
         <Separator Height="1" Margin="0,5" />
         <TextBlock FontWeight="Bold" FontSize="16" TextWrapping="Wrap" Margin="10" Text="{locale:Locale SettingsTabLoggingDeveloperOptions}" />
         <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+                Classes="settingsItem" CornerRadius="5" Padding="10, 0" ClipToBounds="True">
+            <Grid Background="Transparent" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
@@ -123,9 +129,10 @@
                 <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableDebug}"  OffContent="" Content="" OnContent=""/>
             </Grid>
         </Border>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
         <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+                Classes="settingsItem" CornerRadius="5" Padding="10, 0" ClipToBounds="True">
+            <Grid Background="Transparent" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
@@ -137,9 +144,10 @@
                 <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableFsAccessLog}"  OffContent="" Content="" OnContent=""/>
             </Grid>
         </Border>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
 		<Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-			<Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+                Classes="settingsItem" CornerRadius="5" Padding="10, 0" ClipToBounds="True">
+			<Grid Background="Transparent" HorizontalAlignment="Stretch">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition />
 					<ColumnDefinition Width="Auto" />
@@ -158,9 +166,10 @@
 					Value="{Binding FsGlobalAccessLogMode}" />
 			</Grid>
 		</Border>
+        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
 		<Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-			<Grid Background="Transparent" Height="35" HorizontalAlignment="Stretch">
+                Classes="settingsItem" CornerRadius="5" Padding="10, 0" ClipToBounds="True">
+			<Grid Background="Transparent" HorizontalAlignment="Stretch">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition />
 					<ColumnDefinition Width="Auto" />
