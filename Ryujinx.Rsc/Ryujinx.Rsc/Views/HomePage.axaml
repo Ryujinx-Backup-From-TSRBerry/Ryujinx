@@ -52,13 +52,6 @@
                     FontFamily="avares://FluentAvalonia/Fonts#Symbols"
                     Glyph="{controls:GlyphValueConverter Grid}" />
             </Button>
-            <CheckBox
-                Margin="0"
-                VerticalAlignment="Center"
-                IsChecked="{Binding ShowNames, Mode=TwoWay}"
-                IsVisible="{Binding IsGrid}">
-                <TextBlock Margin="5,3,0,0" Text="{locale:Locale CommonShowNames}" />
-            </CheckBox>
             <TextBox
                 Name="SearchBox"
                 MinWidth="200"
@@ -155,12 +148,6 @@
                     </Flyout>
                 </ui:DropDownButton.Flyout>
             </ui:DropDownButton>
-            <TextBlock
-                Margin="10,0"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Center"
-                DockPanel.Dock="Right"
-                Text="{locale:Locale CommonSort}" />
         </DockPanel>
         <controls:GameListView
             x:Name="GameList"
