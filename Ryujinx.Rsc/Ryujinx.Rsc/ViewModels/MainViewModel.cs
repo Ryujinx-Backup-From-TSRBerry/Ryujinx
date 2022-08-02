@@ -1,4 +1,5 @@
-﻿using Avalonia.Threading;
+﻿using Avalonia;
+using Avalonia.Threading;
 using Ryujinx.Ui.App.Common;
 using System;
 using DynamicData;
@@ -256,6 +257,46 @@ namespace Ryujinx.Rsc.ViewModels
             {
                 GamePage.AppHost.Stop();
             });
+        }
+        
+        public Thickness GridItemPadding => ShowNames ? new Thickness() : new Thickness(5);
+        
+        public int GridSizeScale
+        {
+            get => ConfigurationState.Instance.Ui.GridSize;
+            set
+            {
+                ConfigurationState.Instance.Ui.GridSize.Value = value;
+
+                if (value < 2)
+                {
+                    ShowNames = false;
+                }
+
+                this.RaisePropertyChanged();
+                this.RaisePropertyChanged(nameof(IsGridSmall));
+                this.RaisePropertyChanged(nameof(IsGridMedium));
+                this.RaisePropertyChanged(nameof(IsGridLarge));
+                this.RaisePropertyChanged(nameof(IsGridHuge));
+                this.RaisePropertyChanged(nameof(ShowNames));
+                this.RaisePropertyChanged(nameof(GridItemPadding));
+
+                ConfigurationState.Instance.ToFileFormat().SaveConfig(AppConfig.ConfigurationPath);
+            }
+        }
+        
+        public bool ShowNames
+        {
+            get => ConfigurationState.Instance.Ui.ShowNames && ConfigurationState.Instance.Ui.GridSize > 1; set
+            {
+                ConfigurationState.Instance.Ui.ShowNames.Value = value;
+
+                this.RaisePropertyChanged();
+                this.RaisePropertyChanged(nameof(GridItemPadding));
+                this.RaisePropertyChanged(nameof(GridSizeScale));
+
+                ConfigurationState.Instance.ToFileFormat().SaveConfig(AppConfig.ConfigurationPath);
+            }
         }
 
         private void ApplicationLibrary_ApplicationAdded(object? sender, ApplicationAddedEventArgs e)

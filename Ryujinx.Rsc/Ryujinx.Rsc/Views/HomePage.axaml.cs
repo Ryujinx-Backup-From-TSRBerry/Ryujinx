@@ -60,12 +60,6 @@ namespace Ryujinx.Rsc.Views
             e.Handled = true;
         }
 
-        private void SearchBox_OnKeyUp(object sender, KeyEventArgs e)
-        {
-            ViewModel.SearchText = SearchBox.Text;
-        }
-        
-
         public void Sort_Checked(object sender, RoutedEventArgs args)
         {
             if (sender is RadioButton button)
