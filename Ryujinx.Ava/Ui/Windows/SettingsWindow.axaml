@@ -218,7 +218,7 @@
                                     TextAlignment="Center" />
                             </ToggleButton>
                         </StackPanel>
-                        <StackPanel Margin="10,0,0,0" Orientation="Horizontal">common_window
+                        <StackPanel Margin="10,0,0,0" Orientation="Horizontal">
                             <TextBlock VerticalAlignment="Center" Text="{locale:Locale SettingsTabHotkeysShowUiHotkey}" Width="230" />
                             <ToggleButton Width="90" Height="27" Checked="Button_Checked" Unchecked="Button_Unchecked">
                                 <TextBlock
