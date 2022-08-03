@@ -10,16 +10,20 @@ namespace Ryujinx.Ava.Common.Ui.Backend.Vulkan
 {
     internal class VulkanWindowSurface : BackendSurface, IVulkanPlatformSurface
     {
+        private IntPtr _currentHandle;
+
         public float Scaling => (float)Handle.Scaling;
 
         public PixelSize SurfaceSize => Size;
 
-        public VulkanWindowSurface(IPlatformNativeSurfaceHandle handle) : base(handle)
-        {
-        }
+        public VulkanWindowSurface(IPlatformNativeSurfaceHandle handle) : base(handle){}
+
+        public bool IsCorrupted => _currentHandle != IntPtr.Zero && _currentHandle != Handle.Handle;
 
         public unsafe SurfaceKHR CreateSurface(VulkanInstance instance)
         {
+            _currentHandle = Handle.Handle;
+
             if (OperatingSystem.IsWindows())
             {
                 if (instance.Api.TryGetInstanceExtension(new Instance(instance.Handle), out KhrWin32Surface surfaceExtension))

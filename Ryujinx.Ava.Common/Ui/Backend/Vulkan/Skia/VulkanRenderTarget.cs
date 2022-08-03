@@ -10,12 +10,14 @@ namespace Ryujinx.Ava.Common.Ui.Backend.Vulkan
     {
         public GRContext GrContext { get; set; }
 
-        private readonly VulkanSurfaceRenderTarget _surface;
-        private readonly IVulkanPlatformSurface _vulkanPlatformSurface;
+        private VulkanSurfaceRenderTarget _surface;
+        private readonly VulkanPlatformInterface _vulkanPlatformInterface;
+        private IVulkanPlatformSurface _vulkanPlatformSurface;
 
         public VulkanRenderTarget(VulkanPlatformInterface vulkanPlatformInterface, IVulkanPlatformSurface vulkanPlatformSurface)
         {
             _surface = vulkanPlatformInterface.CreateRenderTarget(vulkanPlatformSurface);
+            _vulkanPlatformInterface = vulkanPlatformInterface;
             _vulkanPlatformSurface = vulkanPlatformSurface;
         }
 
@@ -26,6 +28,13 @@ namespace Ryujinx.Ava.Common.Ui.Backend.Vulkan
 
         public ISkiaGpuRenderSession BeginRenderingSession()
         {
+            if (_vulkanPlatformSurface.IsCorrupted)
+            {
+                _surface.Dispose();
+                _vulkanPlatformSurface = new VulkanWindowSurface(((BackendSurface)_vulkanPlatformSurface).Handle);
+                _surface = _vulkanPlatformInterface.CreateRenderTarget(_vulkanPlatformSurface);
+            }
+
             var session = _surface.BeginDraw(_vulkanPlatformSurface.Scaling);
             bool success = false;
             try

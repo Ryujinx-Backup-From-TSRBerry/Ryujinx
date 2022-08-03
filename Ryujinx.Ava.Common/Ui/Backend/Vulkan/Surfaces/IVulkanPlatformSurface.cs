@@ -8,6 +8,7 @@ namespace Ryujinx.Ava.Common.Ui.Vulkan.Surfaces
     {
         float Scaling { get; }
         PixelSize SurfaceSize { get; }
+        bool IsCorrupted { get; }
         SurfaceKHR CreateSurface(VulkanInstance instance);
     }
 }
