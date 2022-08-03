@@ -57,6 +57,14 @@ namespace Ryujinx.Rsc.Views
                 Initialize();
 
                 ViewModel.Owner = this;
+
+                ConfigurationState.Instance.Ui.GridSize.Value = 2;
+
+                foreach (var folder in ConfigurationState.Instance.Ui.GameDirs.Value)
+                {
+                    (VisualRoot as TopLevel)?.StorageProvider?.OpenFolderBookmarkAsync(folder);
+                }
+
                 ViewModel.Initialize();
             }
             

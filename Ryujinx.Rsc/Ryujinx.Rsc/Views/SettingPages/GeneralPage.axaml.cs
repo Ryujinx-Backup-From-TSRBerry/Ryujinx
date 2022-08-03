@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.Platform.Storage;
 using Ryujinx.Rsc.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -36,16 +37,24 @@ namespace Ryujinx.Rsc.Views.SettingPages
 
         private async void AddButton_OnClick(object sender, RoutedEventArgs e)
         {
-            Task.Run(async () =>
-            {
-                var fileSystemHelper = App.FileSystemHelperFactory();
-                var path = await fileSystemHelper.OpenFolder(this.VisualRoot);
+            string path = string.Empty;
 
-                if (!string.IsNullOrWhiteSpace(path))
+            var storage = await (VisualRoot as TopLevel).StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions());
+
+            if (storage.Count > 0)
+            {
+                var folder = storage.First();
+
+                if (folder.TryGetUri(out _))
                 {
-                    ViewModel.GameDirectories.Add(path);
+                    path = await folder.SaveBookmark();
                 }
-            });
+            }
+
+            if (!string.IsNullOrWhiteSpace(path))
+            {
+                ViewModel.GameDirectories.Add(path);
+            }
         }
 
         private void RemoveButton_OnClick(object sender, RoutedEventArgs e)

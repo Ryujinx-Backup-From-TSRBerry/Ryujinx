@@ -238,6 +238,8 @@ namespace Ryujinx.Rsc.ViewModels
             Owner.ApplicationLibrary.ApplicationAdded += ApplicationLibrary_ApplicationAdded;
 
             ReloadGameList();
+
+            ShowNames = true;
         }
 
         public void ToggleVirtualController()
