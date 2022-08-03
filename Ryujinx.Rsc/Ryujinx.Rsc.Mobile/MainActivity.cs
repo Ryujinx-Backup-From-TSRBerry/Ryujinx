@@ -58,14 +58,8 @@ namespace Ryujinx.Rsc.Mobile
                 .With(new SkiaOptions()
                 {
                     CustomGpuFactory = SkiaGpuFactory.CreateVulkanGpu
-                })
-                .AfterSetup(_ =>
-                {
-                    AvaloniaLocator.CurrentMutable
-                        .Bind<IRenderTimer>().ToConstant(AppConfig.RenderTimer)
-                        .Bind<IRenderLoop>().ToConstant(new RenderLoop(AppConfig.RenderTimer, Dispatcher.UIThread));
                 });
-                
+
             return base.CustomizeAppBuilder(builder);
         }
 
@@ -112,7 +106,7 @@ namespace Ryujinx.Rsc.Mobile
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            AppConfig.RenderTimer.Dispose();
+            AppConfig.RenderTimer?.Dispose();
             _fileSystemHelper.Dispose();
         }
     }

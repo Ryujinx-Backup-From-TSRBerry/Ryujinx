@@ -309,7 +309,7 @@ namespace Ryujinx.Rsc.ViewModels
 
         public void OpenSettings()
         {
-            Owner.Navigate(typeof(TestPage), Owner);
+            Owner.Navigate(typeof(SettingsView), Owner);
         }
 
         public void ReloadGameList()

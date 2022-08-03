@@ -21,6 +21,8 @@ using Ryujinx.Ava.Common.Ui.Controls;
 using Ryujinx.Ava.Common.Input;
 using Ryujinx.Ava.Common.Ui.Models;
 using Ryujinx.Ava.Common;
+using FluentAvalonia.UI.Media.Animation;
+
 
 namespace Ryujinx.Rsc.Views
 {
@@ -54,8 +56,6 @@ namespace Ryujinx.Rsc.Views
 
                 Initialize();
 
-                LoadControls();
-
                 ViewModel.Owner = this;
                 ViewModel.Initialize();
             }
@@ -65,7 +65,7 @@ namespace Ryujinx.Rsc.Views
 
         public void Navigate(Type sourcePageType, object parameter)
         {
-            ViewFrame.Navigate(sourcePageType, parameter);
+            ViewFrame.Navigate(sourcePageType, parameter, new SuppressNavigationTransitionInfo());
         }
 
         public void GoBack(object parameter = null)
@@ -74,13 +74,6 @@ namespace Ryujinx.Rsc.Views
             {
                 ViewFrame.GoBack();
             }
-        }
-
-        private void LoadControls()
-        {
-            //GameGrid.ApplicationOpened += Application_Opened;
-
-            //GameGrid.DataContext = ViewModel;
         }
 
         private void Initialize()

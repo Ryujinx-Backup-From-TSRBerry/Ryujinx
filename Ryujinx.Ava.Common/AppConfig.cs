@@ -21,7 +21,10 @@ namespace Ryujinx.Ava.Common
 
         static AppConfig()
         {
-            RenderTimer = new RenderTimer();
+            if (!OperatingSystem.IsAndroid())
+            {
+                RenderTimer = new RenderTimer();
+            }
         }
 
         public static void ApplyConfiguredTheme(Application app)

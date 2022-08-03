@@ -1,4 +1,5 @@
 using Avalonia.Collections;
+using DynamicData;
 using LibHac.Tools.FsSystem;
 using ReactiveUI;
 using Ryujinx.Ava.Common;
@@ -13,6 +14,8 @@ using Ryujinx.Ui.Common.Configuration;
 using Ryujinx.Ui.Common.Configuration.System;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+
 
 namespace Ryujinx.Rsc.ViewModels
 {
@@ -43,7 +46,7 @@ namespace Ryujinx.Rsc.ViewModels
         {
             TimeZones = new AvaloniaList<Ryujinx.Ava.Common.Ui.Models.TimeZone>();
             _validTzRegions = new List<string>();
-            GameDirectories = new AvaloniaList<string>();
+            GameDirectories = new ObservableCollection<string>();
 
             if (AppConfig.PreviewerDetached)
             {
@@ -63,7 +66,7 @@ namespace Ryujinx.Rsc.ViewModels
             _owner = owner;
             TimeZones = new AvaloniaList<Ryujinx.Ava.Common.Ui.Models.TimeZone>();
             _validTzRegions = new List<string>();
-            GameDirectories = new AvaloniaList<string>();
+            GameDirectories = new ObservableCollection<string>();
 
             if (AppConfig.PreviewerDetached)
             {
@@ -165,7 +168,7 @@ namespace Ryujinx.Rsc.ViewModels
         public bool EnableGuest { get; set; }
         public bool EnableFsAccessLog { get; set; }
         public bool EnableDebug { get; set; }
-        public AvaloniaList<string> GameDirectories { get; set; }
+        public ObservableCollection<string> GameDirectories { get; set; }
         public bool IsResolutionScaleActive
         {
             get => _resolutionScale == 0;
