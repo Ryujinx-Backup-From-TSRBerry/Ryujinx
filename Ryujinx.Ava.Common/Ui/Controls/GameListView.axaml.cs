@@ -4,6 +4,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using LibHac.Common;
+using Ryujinx.Ava.Common.Input;
 using Ryujinx.Ava.Common.Ui.ViewModels;
 using Ryujinx.Ui.App.Common;
 using System;
@@ -55,6 +56,16 @@ namespace Ryujinx.Ava.Common.Ui.Controls
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
+            
+            GameListBox.AddHandler(HoldGestureRecognizer.HoldEventEvent, (s, e) =>
+            {
+                OnHold();
+            }, RoutingStrategies.Direct);
+        }
+
+        private void OnHold()
+        {
+            
         }
 
         private void SearchBox_OnKeyUp(object sender, KeyEventArgs e)

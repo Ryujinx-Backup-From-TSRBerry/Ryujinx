@@ -41,8 +41,6 @@ namespace Ryujinx.Ava.Common.Ui.Backend
             }
         }
 
-        public PixelSize CurrentSize => _currentSize;
-
         public virtual void Dispose()
         {
             if (IsDisposed)
