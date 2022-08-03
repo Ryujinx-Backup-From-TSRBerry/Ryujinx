@@ -18,6 +18,7 @@ namespace Ryujinx.Ava.Common.Ui.Controls
             RoutedEvent.Register<GameGridView, ApplicationOpenedEventArgs>(nameof(ApplicationOpened), RoutingStrategies.Bubble);
 
         public event EventHandler<string> OnSearch;
+        public event EventHandler<ApplicationData> LongPressed;
 
         public event EventHandler<ApplicationOpenedEventArgs> ApplicationOpened
         {
@@ -51,13 +52,8 @@ namespace Ryujinx.Ava.Common.Ui.Controls
         public GameListView()
         {
             InitializeComponent();
-        }
 
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
-            
-            GameListBox.AddHandler(HoldGestureRecognizer.HoldEventEvent, (s, e) =>
+            GameListBox.AddHandler(HoldGestureRecognizer.HoldGestureEvent, (s, e) =>
             {
                 OnHold();
             }, RoutingStrategies.Direct);
@@ -65,6 +61,10 @@ namespace Ryujinx.Ava.Common.Ui.Controls
 
         private void OnHold()
         {
+            if (SelectedApplication != null)
+            {
+                LongPressed?.Invoke(this, SelectedApplication);
+            }
             
         }
 

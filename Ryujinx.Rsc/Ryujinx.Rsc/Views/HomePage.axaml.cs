@@ -8,6 +8,7 @@ using FluentAvalonia.UI.Navigation;
 using Ryujinx.Ava.Common;
 using Ryujinx.Ava.Common.Ui.Controls;
 using Ryujinx.Rsc.ViewModels;
+using Ryujinx.Ui.App.Common;
 using System;
 using System.IO;
 
@@ -23,6 +24,9 @@ namespace Ryujinx.Rsc.Views
             
             GameGrid.ApplicationOpened += Application_Opened;
             GameList.ApplicationOpened += Application_Opened;
+            
+            GameGrid.LongPressed += ApplicationLongPressed;
+            GameList.LongPressed += ApplicationLongPressed;
 
             if (AppConfig.PreviewerDetached)
             {
@@ -31,6 +35,11 @@ namespace Ryujinx.Rsc.Views
                     NavigatedTo(e);
                 }, RoutingStrategies.Direct);
             }
+        }
+
+        private void ApplicationLongPressed(object sender, ApplicationData e)
+        {
+            ViewModel.ShowContextOptions = true;
         }
 
         private void NavigatedTo(NavigationEventArgs arg)
@@ -48,16 +57,21 @@ namespace Ryujinx.Rsc.Views
         
         private void Application_Opened(object sender, ApplicationOpenedEventArgs e)
         {
-            if (e.Application != null)
+            if (!ViewModel.ShowContextOptions && e.Application != null)
             {
-                string path = OperatingSystem.IsAndroid() ? e.Application.Path : new FileInfo(e.Application.Path).FullName;
-
-                ViewModel.ApplicationPath = path;
-                
-                ViewModel.Owner.Navigate(typeof(GamePage), ViewModel);
+                LoadApplication(e.Application);
             }
 
             e.Handled = true;
+        }
+
+        private void LoadApplication(ApplicationData application)
+        {
+            string path = OperatingSystem.IsAndroid() ? application.Path : new FileInfo(application.Path).FullName;
+
+            ViewModel.ApplicationPath = path;
+                
+            ViewModel.Owner.Navigate(typeof(GamePage), ViewModel);
         }
 
         public void Sort_Checked(object sender, RoutedEventArgs args)
@@ -82,6 +96,42 @@ namespace Ryujinx.Rsc.Views
         private void SettingsButton_OnClick(object sender, RoutedEventArgs e)
         {
             ViewModel.OpenSettings();
+        }
+
+        private void RefreshButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            ViewModel.ReloadGameList();
+        }
+
+        private void PlayButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var selectedApplication = ViewModel.IsGrid ? GameGrid.SelectedApplication : GameList.SelectedApplication;
+
+            if (selectedApplication != null)
+            {
+                LoadApplication(selectedApplication);
+
+                ViewModel.ShowContextOptions = false;
+            }
+        }
+
+        private void DeleteButton_OnClick(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void FavoriteButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var selectedApplication = ViewModel.IsGrid ? GameGrid.SelectedApplication : GameList.SelectedApplication;
+
+            if (selectedApplication != null)
+            {
+                ViewModel.ToggleFavorite(selectedApplication);
+            }
+        }
+
+        private void DismissButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            ViewModel.ShowContextOptions = false;
         }
     }
 }

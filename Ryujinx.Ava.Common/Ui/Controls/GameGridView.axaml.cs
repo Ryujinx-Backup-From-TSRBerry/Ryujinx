@@ -4,6 +4,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using LibHac.Common;
+using Ryujinx.Ava.Common.Input;
 using Ryujinx.Ava.Common.Ui.ViewModels;
 using Ryujinx.Ui.App.Common;
 using System;
@@ -17,6 +18,7 @@ namespace Ryujinx.Ava.Common.Ui.Controls
             RoutedEvent.Register<GameGridView, ApplicationOpenedEventArgs>(nameof(ApplicationOpened), RoutingStrategies.Bubble);
 
         public event EventHandler<string> OnSearch;
+        public event EventHandler<ApplicationData> LongPressed;
 
         public event EventHandler<ApplicationOpenedEventArgs> ApplicationOpened
         {
@@ -50,11 +52,19 @@ namespace Ryujinx.Ava.Common.Ui.Controls
         public GameGridView()
         {
             InitializeComponent();
+
+            ListBox.AddHandler(HoldGestureRecognizer.HoldGestureEvent, (s, e) =>
+            {
+                OnHold();
+            }, RoutingStrategies.Direct);
         }
 
-        private void InitializeComponent()
+        private void OnHold()
         {
-            AvaloniaXamlLoader.Load(this);
+            if (SelectedApplication != null)
+            {
+                LongPressed?.Invoke(this, SelectedApplication);
+            }
         }
 
         private void SearchBox_OnKeyUp(object sender, KeyEventArgs e)

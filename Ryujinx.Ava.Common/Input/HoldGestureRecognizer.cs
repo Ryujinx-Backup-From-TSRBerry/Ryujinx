@@ -12,7 +12,7 @@ namespace Ryujinx.Ava.Common.Input
     {
         private int _holdDelayMs = 500;
         
-        public static readonly RoutedEvent<HoldGestureEventArgs> HoldEventEvent = RoutedEvent.Register<Control, HoldGestureEventArgs>("HoldGesture", RoutingStrategies.Direct);
+        public static readonly RoutedEvent<HoldGestureEventArgs> HoldGestureEvent = RoutedEvent.Register<Control, HoldGestureEventArgs>("HoldGesture", RoutingStrategies.Direct);
         
         /// <summary>
         /// Defines the <see cref="HoldDelayMs"/> property.
@@ -55,8 +55,6 @@ namespace Ryujinx.Ava.Common.Input
                 {
                     _target!.RaiseEvent(new HoldGestureEventArgs(_holdDelayMs));
                 });
-                
-                _holdTimer.Dispose();
             }
         }
 
@@ -91,7 +89,7 @@ namespace Ryujinx.Ava.Common.Input
         public HoldGestureEventArgs(int holdDuration)
         {
             HoldDuration = holdDuration;
-            RoutedEvent = HoldGestureRecognizer.HoldEventEvent;
+            RoutedEvent = HoldGestureRecognizer.HoldGestureEvent;
         }
 
         public int HoldDuration { get; }

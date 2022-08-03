@@ -17,8 +17,6 @@ namespace Ryujinx.Ava.Common.Ui.Backend
 
         [DllImport("libX11.so.6")]
         public static extern int XCloseDisplay(IntPtr display);
-
-        private PixelSize _currentSize;
         public IPlatformNativeSurfaceHandle Handle { get; protected set; }
 
         public bool IsDisposed { get; private set; }

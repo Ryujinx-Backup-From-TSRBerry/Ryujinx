@@ -165,9 +165,14 @@
             HorizontalContentAlignment="Stretch"
             VerticalContentAlignment="Stretch"
             IsVisible="{Binding IsGrid}" />
-        <ui:CommandBar Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+        <ui:CommandBar Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
             <ui:CommandBar.PrimaryCommands>
                 <ui:CommandBarButton Icon="Setting" Label="{locale:Locale Settings}" Click="SettingsButton_OnClick"/>
+                <ui:CommandBarButton Icon="Refresh" Label="{locale:Locale ControllerSettingsRefresh}" Click="RefreshButton_OnClick"/>
+                <ui:CommandBarButton IsVisible="{Binding ShowContextOptions}" Icon="Play" Label="{locale:Locale Play}" Click="PlayButton_OnClick"/>
+                <ui:CommandBarButton IsVisible="{Binding ShowContextOptions}" Icon="Star" Label="{locale:Locale GameListContextMenuToggleFavorite}" Click="FavoriteButton_OnClick"/>
+                <ui:CommandBarButton IsVisible="{Binding ShowContextOptions}" Icon="Delete" Label="{locale:Locale Delete}" Click="DeleteButton_OnClick"/>
+                <ui:CommandBarButton IsVisible="{Binding ShowContextOptions}" Icon="Dismiss" Label="{locale:Locale Dismiss}" Click="DismissButton_OnClick"/>
             </ui:CommandBar.PrimaryCommands>
         </ui:CommandBar>
     </Grid>

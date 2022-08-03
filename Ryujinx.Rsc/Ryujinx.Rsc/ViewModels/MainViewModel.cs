@@ -37,6 +37,7 @@ namespace Ryujinx.Rsc.ViewModels
         private float _volume;
         private float _currentVolume;
         private bool _isPaused;
+        private bool _showContextOptions;
         private string _searchText;
 
         public MainView Owner { get; set; }
@@ -114,7 +115,24 @@ namespace Ryujinx.Rsc.ViewModels
                 this.RaisePropertyChanged(nameof(IsGrid));
                 this.RaisePropertyChanged(nameof(IsList));
 
+                ShowContextOptions = false;
+
                 ConfigurationState.Instance.ToFileFormat().SaveConfig(AppConfig.ConfigurationPath);
+            }
+        }
+        
+        public void ToggleFavorite(ApplicationData application)
+        {
+            if (application != null)
+            {
+                application.Favorite = !application.Favorite;
+
+                Owner.ApplicationLibrary.LoadAndSaveMetaData(application.TitleId, appMetadata =>
+                {
+                    appMetadata.Favorite = application.Favorite;
+                });
+
+                RefreshView();
             }
         }
 
@@ -318,6 +336,8 @@ namespace Ryujinx.Rsc.ViewModels
             {
                 return;
             }
+            
+            ShowContextOptions = false;
 
             _isLoading = true;
 
@@ -448,8 +468,20 @@ namespace Ryujinx.Rsc.ViewModels
 
         public string ApplicationPath { get; set; }
 
+        public bool ShowContextOptions
+        {
+            get => _showContextOptions;
+            set
+            {
+                _showContextOptions = value;
+                this.RaisePropertyChanged();
+            }
+        }
+
         private void RefreshView()
         {
+            ShowContextOptions = false;
+            
             Applications.ToObservableChangeSet()
                 .Filter(Filter)
                 .Sort(GetComparer())
