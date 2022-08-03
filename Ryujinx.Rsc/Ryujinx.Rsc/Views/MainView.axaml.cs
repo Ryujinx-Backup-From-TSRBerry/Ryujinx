@@ -65,7 +65,7 @@ namespace Ryujinx.Rsc.Views
 
         public void Navigate(Type sourcePageType, object parameter)
         {
-            ViewFrame.Navigate(sourcePageType, parameter, new SuppressNavigationTransitionInfo());
+            ViewFrame.Navigate(sourcePageType, parameter);
         }
 
         public void GoBack(object parameter = null)
