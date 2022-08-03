@@ -36,8 +36,6 @@ jobs:
           sdkmanager "platform-tools" "platforms;android-31" "build-tools;30.0.3" "ndk;23.2.8568313"
       - name: Ensure NuGet Source
         uses: fabriciomurta/ensure-nuget-source@v1
-      - name: Add Avalonia Nightly source
-        run: dotnet nuget add source -n AvaloniaCI https://nuget.avaloniaui.net/repository/avalonia-nightly/index.json
       - name: Clear
         run: dotnet clean && dotnet nuget locals all --clear
       - name: Get version info
