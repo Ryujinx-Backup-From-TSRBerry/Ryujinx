@@ -22,10 +22,11 @@
         </Grid.RowDefinitions>
         <DockPanel
             Grid.Row="0"
-            Margin="0,0,0,5"
+            Margin="5"
             HorizontalAlignment="Stretch">
             <Button
                 Width="40"
+                Height="35"
                 MinWidth="40"
                 Margin="5,2,0,2"
                 VerticalAlignment="Stretch"
@@ -40,6 +41,7 @@
             </Button>
             <Button
                 Width="40"
+                Height="35"
                 MinWidth="40"
                 Margin="5,2,5,2"
                 VerticalAlignment="Stretch"
@@ -55,6 +57,7 @@
             <TextBox
                 Name="SearchBox"
                 MinWidth="200"
+                Height="35"
                 Margin="5,0,5,0"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
@@ -63,6 +66,7 @@
                 Watermark="{locale:Locale MenuSearch}" />
             <ui:DropDownButton
                 Width="150"
+                Height="35"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
                 Content="{Binding SortName}"
@@ -171,7 +175,23 @@
                 <ui:CommandBarButton Icon="Refresh" Label="{locale:Locale ControllerSettingsRefresh}" Click="RefreshButton_OnClick"/>
                 <ui:CommandBarButton IsVisible="{Binding ShowContextOptions}" Icon="Play" Label="{locale:Locale Play}" Click="PlayButton_OnClick"/>
                 <ui:CommandBarButton IsVisible="{Binding ShowContextOptions}" Icon="Star" Label="{locale:Locale GameListContextMenuToggleFavorite}" Click="FavoriteButton_OnClick"/>
-                <ui:CommandBarButton IsVisible="{Binding ShowContextOptions}" Icon="Delete" Label="{locale:Locale Delete}" Click="DeleteButton_OnClick"/>
+                <ui:CommandBarButton IsVisible="{Binding ShowContextOptions}" Icon="Delete" Label="{locale:Locale Delete}" Click="DeleteButton_OnClick">
+                    <ui:CommandBarButton.Flyout>
+                        <ui:MenuFlyout>
+                            <ui:MenuFlyoutItem
+                                Click="PurgePtcMenuItem_Click"
+                                Text="{locale:Locale GameListContextMenuCacheManagementPurgePptc}"
+                                ToolTip.Tip="{locale:Locale GameListContextMenuCacheManagementPurgePptcToolTip}" />
+                            <ui:MenuFlyoutItem
+                                Click="PurgePtcMenuItem_Click"
+                                Text="{locale:Locale DeleteGame}" />
+                            <ui:MenuFlyoutItem
+                                Click="PurgeShaderMenuItem_Click"
+                                Text="{locale:Locale GameListContextMenuCacheManagementPurgeShaderCache}"
+                                ToolTip.Tip="{locale:Locale GameListContextMenuCacheManagementPurgeShaderCacheToolTip}" />
+                        </ui:MenuFlyout>
+                    </ui:CommandBarButton.Flyout>
+                </ui:CommandBarButton>
                 <ui:CommandBarButton IsVisible="{Binding ShowContextOptions}" Icon="Dismiss" Label="{locale:Locale Dismiss}" Click="DismissButton_OnClick"/>
             </ui:CommandBar.PrimaryCommands>
         </ui:CommandBar>

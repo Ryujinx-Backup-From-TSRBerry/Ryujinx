@@ -37,6 +37,24 @@ namespace Ryujinx.Ava.Common.Ui.Controls
             }
         }
 
+        public void GameList_Tapped(object sender, TappedEventArgs args)
+        {
+            if (sender is ListBox listBox)
+            {
+                if (listBox.SelectedItem is ApplicationData selected)
+                {
+                    if (OperatingSystem.IsAndroid())
+                    {
+                        RaiseEvent(new ApplicationOpenedEventArgs(selected, ApplicationOpenedEvent));
+                    }
+                    else
+                    {
+                        OnHold();
+                    }
+                }
+            }
+        }
+
         public void GameList_SelectionChanged(object sender, SelectionChangedEventArgs args)
         {
             if (sender is ListBox listBox)

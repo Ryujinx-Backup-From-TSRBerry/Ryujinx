@@ -99,7 +99,7 @@
             VerticalAlignment="Stretch"
             ContextFlyout="{StaticResource GameContextMenu}"
             DoubleTapped="GameList_DoubleTapped"
-            Tapped="GameList_DoubleTapped"
+            Tapped="GameList_Tapped"
             Items="{Binding AppsObservableList}"
             SelectionChanged="GameList_SelectionChanged">
             <ListBox.GestureRecognizers>

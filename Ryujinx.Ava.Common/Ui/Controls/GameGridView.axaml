@@ -98,7 +98,7 @@
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             ContextFlyout="{StaticResource GameContextMenu}"
-            Tapped="GameList_DoubleTapped"
+            Tapped="GameList_Tapped"
             DoubleTapped="GameList_DoubleTapped"
             Items="{Binding AppsObservableList}"
             SelectionChanged="GameList_SelectionChanged">

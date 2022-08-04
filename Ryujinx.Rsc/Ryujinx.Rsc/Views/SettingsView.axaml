@@ -34,21 +34,21 @@
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Grid IsVisible="{Binding ShowToolbar}" Background="{DynamicResource ButtonBackground}"
+        <Grid IsVisible="{Binding ShowToolbar}" Margin="" Background="{DynamicResource ButtonBackground}"
                     HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" VerticalAlignment="Stretch" Margin="2,2,10,2" Click="BackButton_OnClick" IsVisible="{Binding HasBackStack}">
+            <Button Grid.Column="0" VerticalAlignment="Stretch"  Width="40" MinWidth="40" Height="35" Click="BackButton_OnClick" IsVisible="{Binding HasBackStack}">
                 <ui:SymbolIcon Symbol="Back" />
             </Button>
-            <Button Grid.Column="0" Click="HomeButton_OnClick" VerticalAlignment="Stretch" Margin="2,2,10,2" IsVisible="{Binding !HasBackStack}">
+            <Button Grid.Column="0" Width="40" MinWidth="40" Height="35" Click="HomeButton_OnClick" VerticalAlignment="Stretch" IsVisible="{Binding !HasBackStack}">
                 <ui:SymbolIcon FontSize="25" Symbol="Home" />
             </Button>
-            <Label Grid.Column="1" Content="{Binding Title}" VerticalAlignment="Center" FontSize="16"  Padding="0"  />
-            <Button Grid.Column="2" Click="SaveButton_OnClick" Margin="10,5">
+            <Label Grid.Column="1" Content="{Binding Title}" Margin="5" VerticalAlignment="Center" FontSize="16"  Padding="0"  />
+            <Button Grid.Column="2"  Width="40" MinWidth="40" Height="35" Click="SaveButton_OnClick">
                 <ui:SymbolIcon FontSize="20" Symbol="Save" />
             </Button>
         </Grid>

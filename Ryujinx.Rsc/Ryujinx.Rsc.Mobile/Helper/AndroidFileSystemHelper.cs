@@ -214,5 +214,12 @@ namespace Ryujinx.Rsc.Mobile.Helper
             using var documentFile = DocumentFile.FromSingleUri(_activity, uri);
             return documentFile.Length();
         }
+
+        public void DeleteFile(string file)
+        {
+            var uri = Android.Net.Uri.Parse(file);
+            using var documentFile = DocumentFile.FromSingleUri(_activity, uri);
+            documentFile.Delete();
+        }
     }
 }

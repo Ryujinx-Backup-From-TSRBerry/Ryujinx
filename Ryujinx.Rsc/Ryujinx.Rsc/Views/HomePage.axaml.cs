@@ -6,10 +6,13 @@ using Avalonia.Markup.Xaml;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Navigation;
 using Ryujinx.Ava.Common;
+using Ryujinx.Ava.Common.Locale;
 using Ryujinx.Ava.Common.Ui.Controls;
+using Ryujinx.Common.Configuration;
 using Ryujinx.Rsc.ViewModels;
 using Ryujinx.Ui.App.Common;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Ryujinx.Rsc.Views
@@ -132,6 +135,121 @@ namespace Ryujinx.Rsc.Views
         private void DismissButton_OnClick(object sender, RoutedEventArgs e)
         {
             ViewModel.ShowContextOptions = false;
+        }
+
+        public async void PurgePtcMenuItem_Click(object sender, RoutedEventArgs ev)
+        {
+            var selection = ViewModel.IsGrid ? GameGrid.SelectedApplication : GameList.SelectedApplication;
+
+            if (selection != null)
+            {
+                DirectoryInfo mainDir = new(Path.Combine(AppDataManager.GamesDirPath, selection.TitleId, "cache", "cpu", "0"));
+                DirectoryInfo backupDir = new(Path.Combine(AppDataManager.GamesDirPath, selection.TitleId, "cache", "cpu", "1"));
+
+                // FIXME: Found a way to reproduce the bold effect on the title name (fork?).
+                UserResult result = await ContentDialogHelper.CreateConfirmationDialog(LocaleManager.Instance["DialogWarning"],
+                    string.Format(LocaleManager.Instance["DialogPPTCDeletionMessage"], selection.TitleName), LocaleManager.Instance["InputDialogYes"], LocaleManager.Instance["InputDialogNo"], LocaleManager.Instance["RyujinxConfirm"]);
+
+                List<FileInfo> cacheFiles = new();
+
+                if (mainDir.Exists)
+                {
+                    cacheFiles.AddRange(mainDir.EnumerateFiles("*.cache"));
+                }
+
+                if (backupDir.Exists)
+                {
+                    cacheFiles.AddRange(backupDir.EnumerateFiles("*.cache"));
+                }
+
+                if (cacheFiles.Count > 0 && result == UserResult.Yes)
+                {
+                    foreach (FileInfo file in cacheFiles)
+                    {
+                        try
+                        {
+                            file.Delete();
+                        }
+                        catch (Exception e)
+                        {
+                            await ContentDialogHelper.CreateErrorDialog(string.Format(LocaleManager.Instance["DialogPPTCDeletionErrorMessage"], file.Name, e));
+                        }
+                    }
+                }
+            }
+        }
+
+        public async void PurgeShaderMenuItem_Click(object sender, RoutedEventArgs ev)
+        {
+            var selection = ViewModel.IsGrid ? GameGrid.SelectedApplication : GameList.SelectedApplication;
+
+            if (selection != null)
+            {
+                DirectoryInfo shaderCacheDir = new(Path.Combine(AppDataManager.GamesDirPath, selection.TitleId, "cache", "shader"));
+
+                // FIXME: Found a way to reproduce the bold effect on the title name (fork?).
+                UserResult result = await ContentDialogHelper.CreateConfirmationDialog(LocaleManager.Instance["DialogWarning"],
+                    string.Format(LocaleManager.Instance["DialogShaderDeletionMessage"], selection.TitleName), LocaleManager.Instance["InputDialogYes"], LocaleManager.Instance["InputDialogNo"], LocaleManager.Instance["RyujinxConfirm"]);
+
+                List<DirectoryInfo> oldCacheDirectories = new List<DirectoryInfo>();
+                List<FileInfo> newCacheFiles = new List<FileInfo>();
+
+                if (shaderCacheDir.Exists)
+                {
+                    oldCacheDirectories.AddRange(shaderCacheDir.EnumerateDirectories("*"));
+                    newCacheFiles.AddRange(shaderCacheDir.GetFiles("*.toc"));
+                    newCacheFiles.AddRange(shaderCacheDir.GetFiles("*.data"));
+                }
+
+                if ((oldCacheDirectories.Count > 0 || newCacheFiles.Count > 0) && result == UserResult.Yes)
+                {
+                    foreach (DirectoryInfo directory in oldCacheDirectories)
+                    {
+                        try
+                        {
+                            directory.Delete(true);
+                        }
+                        catch (Exception e)
+                        {
+                            await ContentDialogHelper.CreateErrorDialog(string.Format(LocaleManager.Instance["DialogPPTCDeletionErrorMessage"], directory.Name, e));
+                        }
+                    }
+                }
+
+                foreach (FileInfo file in newCacheFiles)
+                {
+                    try
+                    {
+                        file.Delete();
+                    }
+                    catch (Exception e)
+                    {
+                        await ContentDialogHelper.CreateErrorDialog(string.Format(LocaleManager.Instance["ShaderCachePurgeError"], file.Name, e));
+                    }
+                }
+            }
+        }
+
+        public async void DeleteMenuItem_Click(object sender, RoutedEventArgs ev)
+        {
+            var selection = ViewModel.IsGrid ? GameGrid.SelectedApplication : GameList.SelectedApplication;
+
+            if (selection != null)
+            {
+                UserResult result = await ContentDialogHelper.CreateConfirmationDialog(LocaleManager.Instance["DialogWarning"],
+                    string.Format(LocaleManager.Instance["DialogGameDeletionMessage"], selection.TitleName), LocaleManager.Instance["InputDialogYes"], LocaleManager.Instance["InputDialogNo"], LocaleManager.Instance["RyujinxConfirm"]);
+
+                if(result == UserResult.Yes)
+                {
+                    var fileSystem = App.FileSystemHelperFactory();
+
+                    return;
+
+                    fileSystem.DeleteFile(selection.Path);
+
+                    ViewModel.ReloadGameList();
+                }
+            }
         }
     }
 }

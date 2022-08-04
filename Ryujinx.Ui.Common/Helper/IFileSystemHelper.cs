@@ -13,5 +13,6 @@ namespace Ryujinx.Ui.Common.Helper
         bool DirectoryExist(string directory);
         long GetFileLength(string file);
         Task<string> OpenFolder(object parent);
+        void DeleteFile(string file);
     }
 }

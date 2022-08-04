@@ -112,7 +112,7 @@
                     </Border>
                 </Flyout>
             </Button.Flyout>
-            <ui:SymbolIcon FontSize="25" Symbol="Repair" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+            <ui:SymbolIcon FontSize="25" Symbol="PreviewLink" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                            Height="25" Width="25" />
         </Button>
     </Grid>

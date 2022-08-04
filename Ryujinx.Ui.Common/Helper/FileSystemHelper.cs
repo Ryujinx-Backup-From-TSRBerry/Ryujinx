@@ -8,6 +8,11 @@ namespace Ryujinx.Ui.Common.Helper
 {
     public class FileSystemHelper : IFileSystemHelper
     {
+        public void DeleteFile(string file)
+        {
+            File.Delete(file);
+        }
+
         public bool DirectoryExist(string directory)
         {
             return Directory.Exists(directory);
