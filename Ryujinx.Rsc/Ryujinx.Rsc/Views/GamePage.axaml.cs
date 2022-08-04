@@ -13,17 +13,19 @@ using Ryujinx.Rsc.ViewModels;
 using Ryujinx.Ui.Common.Configuration;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Ryujinx.Rsc.Views
 {
     public partial class GamePage : UserControl
     {
         private bool _isClosing;
+        private bool _canNavigateFrom;
         private ManualResetEvent _rendererWaitEvent;
         public VulkanRendererControl VkRenderer { get; set; }
 
         public AppHost AppHost { get; set; }
-        
+
         public GamePage()
         {
             InitializeComponent();
@@ -34,6 +36,11 @@ namespace Ryujinx.Rsc.Views
                 AddHandler(Frame.NavigatedToEvent, (s, e) =>
                 {
                     NavigatedTo(e);
+                }, RoutingStrategies.Direct);
+
+                AddHandler(Frame.NavigatingFromEvent, async (s, e) =>
+                {
+                    await NavigatedFrom(e);
                 }, RoutingStrategies.Direct);
             }
         }
@@ -54,6 +61,28 @@ namespace Ryujinx.Rsc.Views
                 if (!string.IsNullOrWhiteSpace(ViewModel.ApplicationPath))
                 {
                     StartGame(ViewModel.ApplicationPath);
+                }
+            }
+        }
+
+        private async Task NavigatedFrom(NavigatingCancelEventArgs arg)
+        {
+            if (AppConfig.PreviewerDetached)
+            {
+                if (arg.NavigationMode == NavigationMode.Back)
+                {
+                    if (_canNavigateFrom)
+                    {
+                        return;
+                    }
+                    arg.Cancel = true;
+                    _canNavigateFrom = true;
+                    var shouldExit = await ContentDialogHelper.CreateStopEmulationDialog();
+
+                    if (shouldExit)
+                    {
+                        AppHost.Stop();
+                    }
                 }
             }
         }
@@ -90,7 +119,7 @@ namespace Ryujinx.Rsc.Views
             ViewModel.TitleName =
                 string.IsNullOrWhiteSpace(titleName) ? AppHost.Device.Application.TitleName : titleName;
 
-            Thread gameThread = new Thread(InitializeGame) {Name = "GUI.WindowThread"};
+            Thread gameThread = new Thread(InitializeGame) { Name = "GUI.WindowThread" };
             gameThread.Start();
         }
 
@@ -102,7 +131,7 @@ namespace Ryujinx.Rsc.Views
             VkRenderer.RendererInitialized += Renderer_Created;
             AppHost.AppExit += AppHost_AppExit;
             AppHost.StatusUpdatedEvent += AppHost_StatusUpdatedEvent;
-            
+
             Dispatcher.UIThread.Post(() =>
             {
                 ContentFrame.Content = VkRenderer;
@@ -110,7 +139,7 @@ namespace Ryujinx.Rsc.Views
             });
 
             _rendererWaitEvent.WaitOne();
-            
+
             Dispatcher.UIThread.Post(ControllerLayout.Reload);
             AppHost?.Start();
 
@@ -120,7 +149,7 @@ namespace Ryujinx.Rsc.Views
         private void Renderer_Created(object sender, EventArgs e)
         {
             _rendererWaitEvent.Set();
-            
+
             Dispatcher.UIThread.Post(() =>
             {
                 ViewModel.EnableVirtualController = true;

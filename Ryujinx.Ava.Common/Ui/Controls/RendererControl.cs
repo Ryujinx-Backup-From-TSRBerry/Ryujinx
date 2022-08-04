@@ -99,7 +99,8 @@ namespace Ryujinx.Ava.Common.Ui.Controls
 
         public void QueueRender()
         {
-            AppConfig.RenderTimer.TickNow();
+            InvalidateVisual();
+            AppConfig.RenderTimer?.TickNow();
         }
 
         public abstract void Present(object image);
