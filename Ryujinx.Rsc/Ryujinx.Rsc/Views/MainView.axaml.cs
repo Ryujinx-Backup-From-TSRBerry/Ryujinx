@@ -44,6 +44,17 @@ namespace Ryujinx.Rsc.Views
         {
             InitializeComponent();
             _rendererWaitEvent = new ManualResetEvent(false);
+
+            App.BackPressed += App_BackPressed;
+        }
+
+        private void App_BackPressed(object sender, RoutedEventArgs e)
+        {
+            if(ViewFrame.CanGoBack)
+            {
+                ViewFrame.GoBack();
+                e.Handled = true;
+            }
         }
 
         protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -78,7 +89,7 @@ namespace Ryujinx.Rsc.Views
 
         public void GoBack(object parameter = null)
         {
-            if (ViewFrame.BackStack.Count > 0)
+            if (ViewFrame.BackStackDepth > 0)
             {
                 ViewFrame.GoBack();
             }

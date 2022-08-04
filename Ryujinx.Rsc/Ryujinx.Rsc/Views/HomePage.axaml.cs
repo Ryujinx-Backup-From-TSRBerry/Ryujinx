@@ -243,8 +243,6 @@ namespace Ryujinx.Rsc.Views
                 {
                     var fileSystem = App.FileSystemHelperFactory();
 
-                    return;
-
                     fileSystem.DeleteFile(selection.Path);
 
                     ViewModel.ReloadGameList();

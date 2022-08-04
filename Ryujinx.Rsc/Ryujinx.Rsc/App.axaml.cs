@@ -15,6 +15,7 @@ using Ryujinx.Ui.Common.Helper;
 using static Ryujinx.Ava.Common.AppConfig;
 using Ryujinx.Ava.Common;
 using Ryujinx.Common;
+using Avalonia.Interactivity;
 
 namespace Ryujinx.Rsc
 {
@@ -24,6 +25,8 @@ namespace Ryujinx.Rsc
         public static string BaseDirectory { get; set; }
 
         public static Func<AudioBackend, IHardwareDeviceDriver> CreateAudioHardwareDeviceDriver { get; set; }
+
+        public static event EventHandler<RoutedEventArgs> BackPressed;
 
         static App()
         {
@@ -131,6 +134,15 @@ namespace Ryujinx.Rsc
         private void ThemeChanged_Event(object sender, ReactiveEventArgs<string> e)
         {
             ApplyConfiguredTheme(this);
+        }
+
+        public static bool HandleBackPress()
+        {
+            RoutedEventArgs eventArgs = new RoutedEventArgs();
+
+            BackPressed?.Invoke(null, eventArgs);
+
+            return eventArgs.Handled;
         }
     }
 }

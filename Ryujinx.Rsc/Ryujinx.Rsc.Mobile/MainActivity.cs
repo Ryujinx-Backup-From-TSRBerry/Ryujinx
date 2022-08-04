@@ -4,16 +4,10 @@ using Avalonia.Android;
 using Avalonia;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Rsc.Controls;
-using Silk.NET.Vulkan.Extensions.EXT;
-using Silk.NET.Vulkan.Extensions.KHR;
-using System.Collections.Generic;
 using System;
 using Ryujinx.Ui.Common.Configuration;
 using Android.Views;
-
 using WindowManagerFlags = Android.Views.WindowManagerFlags;
-using Avalonia.Rendering;
-using Avalonia.Threading;
 using Android.Runtime;
 using Android.Content;
 using Android.OS;
@@ -23,7 +17,7 @@ using Ryujinx.Ava.Common;
 
 namespace Ryujinx.Rsc.Mobile
 {
-    [Activity(Label = "Ryujinx.Rsc.Mobile", Theme = "@style/MyTheme.NoActionBar", Icon = "@drawable/ryujinx", WindowSoftInputMode=SoftInput.AdjustResize, LaunchMode = LaunchMode.SingleInstance, ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize)]
+    [Activity(Label = "Ryujinx.Rsc.Mobile", Theme = "@style/MyTheme.NoActionBar", Icon = "@drawable/ryujinx", NoHistory = true, WindowSoftInputMode=SoftInput.AdjustResize, LaunchMode = LaunchMode.SingleInstance, ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize)]
     public class MainActivity : AvaloniaActivity<App>
     {
         public event EventHandler<FileSystemResultEventArgs> FileSystemResult;
@@ -108,6 +102,14 @@ namespace Ryujinx.Rsc.Mobile
             base.OnDestroy();
             AppConfig.RenderTimer?.Dispose();
             _fileSystemHelper.Dispose();
+        }
+
+        public override void OnBackPressed()
+        {
+            if (!App.HandleBackPress())
+            {
+                FinishAndRemoveTask();
+            }
         }
     }
 }
