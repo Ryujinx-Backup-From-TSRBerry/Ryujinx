@@ -73,7 +73,9 @@ namespace Ryujinx.Rsc.Views
             string path = OperatingSystem.IsAndroid() ? application.Path : new FileInfo(application.Path).FullName;
 
             ViewModel.ApplicationPath = path;
-                
+
+            ViewModel.SelectedIcon = application.Icon;
+
             ViewModel.Owner.Navigate(typeof(GamePage), ViewModel);
         }
 

@@ -1,28 +1,21 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Threading;
-using Ryujinx.Common.Logging;
+using Ryujinx.Ava.Common;
+using Ryujinx.Ava.Common.Input;
+using Ryujinx.Ava.Common.Ui.Controls;
 using Ryujinx.Graphics.Gpu;
 using Ryujinx.HLE.FileSystem;
 using Ryujinx.HLE.HOS;
 using Ryujinx.HLE.HOS.Services.Account.Acc;
 using Ryujinx.Input.HLE;
-using Ryujinx.Ui.Common.Configuration;
-using Ryujinx.Rsc.Controls;
+using Ryujinx.Rsc.Models;
 using Ryujinx.Rsc.ViewModels;
 using Ryujinx.Ui.App.Common;
+using Ryujinx.Ui.Common.Configuration;
 using System;
 using System.IO;
 using System.Threading;
-using Avalonia.Media;
-using Ryujinx.Rsc.Models;
-using Ryujinx.Ava.Common.Ui.Controls;
-using Ryujinx.Ava.Common.Input;
-using Ryujinx.Ava.Common.Ui.Models;
-using Ryujinx.Ava.Common;
-using FluentAvalonia.UI.Media.Animation;
-
 
 namespace Ryujinx.Rsc.Views
 {
@@ -163,8 +156,6 @@ namespace Ryujinx.Rsc.Views
         private void GameListTab_OnClick(object? sender, RoutedEventArgs e)
         {
             ViewModel.CurrentView = View.GameList;
-
-            //ViewFrame.Content = GameGrid;
         }
     }
 }

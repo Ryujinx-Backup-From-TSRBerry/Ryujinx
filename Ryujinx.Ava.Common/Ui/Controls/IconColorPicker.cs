@@ -3,9 +3,9 @@ using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Collections.Generic;
 
-namespace Ryujinx.Ava.Ui.Windows
+namespace Ryujinx.Ava.Common.Ui.Controls
 {
-    static class IconColorPicker
+    public static class IconColorPicker
     {
         private const int ColorsPerLine = 64;
         private const int TotalColors = ColorsPerLine * ColorsPerLine;
@@ -132,7 +132,7 @@ namespace Ryujinx.Ava.Ui.Windows
         {
             var hitCount = dominantColorBin[color.Qck];
             var balancedHitCount = BalanceHitCount(hitCount, maxHitCount);
-            var quantSat = (GetColorSaturation(color) >> SatQuantShift) << SatQuantShift;
+            var quantSat = GetColorSaturation(color) >> SatQuantShift << SatQuantShift;
             var value = GetColorValue(color);
 
             // If the color is rarely used on the image,
@@ -143,7 +143,7 @@ namespace Ryujinx.Ava.Ui.Windows
             var satWeight = balancedHitCount << 5;
             if (satWeight < 0x100)
             {
-                satWeighted = (satWeighted * satWeight) >> 8;
+                satWeighted = satWeighted * satWeight >> 8;
             }
 
             // Compute score from saturation and dominance of the color.
@@ -184,9 +184,9 @@ namespace Ryujinx.Ava.Ui.Windows
 
         private static int GetQuantizedColorKey(byte r, byte g, byte b)
         {
-            int u = ((-38 * r - 74 * g + 112 * b + 128) >> 8) + 128;
-            int v = ((112 * r - 94 * g - 18 * b + 128) >> 8) + 128;
-            return (v >> UvQuantShift) | ((u >> UvQuantShift) << UvQuantBits);
+            int u = (-38 * r - 74 * g + 112 * b + 128 >> 8) + 128;
+            int v = (112 * r - 94 * g - 18 * b + 128 >> 8) + 128;
+            return v >> UvQuantShift | u >> UvQuantShift << UvQuantBits;
         }
     }
 }

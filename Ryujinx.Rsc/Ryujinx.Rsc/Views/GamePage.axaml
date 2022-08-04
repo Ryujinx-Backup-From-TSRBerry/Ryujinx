@@ -9,6 +9,7 @@
              xmlns:controls="clr-namespace:Ryujinx.Ava.Common.Ui.Controls;assembly=Ryujinx.Ava.Common"
              x:Class="Ryujinx.Rsc.Views.GamePage">
     <UserControl.Resources>
+        <controls:BitmapArrayValueConverter x:Key="ByteImage" />
         <Color x:Key="OverlayBackgroundColor">#98414141</Color>
     </UserControl.Resources>
     <Grid>
@@ -115,5 +116,94 @@
             <ui:SymbolIcon FontSize="25" Symbol="PreviewLink" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                            Height="25" Width="25" />
         </Button>
+        <Grid
+                Grid.Row="1"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Background="{DynamicResource ThemeContentBackgroundColor}"
+                IsVisible="{Binding ShowLoadProgress}"
+                ZIndex="1000">
+            <Grid
+                Margin="40"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                IsVisible="{Binding ShowLoadProgress}">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Border
+                    Grid.ColumnSpan="2"
+                    Grid.Column="0"
+                    Width="256"
+                    Height="256"
+                    Margin="10"
+                    Padding="4"
+                    BorderBrush="Black"
+                    BorderThickness="2"
+                    BoxShadow="4 4 32 8 #40000000"
+                    CornerRadius="3"
+                    IsVisible="{Binding ShowLoadProgress}">
+                    <Image
+                        Width="256"
+                        Height="256"
+                        IsVisible="{Binding ShowLoadProgress}"
+                        Source="{Binding SelectedIcon, Converter={StaticResource ByteImage}}" />
+                </Border>
+                <Grid
+                    Grid.Row="1"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
+                    IsVisible="{Binding ShowLoadProgress}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock
+                        Grid.Row="0"
+                        Margin="10"
+                        FontSize="30"
+                        FontWeight="Bold"
+                        IsVisible="{Binding ShowLoadProgress}"
+                        Text="{Binding LoadHeading}"
+                        TextAlignment="Left"
+                        TextWrapping="Wrap" />
+                    <Border
+                        Grid.Row="1"
+                        Margin="10"
+                        Padding="0"
+                        HorizontalAlignment="Stretch"
+                        BorderBrush="{Binding ProgressBarBackgroundColor}"
+                        BorderThickness="1"
+                        ClipToBounds="True"
+                        CornerRadius="5"
+                        IsVisible="{Binding ShowLoadProgress}">
+                        <ProgressBar
+                            Height="10"
+                            MinWidth="500"
+                            Margin="0"
+                            Padding="0"
+                            HorizontalAlignment="Stretch"
+                            Background="{Binding ProgressBarBackgroundColor}"
+                            ClipToBounds="True"
+                            CornerRadius="5"
+                            Foreground="{Binding ProgressBarForegroundColor}"
+                            IsIndeterminate="{Binding IsLoadingIndeterminate}"
+                            IsVisible="{Binding ShowLoadProgress}"
+                            Maximum="{Binding ProgressMaximum}"
+                            Minimum="0"
+                            Value="{Binding ProgressValue}" />
+                    </Border>
+                    <TextBlock
+                        Grid.Row="2"
+                        Margin="10"
+                        FontSize="18"
+                        IsVisible="{Binding ShowLoadProgress}"
+                        Text="{Binding CacheLoadStatus}"
+                        TextAlignment="Left" />
+                </Grid>
+            </Grid>
+        </Grid>
     </Grid>
 </UserControl>

@@ -14,9 +14,11 @@ using Ryujinx.Ava.Common;
 using Ryujinx.Ava.Common.Locale;
 using Ryujinx.Ava.Common.Ui.Controls;
 using Ryujinx.Rsc.Models;
-using Silk.NET.Vulkan;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Ryujinx.HLE;
+using ARMeilleure.Translation.PTC;
+using ShaderCacheLoadingState = Ryujinx.Graphics.Gpu.Shader.ShaderCacheState;
 
 namespace Ryujinx.Rsc.ViewModels
 {
@@ -39,6 +41,15 @@ namespace Ryujinx.Rsc.ViewModels
         private bool _isPaused;
         private bool _showContextOptions;
         private string _searchText;
+        private bool _isLoadingIndeterminate = true;
+        private bool _showLoadProgress;
+        private Brush _progressBarBackgroundColor;
+        private string _loadHeading;
+        private int _progressValue;
+        private int _progressMaximum;
+        private string _cacheLoadStatus;
+        private Brush _progressBarForegroundColor;
+        private byte[] _selectedIcon;
 
         public MainView Owner { get; set; }
         public GamePage GamePage { get; set; }
@@ -176,6 +187,106 @@ namespace Ryujinx.Rsc.ViewModels
             }
         }
 
+        public bool IsLoadingIndeterminate
+        {
+            get => _isLoadingIndeterminate;
+            set
+            {
+                _isLoadingIndeterminate = value;
+
+                this.RaisePropertyChanged();
+            }
+        }
+
+        public bool ShowLoadProgress
+        {
+            get => _showLoadProgress;
+            set
+            {
+                _showLoadProgress = value;
+
+                this.RaisePropertyChanged();
+                this.RaisePropertyChanged(nameof(EnableVirtualController));
+            }
+        }
+
+        public Brush ProgressBarBackgroundColor
+        {
+            get => _progressBarBackgroundColor;
+            set
+            {
+                _progressBarBackgroundColor = value;
+
+                this.RaisePropertyChanged();
+            }
+        }
+
+        public Brush ProgressBarForegroundColor
+        {
+            get => _progressBarForegroundColor;
+            set
+            {
+                _progressBarForegroundColor = value;
+
+                this.RaisePropertyChanged();
+            }
+        }
+
+        public byte[] SelectedIcon
+        {
+            get => _selectedIcon;
+            set
+            {
+                _selectedIcon = value;
+
+                this.RaisePropertyChanged();
+            }
+        }
+
+        public string LoadHeading
+        {
+            get => _loadHeading;
+            set
+            {
+                _loadHeading = value;
+
+                this.RaisePropertyChanged();
+            }
+        }
+
+        public int ProgressMaximum
+        {
+            get => _progressMaximum;
+            set
+            {
+                _progressMaximum = value;
+
+                this.RaisePropertyChanged();
+            }
+        }
+
+        public int ProgressValue
+        {
+            get => _progressValue;
+            set
+            {
+                _progressValue = value;
+
+                this.RaisePropertyChanged();
+            }
+        }
+
+        public string CacheLoadStatus
+        {
+            get => _cacheLoadStatus;
+            set
+            {
+                _cacheLoadStatus = value;
+
+                this.RaisePropertyChanged();
+            }
+        }
+
         public bool VolumeMuted => _currentVolume == 0;
 
         public float Volume
@@ -224,7 +335,7 @@ namespace Ryujinx.Rsc.ViewModels
 
         public bool EnableVirtualController
         {
-            get => _enableVirtualController; set
+            get => _enableVirtualController && !ShowLoadProgress; set
             {
                 _enableVirtualController = value;
 
@@ -237,6 +348,9 @@ namespace Ryujinx.Rsc.ViewModels
             Owner.ApplicationLibrary.ApplicationCountUpdated += ApplicationLibrary_ApplicationCountUpdated;
             Owner.ApplicationLibrary.ApplicationAdded += ApplicationLibrary_ApplicationAdded;
 
+            Ptc.PtcStateChanged -= ProgressHandler;
+            Ptc.PtcStateChanged += ProgressHandler;
+
             ReloadGameList();
 
             ShowNames = true;
@@ -245,6 +359,61 @@ namespace Ryujinx.Rsc.ViewModels
         public void ToggleVirtualController()
         {
             EnableVirtualController = !EnableVirtualController;
+        }
+
+        public void HandleShaderProgress(Switch emulationContext)
+        {
+            emulationContext.Gpu.ShaderCacheStateChanged -= ProgressHandler;
+            emulationContext.Gpu.ShaderCacheStateChanged += ProgressHandler;
+        }
+
+
+        private void ProgressHandler<T>(T state, int current, int total) where T : Enum
+        {
+            try
+            {
+                ProgressMaximum = total;
+                ProgressValue = current;
+
+                switch (state)
+                {
+                    case PtcLoadingState ptcState:
+                        CacheLoadStatus = $"{current} / {total}";
+                        switch (ptcState)
+                        {
+                            case PtcLoadingState.Start:
+                            case PtcLoadingState.Loading:
+                                LoadHeading = LocaleManager.Instance["CompilingPPTC"];
+                                IsLoadingIndeterminate = false;
+                                break;
+                            case PtcLoadingState.Loaded:
+                                LoadHeading = string.Format(LocaleManager.Instance["LoadingHeading"], TitleName);
+                                IsLoadingIndeterminate = true;
+                                CacheLoadStatus = "";
+                                break;
+                        }
+                        break;
+                    case ShaderCacheLoadingState shaderCacheState:
+                        CacheLoadStatus = $"{current} / {total}";
+                        switch (shaderCacheState)
+                        {
+                            case ShaderCacheLoadingState.Start:
+                            case ShaderCacheLoadingState.Loading:
+                                LoadHeading = LocaleManager.Instance["CompilingShaders"];
+                                IsLoadingIndeterminate = false;
+                                break;
+                            case ShaderCacheLoadingState.Loaded:
+                                LoadHeading = string.Format(LocaleManager.Instance["LoadingHeading"], TitleName);
+                                IsLoadingIndeterminate = true;
+                                CacheLoadStatus = "";
+                                break;
+                        }
+                        break;
+                    default:
+                        throw new ArgumentException($"Unknown Progress Handler type {typeof(T)}");
+                }
+            }
+            catch (Exception) { }
         }
 
         public void ToggleVSync()

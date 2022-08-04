@@ -5,13 +5,16 @@ using Avalonia.Threading;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Navigation;
 using Ryujinx.Ava.Common;
+using Ryujinx.Ava.Common.Locale;
 using Ryujinx.Ava.Common.Ui.Controls;
 using Ryujinx.Ava.Common.Ui.Models;
 using Ryujinx.Common.Logging;
 using Ryujinx.Rsc.Controls;
 using Ryujinx.Rsc.ViewModels;
 using Ryujinx.Ui.Common.Configuration;
+using SixLabors.ImageSharp.PixelFormats;
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -57,6 +60,7 @@ namespace Ryujinx.Rsc.Views
                 DataContext = ViewModel;
 
                 ViewModel.GamePage = this;
+                ViewModel.ShowLoadProgress = true;
 
                 if (!string.IsNullOrWhiteSpace(ViewModel.ApplicationPath))
                 {
@@ -71,7 +75,7 @@ namespace Ryujinx.Rsc.Views
             {
                 if (arg.NavigationMode == NavigationMode.Back)
                 {
-                    if (_canNavigateFrom)
+                    if (_canNavigateFrom || !ViewModel.IsGameRunning)
                     {
                         return;
                     }
@@ -116,11 +120,34 @@ namespace Ryujinx.Rsc.Views
                 return;
             }
 
+            PrepareLoadScreen();
+
             ViewModel.TitleName =
                 string.IsNullOrWhiteSpace(titleName) ? AppHost.Device.Application.TitleName : titleName;
 
+            ViewModel.LoadHeading = string.IsNullOrWhiteSpace(titleName) ? string.Format(LocaleManager.Instance["LoadingHeading"], AppHost.Device.Application.TitleName) : titleName;
+
             Thread gameThread = new Thread(InitializeGame) { Name = "GUI.WindowThread" };
             gameThread.Start();
+        }
+
+        private void PrepareLoadScreen()
+        {
+            using MemoryStream stream = new MemoryStream(ViewModel.SelectedIcon);
+            using var gameIconBmp = SixLabors.ImageSharp.Image.Load<Bgra32>(stream);
+
+            var dominantColor = IconColorPicker.GetFilteredColor(gameIconBmp).ToPixel<Bgra32>();
+
+            const int ColorDivisor = 4;
+
+            Color progressFgColor = Color.FromRgb(dominantColor.R, dominantColor.G, dominantColor.B);
+            Color progressBgColor = Color.FromRgb(
+                (byte)(dominantColor.R / ColorDivisor),
+                (byte)(dominantColor.G / ColorDivisor),
+                (byte)(dominantColor.B / ColorDivisor));
+
+            ViewModel.ProgressBarForegroundColor = new SolidColorBrush(progressFgColor);
+            ViewModel.ProgressBarBackgroundColor = new SolidColorBrush(progressBgColor);
         }
 
         public double Scaling { get; set; }
