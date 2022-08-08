@@ -47,7 +47,7 @@ namespace Ryujinx.Rsc.Views.SettingPages
 
                 if (folder.TryGetUri(out _))
                 {
-                    path = await folder.SaveBookmark();
+                    path = await folder.SaveBookmarkAsync();
                 }
             }
 

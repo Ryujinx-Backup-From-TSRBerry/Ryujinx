@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Media;
 using Avalonia.Rendering.SceneGraph;
+using Avalonia.Threading;
 using Ryujinx.Common.Configuration;
 using SPB.Windowing;
 using System;
@@ -99,8 +100,10 @@ namespace Ryujinx.Ava.Common.Ui.Controls
 
         public void QueueRender()
         {
-            InvalidateVisual();
-            AppConfig.RenderTimer?.TickNow();
+            Dispatcher.UIThread.Post(() =>
+            {
+                InvalidateVisual();
+            });
         }
 
         public abstract void Present(object image);

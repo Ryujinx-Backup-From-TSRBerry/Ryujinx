@@ -88,17 +88,19 @@ namespace Ryujinx.Ava.Common.Ui.Controls
 
             public void Render(IDrawingContextImpl context)
             {
+                var leaseFeature = context.GetFeature<ISkiaSharpApiLeaseFeature>();
+
+                if (leaseFeature == null)
+                {
+                    return;
+                }
+
                 if (_control.Image == null || _control.RenderSize.Width == 0 || _control.RenderSize.Height == 0)
                 {
                     return;
                 }
 
                 var image = (PresentImageInfo)_control.Image;
-
-                if (context is not ISkiaDrawingContextImpl skiaDrawingContextImpl)
-                {
-                    return;
-                }
 
                 _control._platformInterface.Device.QueueWaitIdle();
 
@@ -132,8 +134,10 @@ namespace Ryujinx.Ava.Common.Ui.Controls
                     1,
                     imageInfo);
 
+                using var lease = leaseFeature.Lease();
+
                 using var surface = SKSurface.Create(
-                    gpu.GrContext,
+                    lease.GrContext,
                     backendTexture,
                     GRSurfaceOrigin.TopLeft,
                     SKColorType.Rgba8888);
@@ -146,7 +150,7 @@ namespace Ryujinx.Ava.Common.Ui.Controls
                 var rect = new Rect(new Point(), _control.RenderSize);
 
                 using var snapshot = surface.Snapshot();
-                skiaDrawingContextImpl.SkCanvas.DrawImage(snapshot, rect.ToSKRect(), _control.Bounds.ToSKRect(), new SKPaint());
+                lease.SkCanvas.DrawImage(snapshot, rect.ToSKRect(), _control.Bounds.ToSKRect(), new SKPaint());
             }
         }
     }

@@ -17,7 +17,7 @@ using Ryujinx.Ava.Common;
 
 namespace Ryujinx.Rsc.Mobile
 {
-    [Activity(Label = "Ryujinx.Rsc.Mobile", Theme = "@style/MyTheme.NoActionBar", Icon = "@drawable/ryujinx", NoHistory = true, WindowSoftInputMode=SoftInput.AdjustResize, LaunchMode = LaunchMode.SingleInstance, ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize)]
+    [Activity(Label = "Ryujinx.Rsc.Mobile", Theme = "@style/MyTheme.NoActionBar", Icon = "@drawable/ryujinx", WindowSoftInputMode=SoftInput.AdjustResize, LaunchMode = LaunchMode.SingleInstance, ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize)]
     public class MainActivity : AvaloniaActivity<App>
     {
         public event EventHandler<FileSystemResultEventArgs> FileSystemResult;
@@ -48,6 +48,7 @@ namespace Ryujinx.Rsc.Mobile
                 .With(new AndroidPlatformOptions()
                 {
                     UseGpu = false,
+                    UseCompositor = true,
                 })
                 .With(new SkiaOptions()
                 {

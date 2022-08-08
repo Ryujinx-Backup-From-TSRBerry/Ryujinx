@@ -143,6 +143,13 @@ namespace Ryujinx.Ava.Common.Ui.Controls
 
             public void Render(IDrawingContextImpl context)
             {
+                var leaseFeature = context.GetFeature<ISkiaSharpApiLeaseFeature>();
+
+                if (leaseFeature == null)
+                {
+                    return;
+                }
+
                 if (_control.Image == null)
                 {
                     return;
@@ -162,18 +169,16 @@ namespace Ryujinx.Ava.Common.Ui.Controls
                 GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, (int)image, 0);
                 GL.BindFramebuffer(FramebufferTarget.Framebuffer, currentFramebuffer);
 
-                if (context is not ISkiaDrawingContextImpl skiaDrawingContextImpl)
-                {
-                    return;
-                }
-
                 var imageInfo = new SKImageInfo((int)_control.RenderSize.Width, (int)_control.RenderSize.Height, SKColorType.Rgba8888);
                 var glInfo = new GRGlFramebufferInfo((uint)_framebuffer, SKColorType.Rgba8888.ToGlSizedFormat());
 
                 GL.WaitSync(fence, WaitSyncFlags.None, ulong.MaxValue);
 
                 using var backendTexture = new GRBackendRenderTarget(imageInfo.Width, imageInfo.Height, 1, 0, glInfo);
-                using var surface = SKSurface.Create(skiaDrawingContextImpl.GrContext, backendTexture, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888);
+
+                using var lease = leaseFeature.Lease();
+
+                using var surface = SKSurface.Create(lease.GrContext, backendTexture, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888);
 
                 if (surface == null)
                 {
@@ -183,7 +188,7 @@ namespace Ryujinx.Ava.Common.Ui.Controls
                 var rect = new Rect(new Point(), _control.RenderSize);
 
                 using var snapshot = surface.Snapshot();
-                skiaDrawingContextImpl.SkCanvas.DrawImage(snapshot, rect.ToSKRect(), _control.Bounds.ToSKRect(), new SKPaint());
+                lease.SkCanvas.DrawImage(snapshot, rect.ToSKRect(), _control.Bounds.ToSKRect(), new SKPaint());
             }
         }
     }
