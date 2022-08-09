@@ -14,6 +14,7 @@ using Android.OS;
 using Ryujinx.Rsc.Mobile.Helper;
 using Ryujinx.Ava.Common.Ui.Backend;
 using Ryujinx.Ava.Common;
+using Silk.NET.Vulkan;
 
 namespace Ryujinx.Rsc.Mobile
 {
@@ -52,7 +53,7 @@ namespace Ryujinx.Rsc.Mobile
                 })
                 .With(new SkiaOptions()
                 {
-                    CustomGpuFactory = SkiaGpuFactory.CreateVulkanGpu
+                    CustomGpuFactory = () => { return SkiaGpuFactory.CreateVulkanGpu(Vk.GetApi); }
                 });
 
             return base.CustomizeAppBuilder(builder);
@@ -88,7 +89,7 @@ namespace Ryujinx.Rsc.Mobile
             }
         }
 
-        protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent? data)
+        protected override void OnActivityResult(int requestCode, [GeneratedEnum] Android.App.Result resultCode, Intent? data)
         {
             base.OnActivityResult(requestCode, resultCode, data);
 
