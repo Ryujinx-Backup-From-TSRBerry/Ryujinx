@@ -82,19 +82,22 @@ namespace Ryujinx.Graphics.Vulkan
 
         public bool PreferThreading => true;
 
+        public Func<Vk> GetApiFunction { get; }
+
         public event EventHandler<ScreenCaptureImageInfo> ScreenCaptured;
 
-        public VulkanRenderer(Func<Instance, Vk, SurfaceKHR> surfaceFunc, Func<string[]> requiredExtensionsFunc, string preferredGpuId)
+        public VulkanRenderer(Func<Instance, Vk, SurfaceKHR> surfaceFunc, Func<string[]> requiredExtensionsFunc, string preferredGpuId, Func<Vk> getApiFunction)
         {
             _getSurface = surfaceFunc;
             _getRequiredExtensions = requiredExtensionsFunc;
             _preferredGpuId = preferredGpuId;
+            GetApiFunction = getApiFunction;
             Shaders = new HashSet<ShaderCollection>();
             Textures = new HashSet<ITexture>();
             Samplers = new HashSet<SamplerHolder>();
         }
 
-        public VulkanRenderer(Instance instance, Device device, PhysicalDevice physicalDevice, Queue queue, uint queueFamilyIndex, object lockObject)
+        public VulkanRenderer(Instance instance, Device device, PhysicalDevice physicalDevice, Queue queue, uint queueFamilyIndex, object lockObject, Func<Vk> getApiFunction)
         {
             _instance = instance;
             _physicalDevice = physicalDevice;
@@ -103,6 +106,7 @@ namespace Ryujinx.Graphics.Vulkan
 
             Queue = queue;
             QueueLock = lockObject;
+            GetApiFunction = getApiFunction;
 
             IsOffScreen = true;
             Shaders = new HashSet<ShaderCollection>();
@@ -239,7 +243,7 @@ namespace Ryujinx.Graphics.Vulkan
 
         private unsafe void SetupContext(GraphicsDebugLevel logLevel)
         {
-            var api = Vk.GetApi();
+            var api = GetApiFunction();
 
             Api = api;
 
@@ -276,7 +280,7 @@ namespace Ryujinx.Graphics.Vulkan
 
         private unsafe void SetupOffScreenContext(GraphicsDebugLevel logLevel)
         {
-            var api = Vk.GetApi();
+            var api = GetApiFunction();
 
             Api = api;
 

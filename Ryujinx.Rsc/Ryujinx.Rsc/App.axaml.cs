@@ -16,6 +16,7 @@ using static Ryujinx.Ava.Common.AppConfig;
 using Ryujinx.Ava.Common;
 using Ryujinx.Common;
 using Avalonia.Interactivity;
+using Silk.NET.Vulkan;
 
 namespace Ryujinx.Rsc
 {
@@ -27,6 +28,8 @@ namespace Ryujinx.Rsc
         public static Func<AudioBackend, IHardwareDeviceDriver> CreateAudioHardwareDeviceDriver { get; set; }
 
         public static event EventHandler<RoutedEventArgs> BackPressed;
+
+        public static Func<Vk> GetApi{ get; set; }
 
         static App()
         {

@@ -484,7 +484,8 @@ namespace Ryujinx.Headless.SDL2
                 return new VulkanRenderer(
                     (instance, vk) => new SurfaceKHR((ulong)(vulkanWindow.CreateWindowSurface(instance.Handle))),
                     vulkanWindow.GetRequiredInstanceExtensions,
-                    preferredGpuId);
+                    preferredGpuId,
+                    Vk.GetApi);
             }
             else
             {

@@ -569,7 +569,8 @@ namespace Ryujinx.Rsc
                 vulkan.PhysicalDevice.InternalHandle,
                 vulkan.Device.Queue.InternalHandle,
                 vulkan.PhysicalDevice.QueueFamilyIndex,
-                vulkan.Device.Lock);
+                vulkan.Device.Lock,
+                App.GetApi);
 
             IHardwareDeviceDriver deviceDriver = App.CreateAudioHardwareDeviceDriver(ConfigurationState.Instance.System.AudioBackend);
 

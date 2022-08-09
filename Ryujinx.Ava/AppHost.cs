@@ -50,6 +50,7 @@ using MouseButton = Ryujinx.Input.MouseButton;
 using Size = Avalonia.Size;
 using Switch = Ryujinx.HLE.Switch;
 using WindowState = Avalonia.Controls.WindowState;
+using Ryujinx.Ava.Common.Ui.Backend.Vulkan;
 
 namespace Ryujinx.Ava
 {
@@ -601,7 +602,8 @@ namespace Ryujinx.Ava
                     vulkan.PhysicalDevice.InternalHandle,
                     vulkan.Device.Queue.InternalHandle,
                     vulkan.PhysicalDevice.QueueFamilyIndex,
-                    vulkan.Device.Lock);
+                    vulkan.Device.Lock, 
+                    VulkanSkiaGpu.GetApiFunction);
             }
             else
             {

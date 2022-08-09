@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Ryujinx.Ava.Common.Ui.Backend.Vulkan;
 using Silk.NET.Core;
 using Silk.NET.Vulkan;
 using Silk.NET.Vulkan.Extensions.EXT;
@@ -51,7 +52,7 @@ namespace Ryujinx.Ava.Common.Ui.Vulkan
 
         internal static unsafe VulkanInstance Create(VulkanOptions options)
         {
-            var api = Vk.GetApi();
+            var api = VulkanSkiaGpu.GetApiFunction();
             var applicationName = Marshal.StringToHGlobalAnsi(options.ApplicationName);
             var engineName = Marshal.StringToHGlobalAnsi(EngineName);
             var enabledExtensions = new List<string>(options.InstanceExtensions);

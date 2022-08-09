@@ -18,6 +18,7 @@ namespace Ryujinx.Ava.Common.Ui.Backend.Vulkan
         private bool _initialized;
 
         public GRContext GrContext { get; private set; }
+        public static Func<Vk> GetApiFunction { get; set; }
 
         public VulkanSkiaGpu(long? maxResourceBytes)
         {

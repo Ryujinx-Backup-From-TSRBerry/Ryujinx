@@ -14,6 +14,7 @@ using Ryujinx.Common.Logging;
 using Ryujinx.Common.System;
 using Ryujinx.Common.SystemInfo;
 using Ryujinx.Graphics.Vulkan;
+using Silk.NET.Vulkan;
 using Ryujinx.Modules;
 using Ryujinx.Ui.Common;
 using Ryujinx.Ui.Common.Configuration;
@@ -98,7 +99,7 @@ namespace Ryujinx.Ava
                 })
                 .With(new SkiaOptions()
                 {
-                    CustomGpuFactory = UseVulkan ? SkiaGpuFactory.CreateVulkanGpu : null
+                    CustomGpuFactory = UseVulkan ? () => { return SkiaGpuFactory.CreateVulkanGpu(Vk.GetApi); } : null
                 })
                 .AfterSetup(_ =>
                 {

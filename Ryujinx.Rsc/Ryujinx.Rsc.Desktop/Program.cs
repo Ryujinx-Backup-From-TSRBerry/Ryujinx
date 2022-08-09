@@ -11,6 +11,7 @@ using Avalonia.Threading;
 using Ryujinx.Ui.Common.Helper;
 using Ryujinx.Ava.Common;
 using Ryujinx.Ava.Common.Ui.Backend;
+using Silk.NET.Vulkan;
 
 namespace Ryujinx.Rsc.Desktop
 {
@@ -24,7 +25,7 @@ namespace Ryujinx.Rsc.Desktop
         public static void Main(string[] args)
         {
             AppConfig.PreviewerDetached = true;
-            App.BaseDirectory =  Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Ryujinx");
+            App.BaseDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Ryujinx");
             App.FileSystemHelperFactory = () => new ExtendedFileSystemHelper();
             App.LoadConfiguration();
             BuildAvaloniaApp()
@@ -58,7 +59,7 @@ namespace Ryujinx.Rsc.Desktop
                 })
                 .With(new SkiaOptions()
                 {
-                    CustomGpuFactory = SkiaGpuFactory.CreateVulkanGpu
+                    CustomGpuFactory = () => { return SkiaGpuFactory.CreateVulkanGpu(Vk.GetApi); }
                 })
                 .AfterSetup(_ =>
                 {
