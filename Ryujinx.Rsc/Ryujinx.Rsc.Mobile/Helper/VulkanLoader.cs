@@ -1,3 +1,5 @@
+using Silk.NET.Core.Contexts;
+using Silk.NET.Vulkan;
 using System;
 using System.Runtime.InteropServices;
 
@@ -42,6 +44,33 @@ namespace Ryujinx.Rsc.Mobile.Helper
             {
                 throw new Exception($"Failed to load {path}");
             }
+        }
+
+        public Vk GetApi()
+        {
+            var ctx = new MultiNativeContext(new INativeContext[1]);
+            var ret = new Vk(ctx);
+            ctx.Contexts[0] = new LamdaNativeContext
+            (
+                x =>
+                {
+                    if (x.EndsWith("ProcAddr"))
+                    {
+                        return default;
+                    }
+
+                    nint ptr = default;
+                    ptr = GetDeviceProcAddress(loadedLibrary, ret.CurrentDevice.GetValueOrDefault().Handle, x);
+                    if (ptr != default)
+                    {
+                        return ptr;
+                    }
+
+                    ptr = GetInstanceProcAddress(loadedLibrary, ret.CurrentInstance.GetValueOrDefault().Handle, x);
+                    return ptr;
+                }
+            );
+            return ret;
         }
     }
 }

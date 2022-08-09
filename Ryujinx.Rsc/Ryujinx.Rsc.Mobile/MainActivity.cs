@@ -23,6 +23,7 @@ namespace Ryujinx.Rsc.Mobile
     {
         public event EventHandler<FileSystemResultEventArgs> FileSystemResult;
         private AndroidFileSystemHelper _fileSystemHelper;
+        private VulkanLoader _loader;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -31,6 +32,8 @@ namespace Ryujinx.Rsc.Mobile
             App.FileSystemHelperFactory = () => _fileSystemHelper;
             
             base.OnCreate(savedInstanceState);
+
+            //_loader = new VulkanLoader("libvulkan.so");
         }
 
         protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
@@ -101,6 +104,7 @@ namespace Ryujinx.Rsc.Mobile
 
         protected override void OnDestroy()
         {
+            _loader?.Dispose();
             base.OnDestroy();
             AppConfig.RenderTimer?.Dispose();
             _fileSystemHelper.Dispose();
