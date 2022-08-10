@@ -1,6 +1,8 @@
 ﻿using Ryujinx.HLE.HOS.Kernel.Common;
 using Ryujinx.Memory;
+using Ryujinx.Memory.Range;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Ryujinx.HLE.HOS.Kernel.Memory
@@ -12,6 +14,12 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
         public KPageTable(KernelContext context, IVirtualMemoryManager cpuMemory) : base(context)
         {
             _cpuMemory = cpuMemory;
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerable<HostMemoryRange> GetHostRegions(ulong va, ulong size)
+        {
+            return _cpuMemory.GetHostRegions(va, size);
         }
 
         /// <inheritdoc/>
@@ -43,7 +51,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
                 return result;
             }
 
-            result = MapPages(dst, pageList, newDstPermission, false, 0);
+            result = MapPages(dst, pageList, newDstPermission, MemoryMapFlags.Private, false, 0);
 
             if (result != KernelResult.Success)
             {
@@ -81,7 +89,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
 
             if (result != KernelResult.Success)
             {
-                KernelResult mapResult = MapPages(dst, dstPageList, oldDstPermission, false, 0);
+                KernelResult mapResult = MapPages(dst, dstPageList, oldDstPermission, MemoryMapFlags.Private, false, 0);
                 Debug.Assert(mapResult == KernelResult.Success);
             }
 
@@ -89,13 +97,20 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
         }
 
         /// <inheritdoc/>
-        protected override KernelResult MapPages(ulong dstVa, ulong pagesCount, ulong srcPa, KMemoryPermission permission, bool shouldFillPages, byte fillValue)
+        protected override KernelResult MapPages(
+            ulong dstVa,
+            ulong pagesCount,
+            ulong srcPa,
+            KMemoryPermission permission,
+            MemoryMapFlags flags,
+            bool shouldFillPages,
+            byte fillValue)
         {
             ulong size = pagesCount * PageSize;
 
             Context.Memory.Commit(srcPa - DramMemoryMap.DramBase, size);
 
-            _cpuMemory.Map(dstVa, srcPa - DramMemoryMap.DramBase, size);
+            _cpuMemory.Map(dstVa, srcPa - DramMemoryMap.DramBase, size, flags);
 
             if (DramMemoryMap.IsHeapPhysicalAddress(srcPa))
             {
@@ -111,7 +126,13 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
         }
 
         /// <inheritdoc/>
-        protected override KernelResult MapPages(ulong address, KPageList pageList, KMemoryPermission permission, bool shouldFillPages, byte fillValue)
+        protected override KernelResult MapPages(
+            ulong address,
+            KPageList pageList,
+            KMemoryPermission permission,
+            MemoryMapFlags flags,
+            bool shouldFillPages,
+            byte fillValue)
         {
             using var scopedPageList = new KScopedPageList(Context.MemoryManager, pageList);
 
@@ -124,7 +145,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
 
                 Context.Memory.Commit(addr, size);
 
-                _cpuMemory.Map(currentVa, addr, size);
+                _cpuMemory.Map(currentVa, addr, size, flags);
 
                 if (shouldFillPages)
                 {
@@ -135,6 +156,21 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
             }
 
             scopedPageList.SignalSuccess();
+
+            return KernelResult.Success;
+        }
+
+        /// <inheritdoc/>
+        protected override KernelResult MapForeign(IEnumerable<HostMemoryRange> regions, ulong va, ulong size)
+        {
+            ulong offset = 0;
+
+            foreach (var region in regions)
+            {
+                _cpuMemory.MapForeign(va + offset, region.Address, region.Size);
+
+                offset += region.Size;
+            }
 
             return KernelResult.Success;
         }

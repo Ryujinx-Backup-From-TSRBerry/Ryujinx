@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
@@ -15,8 +14,6 @@ namespace Ryujinx.Memory
         private readonly bool _viewCompatible;
         private IntPtr _sharedMemory;
         private IntPtr _pointer;
-        private ConcurrentDictionary<MemoryBlock, byte> _viewStorages;
-        private int _viewCount;
 
         /// <summary>
         /// Pointer to the memory block data.
@@ -40,7 +37,12 @@ namespace Ryujinx.Memory
             if (flags.HasFlag(MemoryAllocationFlags.Mirrorable))
             {
                 _sharedMemory = MemoryManagement.CreateSharedMemory(size, flags.HasFlag(MemoryAllocationFlags.Reserve));
-                _pointer = MemoryManagement.MapSharedMemory(_sharedMemory, size);
+
+                if (!flags.HasFlag(MemoryAllocationFlags.NoMap))
+                {
+                    _pointer = MemoryManagement.MapSharedMemory(_sharedMemory, size);
+                }
+
                 _usesSharedMemory = true;
             }
             else if (flags.HasFlag(MemoryAllocationFlags.Reserve))
@@ -54,10 +56,6 @@ namespace Ryujinx.Memory
             }
 
             Size = size;
-
-            _viewStorages = new ConcurrentDictionary<MemoryBlock, byte>();
-            _viewStorages.TryAdd(this, 0);
-            _viewCount = 1;
         }
 
         /// <summary>
@@ -133,14 +131,13 @@ namespace Ryujinx.Memory
         /// <exception cref="InvalidMemoryRegionException">Throw when either <paramref name="offset"/> or <paramref name="size"/> are out of range</exception>
         public void MapView(MemoryBlock srcBlock, ulong srcOffset, ulong dstOffset, ulong size)
         {
+            if (((srcOffset | dstOffset | size) & (GetPageSize() - 1)) != 0)
+            {
+                throw new Exception("misaligned");
+            }
             if (srcBlock._sharedMemory == IntPtr.Zero)
             {
                 throw new ArgumentException("The source memory block is not mirrorable, and thus cannot be mapped on the current block.");
-            }
-
-            if (_viewStorages.TryAdd(srcBlock, 0))
-            {
-                srcBlock.IncrementViewCount();
             }
 
             MemoryManagement.MapView(srcBlock._sharedMemory, srcOffset, GetPointerInternal(dstOffset, size), size, this);
@@ -154,6 +151,10 @@ namespace Ryujinx.Memory
         /// <param name="size">Size of the range to be unmapped</param>
         public void UnmapView(MemoryBlock srcBlock, ulong offset, ulong size)
         {
+            if (((offset | size) & (GetPageSize() - 1)) != 0)
+            {
+                throw new Exception($"misaligned 0x{offset:X} 0x{size:X}");
+            }
             MemoryManagement.UnmapView(srcBlock._sharedMemory, GetPointerInternal(offset, size), size, this);
         }
 
@@ -404,33 +405,16 @@ namespace Ryujinx.Memory
                 {
                     MemoryManagement.Free(ptr, Size);
                 }
-
-                foreach (MemoryBlock viewStorage in _viewStorages.Keys)
-                {
-                    viewStorage.DecrementViewCount();
-                }
-
-                _viewStorages.Clear();
             }
-        }
 
-        /// <summary>
-        /// Increments the number of views that uses this memory block as storage.
-        /// </summary>
-        private void IncrementViewCount()
-        {
-            Interlocked.Increment(ref _viewCount);
-        }
-
-        /// <summary>
-        /// Decrements the number of views that uses this memory block as storage.
-        /// </summary>
-        private void DecrementViewCount()
-        {
-            if (Interlocked.Decrement(ref _viewCount) == 0 && _sharedMemory != IntPtr.Zero && !_isMirror)
+            if (!_isMirror)
             {
-                MemoryManagement.DestroySharedMemory(_sharedMemory);
-                _sharedMemory = IntPtr.Zero;
+                IntPtr sharedMemory = Interlocked.Exchange(ref _sharedMemory, IntPtr.Zero);
+
+                if (sharedMemory != IntPtr.Zero)
+                {
+                    MemoryManagement.DestroySharedMemory(sharedMemory);
+                }
             }
         }
 
@@ -452,6 +436,16 @@ namespace Ryujinx.Memory
             }
 
             return true;
+        }
+
+        public static ulong GetPageSize()
+        {
+            return 1UL << 14;
+        }
+
+        public static bool IsPageAligned(ulong address, ulong size)
+        {
+            return ((address | size) & (GetPageSize() - 1)) == 0;
         }
 
         private static void ThrowObjectDisposed() => throw new ObjectDisposedException(nameof(MemoryBlock));

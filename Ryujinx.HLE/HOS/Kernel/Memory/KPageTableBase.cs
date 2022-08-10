@@ -1,6 +1,8 @@
 using Ryujinx.Common;
 using Ryujinx.HLE.HOS.Kernel.Common;
 using Ryujinx.HLE.HOS.Kernel.Process;
+using Ryujinx.Memory;
+using Ryujinx.Memory.Range;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -387,7 +389,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
                     return KernelResult.OutOfResource;
                 }
 
-                KernelResult result = MapPages(address, pageList, permission);
+                KernelResult result = MapPages(address, pageList, permission, MemoryMapFlags.None);
 
                 if (result == KernelResult.Success)
                 {
@@ -523,7 +525,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
 
                 if (paIsValid)
                 {
-                    result = MapPages(address, pagesCount, srcPa, permission);
+                    result = MapPages(address, pagesCount, srcPa, permission, MemoryMapFlags.Private);
                 }
                 else
                 {
@@ -586,7 +588,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
 
             using var _ = new OnScopeExit(() => pageList.DecrementPagesReferenceCount(Context.MemoryManager));
 
-            return MapPages(address, pageList, permission);
+            return MapPages(address, pageList, permission, MemoryMapFlags.Private);
         }
 
         public KernelResult MapProcessCodeMemory(ulong dst, ulong src, ulong size)
@@ -767,7 +769,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
                         return KernelResult.InvalidMemState;
                     }
 
-                    result = MapPages(_currentHeapAddr, pageList, KMemoryPermission.ReadAndWrite, true, (byte)_heapFillValue);
+                    result = MapPages(_currentHeapAddr, pageList, KMemoryPermission.ReadAndWrite, MemoryMapFlags.Private, true, (byte)_heapFillValue);
 
                     if (result != KernelResult.Success)
                     {
@@ -1355,7 +1357,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
 
                         ulong currentPagesCount = Math.Min(srcPaPages, dstVaPages);
 
-                        MapPages(dstVa, currentPagesCount, srcPa, KMemoryPermission.ReadAndWrite);
+                        MapPages(dstVa, currentPagesCount, srcPa, KMemoryPermission.ReadAndWrite, MemoryMapFlags.Private);
 
                         dstVa += currentPagesCount * PageSize;
                         srcPa += currentPagesCount * PageSize;
@@ -1899,7 +1901,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
                     Context.Memory.Fill(GetDramAddressFromPa(firstPageFillAddress), unusedSizeAfter, (byte)_ipcFillValue);
                 }
 
-                KernelResult result = MapPages(currentVa, 1, dstFirstPagePa, permission);
+                KernelResult result = MapPages(currentVa, 1, dstFirstPagePa, permission, MemoryMapFlags.Private);
 
                 if (result != KernelResult.Success)
                 {
@@ -1915,10 +1917,19 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
             {
                 ulong alignedSize = endAddrTruncated - addressRounded;
 
-                KPageList pageList = new KPageList();
-                srcPageTable.GetPhysicalRegions(addressRounded, alignedSize, pageList);
+                KernelResult result;
 
-                KernelResult result = MapPages(currentVa, pageList, permission);
+                if (true)
+                {
+                    result = MapForeign(srcPageTable.GetHostRegions(addressRounded, alignedSize), currentVa, alignedSize);
+                }
+                else
+                {
+                    KPageList pageList = new KPageList();
+                    srcPageTable.GetPhysicalRegions(addressRounded, alignedSize, pageList);
+
+                    result = MapPages(currentVa, pageList, permission, MemoryMapFlags.None);
+                }
 
                 if (result != KernelResult.Success)
                 {
@@ -1953,7 +1964,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
 
                 Context.Memory.Fill(GetDramAddressFromPa(lastPageFillAddr), unusedSizeAfter, (byte)_ipcFillValue);
 
-                KernelResult result = MapPages(currentVa, 1, dstLastPagePa, permission);
+                KernelResult result = MapPages(currentVa, 1, dstLastPagePa, permission, MemoryMapFlags.Private);
 
                 if (result != KernelResult.Success)
                 {
@@ -2469,9 +2480,9 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
         {
             ulong endAddr = address + size;
 
-            LinkedListNode<KMemoryBlock> node = _blockManager.FindBlockNode(address);
+            KMemoryBlock currBlock = _blockManager.FindBlock(address);
 
-            KMemoryInfo info = node.Value.GetInfo();
+            KMemoryInfo info = currBlock.GetInfo();
 
             MemoryState firstState = info.State;
             KMemoryPermission firstPermission = info.Permission;
@@ -2479,7 +2490,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
 
             do
             {
-                info = node.Value.GetInfo();
+                info = currBlock.GetInfo();
 
                 // Check if the block state matches what we expect.
                 if (firstState != info.State ||
@@ -2496,7 +2507,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
                     return false;
                 }
             }
-            while (info.Address + info.Size - 1 < endAddr - 1 && (node = node.Next) != null);
+            while (info.Address + info.Size - 1 < endAddr - 1 && (currBlock = currBlock.Successor) != null);
 
             outState = firstState;
             outPermission = firstPermission;
@@ -2531,17 +2542,17 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
 
         private IEnumerable<KMemoryInfo> IterateOverRange(ulong start, ulong end)
         {
-            LinkedListNode<KMemoryBlock> node = _blockManager.FindBlockNode(start);
+            KMemoryBlock currBlock = _blockManager.FindBlock(start);
 
             KMemoryInfo info;
 
             do
             {
-                info = node.Value.GetInfo();
+                info = currBlock.GetInfo();
 
                 yield return info;
             }
-            while (info.Address + info.Size - 1 < end - 1 && (node = node.Next) != null);
+            while (info.Address + info.Size - 1 < end - 1 && (currBlock = currBlock.Successor) != null);
         }
 
         private ulong AllocateVa(ulong regionStart, ulong regionPagesCount, ulong neededPagesCount, int alignment)
@@ -2627,9 +2638,9 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
 
             ulong regionEndAddr = regionStart + regionPagesCount * PageSize;
 
-            LinkedListNode<KMemoryBlock> node = _blockManager.FindBlockNode(regionStart);
+            KMemoryBlock currBlock = _blockManager.FindBlock(regionStart);
 
-            KMemoryInfo info = node.Value.GetInfo();
+            KMemoryInfo info = currBlock.GetInfo();
 
             while (regionEndAddr >= info.Address)
             {
@@ -2658,14 +2669,14 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
                     }
                 }
 
-                node = node.Next;
+                currBlock = currBlock.Successor;
 
-                if (node == null)
+                if (currBlock == null)
                 {
                     break;
                 }
 
-                info = node.Value.GetInfo();
+                info = currBlock.GetInfo();
             }
 
             return 0;
@@ -2906,6 +2917,16 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
         }
 
         /// <summary>
+        /// Gets the host regions that make up the given virtual address region.
+        /// If any part of the virtual region is unmapped, null is returned.
+        /// </summary>
+        /// <param name="va">Virtual address of the range</param>
+        /// <param name="size">Size of the range</param>
+        /// <returns>The host regions</returns>
+        /// <exception cref="Ryujinx.Memory.InvalidMemoryRegionException">Throw for unhandled invalid or unmapped memory accesses</exception>
+        protected abstract IEnumerable<HostMemoryRange> GetHostRegions(ulong va, ulong size);
+
+        /// <summary>
         /// Gets the physical regions that make up the given virtual address region.
         /// If any part of the virtual region is unmapped, null is returned.
         /// </summary>
@@ -2957,10 +2978,18 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
         /// <param name="pagesCount">Number of pages to map</param>
         /// <param name="srcPa">Physical address where the pages should be mapped. May be ignored if aliasing is not supported</param>
         /// <param name="permission">Permission of the region to be mapped</param>
+        /// <param name="flags">Flags controlling the memory map operation</param>
         /// <param name="shouldFillPages">Indicate if the pages should be filled with the <paramref name="fillValue"/> value</param>
         /// <param name="fillValue">The value used to fill pages when <paramref name="shouldFillPages"/> is set to true</param>
         /// <returns>Result of the mapping operation</returns>
-        protected abstract KernelResult MapPages(ulong dstVa, ulong pagesCount, ulong srcPa, KMemoryPermission permission, bool shouldFillPages = false, byte fillValue = 0);
+        protected abstract KernelResult MapPages(
+            ulong dstVa,
+            ulong pagesCount,
+            ulong srcPa,
+            KMemoryPermission permission,
+            MemoryMapFlags flags,
+            bool shouldFillPages = false,
+            byte fillValue = 0);
 
         /// <summary>
         /// Maps a region of memory into the specified physical memory region.
@@ -2968,10 +2997,26 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
         /// <param name="address">Destination virtual address that should be mapped</param>
         /// <param name="pageList">List of physical memory pages where the pages should be mapped. May be ignored if aliasing is not supported</param>
         /// <param name="permission">Permission of the region to be mapped</param>
+        /// <param name="flags">Flags controlling the memory map operation</param>
         /// <param name="shouldFillPages">Indicate if the pages should be filled with the <paramref name="fillValue"/> value</param>
         /// <param name="fillValue">The value used to fill pages when <paramref name="shouldFillPages"/> is set to true</param>
         /// <returns>Result of the mapping operation</returns>
-        protected abstract KernelResult MapPages(ulong address, KPageList pageList, KMemoryPermission permission, bool shouldFillPages = false, byte fillValue = 0);
+        protected abstract KernelResult MapPages(
+            ulong address,
+            KPageList pageList,
+            KMemoryPermission permission,
+            MemoryMapFlags flags,
+            bool shouldFillPages = false,
+            byte fillValue = 0);
+
+        /// <summary>
+        /// Maps pages into an arbitrary host memory location.
+        /// </summary>
+        /// <param name="regions">Host regions to be mapped into the specified virtual memory region</param>
+        /// <param name="va">Destination virtual address of the range on this page table</param>
+        /// <param name="size">Size of the range</param>
+        /// <returns>Result of the mapping operation</returns>
+        protected abstract KernelResult MapForeign(IEnumerable<HostMemoryRange> regions, ulong va, ulong size);
 
         /// <summary>
         /// Unmaps a region of memory that was previously mapped with one of the page mapping methods.
