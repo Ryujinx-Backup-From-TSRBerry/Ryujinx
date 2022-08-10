@@ -30,10 +30,10 @@ namespace Ryujinx.Rsc.Mobile
             _fileSystemHelper = new AndroidFileSystemHelper(this);
 
             App.FileSystemHelperFactory = () => _fileSystemHelper;
+
+            _loader = new VulkanLoader("libvulkan.so");
             
             base.OnCreate(savedInstanceState);
-
-            //_loader = new VulkanLoader("libvulkan.so");
         }
 
         protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
@@ -56,7 +56,7 @@ namespace Ryujinx.Rsc.Mobile
                 })
                 .With(new SkiaOptions()
                 {
-                    CustomGpuFactory = () => { return SkiaGpuFactory.CreateVulkanGpu(Vk.GetApi); }
+                    CustomGpuFactory = () => { return SkiaGpuFactory.CreateVulkanGpu(_loader.GetApi); }
                 });
 
             return base.CustomizeAppBuilder(builder);

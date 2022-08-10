@@ -54,11 +54,6 @@ namespace Ryujinx.Rsc.Mobile.Helper
             (
                 x =>
                 {
-                    if (x.EndsWith("ProcAddr"))
-                    {
-                        return default;
-                    }
-
                     nint ptr = default;
                     ptr = GetDeviceProcAddress(loadedLibrary, ret.CurrentDevice.GetValueOrDefault().Handle, x);
                     if (ptr != default)
@@ -67,6 +62,12 @@ namespace Ryujinx.Rsc.Mobile.Helper
                     }
 
                     ptr = GetInstanceProcAddress(loadedLibrary, ret.CurrentInstance.GetValueOrDefault().Handle, x);
+
+                    if(ptr == default)
+                    {
+                        ptr = GetInstanceProcAddress(loadedLibrary, IntPtr.Zero, x);
+                    }
+
                     return ptr;
                 }
             );
