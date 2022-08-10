@@ -35,6 +35,12 @@ namespace Ryujinx.Memory
         /// Indicates that the memory block should support mapping views of a mirrorable memory block.
         /// The block that is to have their views mapped should be created with the <see cref="Mirrorable"/> flag.
         /// </summary>
-        ViewCompatible = 1 << 3
+        ViewCompatible = 1 << 3,
+
+        /// <summary>
+        /// If used with the <see cref="Mirrorable"/> flag, indicates that the memory block will only be used as
+        /// backing storage and will never be accessed directly, so the memory for the block will not be mapped.
+        /// </summary>
+        NoMap = 1 << 4
     }
 }
