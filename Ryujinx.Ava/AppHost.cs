@@ -603,7 +603,7 @@ namespace Ryujinx.Ava
                     vulkan.Device.Queue.InternalHandle,
                     vulkan.PhysicalDevice.QueueFamilyIndex,
                     vulkan.Device.Lock, 
-                    VulkanSkiaGpu.GetApiFunction);
+                    vulkan.Api);
             }
             else
             {

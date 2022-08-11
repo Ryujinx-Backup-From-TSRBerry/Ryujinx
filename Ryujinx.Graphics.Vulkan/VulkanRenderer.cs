@@ -82,8 +82,6 @@ namespace Ryujinx.Graphics.Vulkan
 
         public bool PreferThreading => true;
 
-        public Func<Vk> GetApiFunction { get; }
-
         public event EventHandler<ScreenCaptureImageInfo> ScreenCaptured;
 
         public VulkanRenderer(Func<Instance, Vk, SurfaceKHR> surfaceFunc, Func<string[]> requiredExtensionsFunc, string preferredGpuId, Func<Vk> getApiFunction)
@@ -91,13 +89,13 @@ namespace Ryujinx.Graphics.Vulkan
             _getSurface = surfaceFunc;
             _getRequiredExtensions = requiredExtensionsFunc;
             _preferredGpuId = preferredGpuId;
-            GetApiFunction = getApiFunction;
+            Api = getApiFunction();
             Shaders = new HashSet<ShaderCollection>();
             Textures = new HashSet<ITexture>();
             Samplers = new HashSet<SamplerHolder>();
         }
 
-        public VulkanRenderer(Instance instance, Device device, PhysicalDevice physicalDevice, Queue queue, uint queueFamilyIndex, object lockObject, Func<Vk> getApiFunction)
+        public VulkanRenderer(Instance instance, Device device, PhysicalDevice physicalDevice, Queue queue, uint queueFamilyIndex, object lockObject, Vk api)
         {
             _instance = instance;
             _physicalDevice = physicalDevice;
@@ -106,7 +104,7 @@ namespace Ryujinx.Graphics.Vulkan
 
             Queue = queue;
             QueueLock = lockObject;
-            GetApiFunction = getApiFunction;
+            Api = api;
 
             IsOffScreen = true;
             Shaders = new HashSet<ShaderCollection>();
@@ -243,33 +241,29 @@ namespace Ryujinx.Graphics.Vulkan
 
         private unsafe void SetupContext(GraphicsDebugLevel logLevel)
         {
-            var api = GetApiFunction();
-
-            Api = api;
-
-            _instance = VulkanInitialization.CreateInstance(api, logLevel, _getRequiredExtensions(), out ExtDebugReport debugReport, out _debugReportCallback);
+            _instance = VulkanInitialization.CreateInstance(Api, logLevel, _getRequiredExtensions(), out ExtDebugReport debugReport, out _debugReportCallback);
 
             DebugReportApi = debugReport;
 
-            if (api.TryGetInstanceExtension(_instance, out KhrSurface surfaceApi))
+            if (Api.TryGetInstanceExtension(_instance, out KhrSurface surfaceApi))
             {
                 SurfaceApi = surfaceApi;
             }
 
-            _surface = _getSurface(_instance, api);
-            _physicalDevice = VulkanInitialization.FindSuitablePhysicalDevice(api, _instance, _surface, _preferredGpuId);
+            _surface = _getSurface(_instance, Api);
+            _physicalDevice = VulkanInitialization.FindSuitablePhysicalDevice(Api, _instance, _surface, _preferredGpuId);
 
-            var queueFamilyIndex = VulkanInitialization.FindSuitableQueueFamily(api, _physicalDevice, _surface, out uint maxQueueCount);
-            var supportedExtensions = VulkanInitialization.GetSupportedExtensions(api, _physicalDevice);
+            var queueFamilyIndex = VulkanInitialization.FindSuitableQueueFamily(Api, _physicalDevice, _surface, out uint maxQueueCount);
+            var supportedExtensions = VulkanInitialization.GetSupportedExtensions(Api, _physicalDevice);
 
-            _device = VulkanInitialization.CreateDevice(api, _physicalDevice, queueFamilyIndex, supportedExtensions, maxQueueCount);
+            _device = VulkanInitialization.CreateDevice(Api, _physicalDevice, queueFamilyIndex, supportedExtensions, maxQueueCount);
 
-            if (api.TryGetDeviceExtension(_instance, _device, out KhrSwapchain swapchainApi))
+            if (Api.TryGetDeviceExtension(_instance, _device, out KhrSwapchain swapchainApi))
             {
                 SwapchainApi = swapchainApi;
             }
 
-            api.GetDeviceQueue(_device, queueFamilyIndex, 0, out var queue);
+            Api.GetDeviceQueue(_device, queueFamilyIndex, 0, out var queue);
             Queue = queue;
             QueueLock = new object();
 
@@ -280,25 +274,21 @@ namespace Ryujinx.Graphics.Vulkan
 
         private unsafe void SetupOffScreenContext(GraphicsDebugLevel logLevel)
         {
-            var api = GetApiFunction();
-
-            Api = api;
-
-            VulkanInitialization.CreateDebugCallbacks(api, logLevel, _instance, out var debugReport, out _debugReportCallback);
+            VulkanInitialization.CreateDebugCallbacks(Api, logLevel, _instance, out var debugReport, out _debugReportCallback);
 
             DebugReportApi = debugReport;
 
-            var supportedExtensions = VulkanInitialization.GetSupportedExtensions(api, _physicalDevice);
+            var supportedExtensions = VulkanInitialization.GetSupportedExtensions(Api, _physicalDevice);
 
             uint propertiesCount;
 
-            api.GetPhysicalDeviceQueueFamilyProperties(_physicalDevice, &propertiesCount, null);
+            Api.GetPhysicalDeviceQueueFamilyProperties(_physicalDevice, &propertiesCount, null);
 
             QueueFamilyProperties[] queueFamilyProperties = new QueueFamilyProperties[propertiesCount];
 
             fixed (QueueFamilyProperties* pProperties = queueFamilyProperties)
             {
-                api.GetPhysicalDeviceQueueFamilyProperties(_physicalDevice, &propertiesCount, pProperties);
+                Api.GetPhysicalDeviceQueueFamilyProperties(_physicalDevice, &propertiesCount, pProperties);
             }
 
             LoadFeatures(supportedExtensions, queueFamilyProperties[0].QueueCount, _queueFamilyIndex);

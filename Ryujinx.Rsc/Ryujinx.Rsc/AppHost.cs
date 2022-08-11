@@ -571,7 +571,7 @@ namespace Ryujinx.Rsc
                 vulkan.Device.Queue.InternalHandle,
                 vulkan.PhysicalDevice.QueueFamilyIndex,
                 vulkan.Device.Lock,
-                VulkanSkiaGpu.GetApiFunction);
+                vulkan.Api);
 
             IHardwareDeviceDriver deviceDriver = App.CreateAudioHardwareDeviceDriver(ConfigurationState.Instance.System.AudioBackend);
 
