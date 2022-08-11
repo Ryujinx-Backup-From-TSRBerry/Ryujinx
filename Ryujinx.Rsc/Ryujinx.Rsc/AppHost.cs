@@ -50,6 +50,7 @@ using System.Runtime.InteropServices;
 using Ryujinx.Ava.Common.Ui.Models;
 using Ryujinx.Ava.Common.Ui.Controls;
 using Ryujinx.Ava.Common.Input;
+using Ryujinx.Ava.Common.Ui.Backend.Vulkan;
 
 namespace Ryujinx.Rsc
 {
@@ -570,7 +571,7 @@ namespace Ryujinx.Rsc
                 vulkan.Device.Queue.InternalHandle,
                 vulkan.PhysicalDevice.QueueFamilyIndex,
                 vulkan.Device.Lock,
-                App.GetApi);
+                VulkanSkiaGpu.GetApiFunction);
 
             IHardwareDeviceDriver deviceDriver = App.CreateAudioHardwareDeviceDriver(ConfigurationState.Instance.System.AudioBackend);
 
