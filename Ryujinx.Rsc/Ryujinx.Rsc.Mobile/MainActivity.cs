@@ -15,6 +15,7 @@ using Ryujinx.Rsc.Mobile.Helper;
 using Ryujinx.Ava.Common.Ui.Backend;
 using Ryujinx.Ava.Common;
 using Silk.NET.Vulkan;
+using System.IO;
 
 namespace Ryujinx.Rsc.Mobile
 {
@@ -31,7 +32,18 @@ namespace Ryujinx.Rsc.Mobile
 
             App.FileSystemHelperFactory = () => _fileSystemHelper;
 
-            _loader = new VulkanLoader("libvulkan.so");
+            var libFolder = ApplicationInfo.NativeLibraryDir;
+            var publicFolder = ApplicationContext.GetExternalFilesDir(null) + Path.DirectorySeparatorChar.ToString();
+            var privateFolder = ApplicationContext.FilesDir + Path.DirectorySeparatorChar.ToString();
+            var driver = "libvulkan.so";
+
+            string preferredDriverSetting = Path.Combine(publicFolder, "Drivers", "selected");
+            if(File.Exists(preferredDriverSetting))
+            {
+                driver = File.ReadAllText(preferredDriverSetting);
+            }
+
+            _loader = new VulkanLoader(driver, publicFolder, privateFolder, libFolder);
             
             base.OnCreate(savedInstanceState);
         }

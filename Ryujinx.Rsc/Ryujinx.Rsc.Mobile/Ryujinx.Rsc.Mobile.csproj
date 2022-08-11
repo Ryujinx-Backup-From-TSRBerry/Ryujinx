@@ -22,6 +22,10 @@
   <ItemGroup>
     <None Remove="Icon.png" />
     <None Remove="libs\arm64-v8a\libmonosgen-2.0.so" />
+    <None Remove="lib\arm64-v8a\libadrenotools.so" />
+    <None Remove="lib\arm64-v8a\libfile_redirect_hook.so" />
+    <None Remove="lib\arm64-v8a\libhook_impl.so" />
+    <None Remove="lib\arm64-v8a\libmain_hook.so" />
     <None Remove="Resources\drawable\ryujinx.png" />
     <AndroidEnvironment Include="AndroidEnv.txt" />
   </ItemGroup>
