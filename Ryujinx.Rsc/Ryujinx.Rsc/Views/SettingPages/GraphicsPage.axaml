@@ -168,5 +168,9 @@
             </Grid>
         </Border>
         <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
+        <Button IsVisible="{Binding CanSelectDriver}" HorizontalAlignment="Stretch" CornerRadius="5" Height="50" HorizontalContentAlignment="Left" Padding="0"  ClipToBounds="True" Click="SelectDriver_OnClick">
+            <TextBlock Margin="10" VerticalAlignment="Center" Text="{locale:Locale SettingsTabGraphicsSelectDriver}"/>
+        </Button>
+        <Separator IsVisible="{Binding CanSelectDriver}" HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
     </StackPanel>
 </UserControl>

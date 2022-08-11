@@ -1,4 +1,7 @@
 using Avalonia.Collections;
+using Avalonia.Controls;
+using Avalonia.Platform.Storage;
+using Avalonia.VisualTree;
 using DynamicData;
 using LibHac.Tools.FsSystem;
 using ReactiveUI;
@@ -15,6 +18,10 @@ using Ryujinx.Ui.Common.Configuration.System;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Text.Json;
 
 
 namespace Ryujinx.Rsc.ViewModels
@@ -24,6 +31,8 @@ namespace Ryujinx.Rsc.ViewModels
         private readonly SettingsView _owner;
         private string _title;
         private bool _showToolbar = true;
+
+        public bool CanSelectDriver => OperatingSystem.IsAndroid();
 
         public string Title
         {
@@ -47,6 +56,9 @@ namespace Ryujinx.Rsc.ViewModels
             TimeZones = new AvaloniaList<Ryujinx.Ava.Common.Ui.Models.TimeZone>();
             _validTzRegions = new List<string>();
             GameDirectories = new ObservableCollection<string>();
+            AvailableDrivers = new ObservableCollection<Driver>();
+            
+            AvailableDrivers.Add(new Driver("System", "libvulkan.so", true) { IsSelected = true });
 
             if (AppConfig.PreviewerDetached)
             {
@@ -67,6 +79,9 @@ namespace Ryujinx.Rsc.ViewModels
             TimeZones = new AvaloniaList<Ryujinx.Ava.Common.Ui.Models.TimeZone>();
             _validTzRegions = new List<string>();
             GameDirectories = new ObservableCollection<string>();
+            AvailableDrivers = new ObservableCollection<Driver>();
+
+            LoadDrivers();
 
             if (AppConfig.PreviewerDetached)
             {
@@ -77,6 +92,53 @@ namespace Ryujinx.Rsc.ViewModels
         public void NotifyPageChanged()
         {
             this.RaisePropertyChanged(nameof(HasBackStack));
+        }
+
+        private void LoadDrivers()
+        {
+            if (!CanSelectDriver)
+            {
+                return;
+            }
+            
+            AvailableDrivers.Clear();
+            AvailableDrivers.Add(new Driver("System", "libvulkan.so", true) {IsSelected = true});
+
+            string driverPath = Path.Combine(App.BaseDirectory, "Drivers");
+            if (Directory.Exists(driverPath))
+            {
+                foreach (string driverFolder in Directory.EnumerateDirectories(driverPath))
+                {
+                    var metadataFile = Path.Combine(driverFolder, "meta.json");
+                    if (File.Exists(metadataFile))
+                    {
+                        var metadata = JsonSerializer.Deserialize<DriverMetadata>(File.ReadAllBytes(metadataFile),
+                            new JsonSerializerOptions() {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
+
+                        if (metadata != null)
+                        {
+                            var driver = Path.Combine(driverFolder, metadata.LibraryName);
+                            if (File.Exists(driver))
+                            {
+                                AvailableDrivers.Add(new Driver(metadata.Name, driver, false) {Metadata = metadata});
+                            }
+                        }
+                    }
+                }
+            }
+
+            string driverProfilePath = Path.Combine(App.BaseDirectory, "Drivers", "selected");
+            if (File.Exists(driverProfilePath))
+            {
+                string path = File.ReadAllText(driverProfilePath);
+                var preferredDriver = AvailableDrivers.FirstOrDefault(x => x.Path == path);
+                var currentlySelected = AvailableDrivers.FirstOrDefault(x => x.IsSelected);
+                if (preferredDriver != null)
+                {
+                    currentlySelected.IsSelected = false;
+                    preferredDriver.IsSelected = true;
+                }
+            }
         }
 
         public void MoveToPage(SettingPages page)
@@ -100,6 +162,9 @@ namespace Ryujinx.Rsc.ViewModels
                     break;
                 case SettingPages.VirtualController:
                     _owner.NavigateToPage(new VirtualControllerPage(this));
+                    break;
+                case SettingPages.Driver:
+                    _owner.NavigateToPage(new DriverPage(this));
                     break;
             }
         }
@@ -168,7 +233,8 @@ namespace Ryujinx.Rsc.ViewModels
         public bool EnableGuest { get; set; }
         public bool EnableFsAccessLog { get; set; }
         public bool EnableDebug { get; set; }
-        public ObservableCollection<string> GameDirectories { get; set; }
+        public ObservableCollection<string> GameDirectories { get; }
+        public ObservableCollection<Driver> AvailableDrivers { get; }
         public bool IsResolutionScaleActive
         {
             get => _resolutionScale == 0;
@@ -216,6 +282,58 @@ namespace Ryujinx.Rsc.ViewModels
                 _showToolbar = value;
                 
                 this.RaisePropertyChanged();
+            }
+        }
+
+        public async void AddDriver()
+        {
+            var selected = await (_owner.GetVisualRoot() as TopLevel).StorageProvider.OpenFilePickerAsync(
+                new FilePickerOpenOptions()
+                {
+                    Title = "Select Driver package",
+                    AllowMultiple = false,
+                    FileTypeFilter = new[]
+                    {
+                        new FilePickerFileType("Vulkan Driver Package") {Patterns = new[] {"*.zip"}}
+                    }
+                });
+
+            if (selected == null || selected.Count == 0)
+            {
+                return;
+            }
+
+            var stream = await selected[0].OpenReadAsync();
+            var archive = new ZipArchive(stream);
+            var metadataEntry = archive.GetEntry("meta.json");
+            if (metadataEntry == null)
+            {
+                // show no metadata found error
+                return;
+            }
+
+            var metadata = JsonSerializer.Deserialize<DriverMetadata>(metadataEntry.Open());
+            if (metadata == null)
+            {
+                return;
+            }
+
+            var newDriverFoler = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss");
+            var newDriverPath = Path.Combine(App.BaseDirectory, "Drivers", newDriverFoler);
+            archive.ExtractToDirectory(newDriverPath);
+            LoadDrivers();
+        }
+
+        public async void RemoveDriver()
+        {
+            var selected = AvailableDrivers.FirstOrDefault(x => x.IsSelected);
+            if (selected != null && !selected.IsSystem)
+            {
+                AvailableDrivers.Remove(selected);
+                var folder = new FileInfo(selected.Path).DirectoryName;
+                Directory.Delete(folder, true);
+                
+                LoadDrivers();
             }
         }
 
@@ -339,7 +457,8 @@ namespace Ryujinx.Rsc.ViewModels
             config.System.Language.Value = (Language)Language;
             config.System.Region.Value = (Region)Region;
 
-            if (ConfigurationState.Instance.Graphics.BackendThreading != (BackendThreading)GraphicsBackendMultithreadingIndex)
+            if (ConfigurationState.Instance.Graphics.BackendThreading !=
+                (BackendThreading)GraphicsBackendMultithreadingIndex)
             {
                 DriverUtilities.ToggleOGLThreading(GraphicsBackendMultithreadingIndex == (int)BackendThreading.Off);
             }
@@ -367,6 +486,17 @@ namespace Ryujinx.Rsc.ViewModels
             _previousVolumeLevel = Volume;
 
             MainView.UpdateGraphicsConfig();
+
+            if (CanSelectDriver)
+            {
+                var selected = AvailableDrivers.FirstOrDefault(x => x.IsSelected);
+                if (selected != null)
+                {
+                    string driverProfilePath = Path.Combine(App.BaseDirectory, "Drivers", "selected");
+                    Directory.CreateDirectory(new FileInfo(driverProfilePath).DirectoryName);
+                    File.WriteAllText(driverProfilePath, selected.Path);
+                }
+            }
         }
 
         public void RevertIfNotSaved()

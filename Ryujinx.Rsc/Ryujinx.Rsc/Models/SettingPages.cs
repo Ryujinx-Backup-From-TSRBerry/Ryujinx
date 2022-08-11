@@ -7,6 +7,7 @@ namespace Ryujinx.Rsc.Models
         System,
         Log,
         Input,
-        VirtualController
+        VirtualController,
+        Driver
     }
 }

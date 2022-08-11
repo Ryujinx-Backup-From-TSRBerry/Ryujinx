@@ -1,0 +1,66 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:Ryujinx.Rsc.ViewModels"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             xmlns:locale="clr-namespace:Ryujinx.Ava.Common.Locale;assembly=Ryujinx.Ava.Common"
+             xmlns:model="clr-namespace:Ryujinx.Rsc.Models"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="440"
+             x:Class="Ryujinx.Rsc.Views.SettingPages.DriverPage">
+    <Design.DataContext>
+        <viewModels:SettingsViewModel/>
+    </Design.DataContext>
+    <StackPanel HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Orientation="Vertical">
+        <Grid HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" FontSize="16" Margin="10" Text="{locale:Locale SettingsTabDriverInstalled}" />
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Column="1" Margin="10" Spacing="10">
+                <Button Height="40" Width="40" Command="{Binding AddDriver}">
+                    <ui:SymbolIcon Symbol="Add"/>
+                </Button>
+                <Button Height="40" Width="40" Command="{Binding RemoveDriver}">
+                    <ui:SymbolIcon Symbol="Delete"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+        <ItemsControl  HorizontalAlignment="Stretch" VerticalAlignment="Top" Padding="10"
+                Classes="settingsItem" Items="{Binding AvailableDrivers}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="model:Driver" >
+                    <RadioButton Margin="5" IsChecked="{Binding IsSelected, Mode=TwoWay}" HorizontalAlignment="Stretch" GroupName="Driver"  VerticalContentAlignment="Center">
+                        <StackPanel VerticalAlignment="Center" Margin="0" Orientation="Vertical" HorizontalAlignment="Left">
+                            <TextBlock VerticalAlignment="Center" FontSize="16" Text="{Binding Name}"/>
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                <Label FontSize="12" Content="Added:" FontStyle="Italic"/>
+                                <Label FontSize="12" FontStyle="Italic" Content="{Binding DateAdded}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                <Label FontSize="12" Content="Vendor:" FontStyle="Italic"/>
+                                <Label FontSize="12" FontStyle="Italic" Content="{Binding Vendor}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                <Label FontSize="12" Content="Driver Version:" FontStyle="Italic"/>
+                                <Label FontSize="12" FontStyle="Italic" Content="{Binding Version}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                <Label FontSize="12" Content="Package Version:" FontStyle="Italic"/>
+                                <Label FontSize="12" FontStyle="Italic" Content="{Binding PackageVersion}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </RadioButton>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </StackPanel>
+</UserControl>

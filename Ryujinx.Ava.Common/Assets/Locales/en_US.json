@@ -593,5 +593,7 @@
     "Delete": "Delete",
     "DeleteGame": "Delete Game",
     "Dismiss": "Dismiss",
-    "DialogGameDeletionMessage" :  "Do you want to delete the selected game? This action can not be reversed."
+    "DialogGameDeletionMessage" :  "Do you want to delete the selected game? This action can not be reversed.",
+    "SettingsTabDriverInstalled": "Installed Drivers",
+    "SettingsTabGraphicsSelectDriver" : "Select GPU Driver"
 }
