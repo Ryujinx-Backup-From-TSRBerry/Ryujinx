@@ -536,34 +536,6 @@ namespace Ryujinx.Rsc.ViewModels
         public bool IsSortedBySize => SortMode == ApplicationSort.FileSize;
         public bool IsSortedByPath => SortMode == ApplicationSort.Path;
 
-        public string SortName
-        {
-            get
-            {
-                switch (SortMode)
-                {
-                    case ApplicationSort.Title:
-                        return LocaleManager.Instance["GameListHeaderApplication"];
-                    case ApplicationSort.Developer:
-                        return LocaleManager.Instance["GameListHeaderDeveloper"];
-                    case ApplicationSort.LastPlayed:
-                        return LocaleManager.Instance["GameListHeaderLastPlayed"];
-                    case ApplicationSort.TotalTimePlayed:
-                        return LocaleManager.Instance["GameListHeaderTimePlayed"];
-                    case ApplicationSort.FileType:
-                        return LocaleManager.Instance["GameListHeaderFileExtension"];
-                    case ApplicationSort.FileSize:
-                        return LocaleManager.Instance["GameListHeaderFileSize"];
-                    case ApplicationSort.Path:
-                        return LocaleManager.Instance["GameListHeaderPath"];
-                    case ApplicationSort.Favorite:
-                        return LocaleManager.Instance["CommonFavorite"];
-                }
-
-                return string.Empty;
-            }
-        }
-
         private void ApplicationLibrary_ApplicationCountUpdated(object? sender, ApplicationCountUpdatedEventArgs e)
         {
         }

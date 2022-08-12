@@ -64,14 +64,15 @@
                 DockPanel.Dock="Right"
                 Text="{Binding SearchText}"
                 Watermark="{locale:Locale MenuSearch}" />
-            <ui:DropDownButton
-                Width="150"
+            <ui:Button
+                Width="40"
                 Height="35"
+                MinWidth="40"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
-                Content="{Binding SortName}"
                 DockPanel.Dock="Right">
-                <ui:DropDownButton.Flyout>
+                <ui:SymbolIcon Symbol="Sort"/>
+                <ui:Button.Flyout>
                     <Flyout Placement="Bottom">
                         <StackPanel
                             Margin="0"
@@ -150,8 +151,8 @@
                                 Tag="Descending" />
                         </StackPanel>
                     </Flyout>
-                </ui:DropDownButton.Flyout>
-            </ui:DropDownButton>
+                </ui:Button.Flyout>
+            </ui:Button>
         </DockPanel>
         <controls:GameListView
             x:Name="GameList"
