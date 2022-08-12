@@ -4,12 +4,12 @@ using LibHac.Ncm;
 using LibHac.Util;
 using Ryujinx.Common;
 using Ryujinx.Common.Logging;
-using Ryujinx.Cpu;
 using Ryujinx.HLE.HOS.Kernel;
 using Ryujinx.HLE.HOS.Kernel.Common;
 using Ryujinx.HLE.HOS.Kernel.Memory;
 using Ryujinx.HLE.HOS.Kernel.Process;
 using Ryujinx.HLE.Loaders.Executables;
+using Ryujinx.Memory;
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -168,7 +168,11 @@ namespace Ryujinx.HLE.HOS
             ulong argsStart = 0;
             uint  argsSize  = 0;
             ulong codeStart = (meta.Flags & 1) != 0 ? 0x8000000UL : 0x200000UL;
-            uint  codeSize  = 0;
+            ulong codeSize  = 0;
+
+            ulong entrypointOffset = 0;
+
+            ulong alignment = MemoryBlock.GetPageSize();
 
             var buildIds = executables.Select(e => (e switch
             {
@@ -202,28 +206,36 @@ namespace Ryujinx.HLE.HOS
 
                 nsoSize = BitUtils.AlignUp(nsoSize, KPageTableBase.PageSize);
 
-                nsoPatch[index] = codeStart + (ulong)codeSize;
+                nsoPatch[index] = codeStart + codeSize;
 
                 codeSize += ReservedPatchSize;
+                codeSize += BitUtils.AlignUp((ulong)nso.Text.Length, alignment) - BitUtils.AlignUp((ulong)nso.Text.Length, KPageTableBase.PageSize);
 
-                nsoBase[index] = codeStart + (ulong)codeSize;
+                if (index == 0)
+                {
+                    entrypointOffset = codeSize;
+                }
+
+                nsoBase[index] = codeStart + codeSize;
 
                 codeSize += nsoSize;
 
                 if (arguments != null && argsSize == 0)
                 {
-                    argsStart = (ulong)codeSize;
+                    argsStart = codeSize;
 
                     argsSize = (uint)BitUtils.AlignDown(arguments.Length * 2 + ArgsTotalSize - 1, KPageTableBase.PageSize);
 
                     codeSize += argsSize;
                 }
+
+                codeSize = BitUtils.AlignUp(codeSize, alignment);
             }
 
             codeSize += ReservedPatchSize;
 
             PtcProfiler.StaticCodeStart = codeStart;
-            PtcProfiler.StaticCodeSize  = (ulong)codeSize;
+            PtcProfiler.StaticCodeSize  = codeSize;
 
             int codePagesCount = (int)(codeSize / KPageTableBase.PageSize);
 
@@ -284,7 +296,7 @@ namespace Ryujinx.HLE.HOS
                 memoryRegion,
                 processContextFactory,
                 null,
-                ReservedPatchSize);
+                entrypointOffset);
 
             if (result != KernelResult.Success)
             {

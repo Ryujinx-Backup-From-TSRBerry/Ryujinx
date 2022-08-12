@@ -70,6 +70,12 @@ namespace Ryujinx.Cpu.Nce
                     PatchInstruction(memoryManager, address, WriteMrsTpidrEl0Patch(ref context, address, rd));
                     Logger.Debug?.Print(LogClass.Cpu, $"Patched MRS x{rd}, tpidr_el0 at 0x{address:X}.");
                 }
+                else if ((inst & ~0x1f) == 0xd53b0020 && OperatingSystem.IsMacOS()) // mrs x0, ctr_el0
+                {
+                    uint rd = inst & 0x1f;
+                    PatchInstruction(memoryManager, address, WriteMrsCtrEl0Patch(ref context, address, rd));
+                    Logger.Debug?.Print(LogClass.Cpu, $"Patched MRS x{rd}, ctr_el0 at 0x{address:X}.");
+                }
                 else if ((inst & ~0x1f) == 0xd51bd040) // msr tpidr_el0, x0
                 {
                     uint rd = inst & 0x1f;
@@ -154,6 +160,24 @@ namespace Ryujinx.Cpu.Nce
             return targetAddress;
         }
 
+        private static ulong WriteMrsCtrEl0Patch(ref Context context, ulong mrsAddress, uint rd)
+        {
+            uint[] code = GetCopy(NceAsmTable.MrsCtrEl0PatchCode);
+
+            int movIndex = Array.IndexOf(code, 0xd2800013u);
+
+            WritePointer(code, movIndex, (ulong)NceThreadTable.EntriesPointer);
+
+            ulong targetAddress = context.GetPatchWriteAddress(code.Length);
+
+            code[code.Length - 2] |= rd;
+            code[code.Length - 1] |= GetImm26(targetAddress + (ulong)(code.Length - 1) * 4, mrsAddress + 4);
+
+            WriteCode(context.MemoryManager, targetAddress, code);
+
+            return targetAddress;
+        }
+
         private static ulong WriteMsrTpidrEl0Patch(ref Context context, ulong msrAddress, uint rd)
         {
             uint r2 = rd == 0 ? 1u : 0u;
@@ -213,7 +237,7 @@ namespace Ryujinx.Cpu.Nce
 
             WritePointer(code, mov3Index, (ulong)NceNativeInterface.GetSuspendThreadHandlerFunctionPointer());
 
-            int mov4Index = Array.IndexOf(code, 0xd280001au, mov3Index + 1);
+            int mov4Index = Array.IndexOf(code, 0xd2800003u, mov3Index + 1);
 
             WritePointer(code, mov4Index, (ulong)oldSignalHandlerSegfaultPtr);
 

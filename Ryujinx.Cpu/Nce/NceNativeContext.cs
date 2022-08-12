@@ -21,7 +21,7 @@ namespace Ryujinx.Cpu.Nce
             public ulong HostSp; // 0x320
             public IntPtr HostThreadHandle; // 0x328
             public ulong HostX30; // 0x330
-            public ulong Reserved338; // 0x338
+            public ulong CtrEl0; // 0x338
             public ulong Reserved340; // 0x340
             public ulong Reserved348; // 0x348
             public IntPtr SvcCallHandler; // 0x350

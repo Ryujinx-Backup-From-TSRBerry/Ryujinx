@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace Ryujinx.Memory
@@ -440,7 +441,15 @@ namespace Ryujinx.Memory
 
         public static ulong GetPageSize()
         {
-            return 1UL << 14;
+            // TODO: Actually query this from the OS instead of assuming.
+            if (OperatingSystem.IsMacOS() && RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
+            {
+                return 1UL << 14;
+            }
+            else
+            {
+                return 1UL << 12;
+            }
         }
 
         public static bool IsPageAligned(ulong address, ulong size)

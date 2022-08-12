@@ -1,4 +1,3 @@
-using ARMeilleure.Memory;
 using ARMeilleure.State;
 using System;
 using System.Runtime.InteropServices;
@@ -71,6 +70,7 @@ namespace Ryujinx.Cpu.Nce
             ref var storage = ref _context.GetStorage();
             storage.SvcCallHandler = svcHandlerPtr;
             storage.InManaged = 1u;
+            storage.CtrEl0 = 0x8444c004; // TODO: Get value from host CPU instead of using guest one?
 
             Running = true;
             _exceptionCallbacks = exceptionCallbacks;

@@ -8,6 +8,7 @@ using Ryujinx.HLE.HOS.Kernel;
 using Ryujinx.HLE.HOS.Kernel.Process;
 using Ryujinx.Memory;
 using System;
+using System.Runtime.InteropServices;
 
 namespace Ryujinx.HLE.HOS
 {
@@ -28,7 +29,7 @@ namespace Ryujinx.HLE.HOS
         {
             MemoryManagerMode mode = context.Device.Configuration.MemoryManagerMode;
 
-            if (OperatingSystem.IsAndroid())
+            if (RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
             {
                 ulong usableAddressSpaceSize = Math.Min(addressSpaceSize, MaxNativeAddressSpaceSize);
                 bool unsafeMode = mode == MemoryManagerMode.HostMappedUnsafe;

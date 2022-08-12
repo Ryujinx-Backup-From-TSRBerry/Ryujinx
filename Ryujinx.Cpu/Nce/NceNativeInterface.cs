@@ -17,9 +17,6 @@ namespace Ryujinx.Cpu.Nce
         private static NceExecutionContext _context;
 
         [ThreadStatic]
-        private static IntPtr _nativeContextPtr;
-
-        [ThreadStatic]
         private static ITickSource _tickSource;
 
         static NceNativeInterface()

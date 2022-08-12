@@ -51,6 +51,8 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
                 return result;
             }
 
+            // TODO: If using private mappings, copy data from the old region to the new one.
+            // Games do not actually depend on this to function.
             result = MapPages(dst, pageList, newDstPermission, MemoryMapFlags.Private, false, 0);
 
             if (result != KernelResult.Success)
@@ -78,6 +80,8 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
                 return KernelResult.InvalidMemRange;
             }
 
+            // TODO: If using private mappings, copy data from the new region to the old one.
+            // Games do not actually depend on this to function.
             KernelResult result = Unmap(dst, pagesCount);
 
             if (result != KernelResult.Success)

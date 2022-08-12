@@ -4,8 +4,10 @@ namespace Ryujinx.Cpu.Nce
 {
     static class NceThreadPal
     {
-        private const int SigUsr2 = 12;
-        public const int UnixSuspendSignal = SigUsr2;
+        private const int SigUsr2Linux = 12;
+        private const int SigUsr2MacOS = 31;
+
+        public static int UnixSuspendSignal => OperatingSystem.IsMacOS() ? SigUsr2MacOS : SigUsr2Linux;
 
         public static IntPtr GetCurrentThreadHandle()
         {

@@ -1919,6 +1919,7 @@ namespace Ryujinx.HLE.HOS.Kernel.Memory
 
                 KernelResult result;
 
+                // TODO: ONly use MapForeign if region is a "private" mapping (not using the backing memory).
                 if (true)
                 {
                     result = MapForeign(srcPageTable.GetHostRegions(addressRounded, alignedSize), currentVa, alignedSize);

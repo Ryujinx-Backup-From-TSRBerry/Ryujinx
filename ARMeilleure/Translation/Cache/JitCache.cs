@@ -1,6 +1,7 @@
 using ARMeilleure.CodeGen;
 using ARMeilleure.CodeGen.Unwinding;
 using ARMeilleure.Memory;
+using ARMeilleure.Native;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -58,11 +59,22 @@ namespace ARMeilleure.Translation.Cache
 
                 IntPtr funcPtr = _jitRegion.Pointer + funcOffset;
 
-                // ReprotectAsWritable(funcOffset, code.Length);
-
-                Marshal.Copy(code, 0, funcPtr, code.Length);
-
-                ReprotectAsExecutable(funcOffset, code.Length);
+                 /* if (OperatingSystem.IsMacOS() && RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
+                {
+                    unsafe
+                    {
+                        fixed (byte *codePtr = code)
+                        {
+                            JitSupportDarwin.Copy(funcPtr, (IntPtr)codePtr, (ulong)code.Length);
+                        }
+                    }
+                }
+                else */
+                {
+                    // ReprotectAsWritable(funcOffset, code.Length);
+                    Marshal.Copy(code, 0, funcPtr, code.Length);
+                    ReprotectAsExecutable(funcOffset, code.Length);
+                }
 
                 Add(funcOffset, code.Length, func.UnwindInfo);
 

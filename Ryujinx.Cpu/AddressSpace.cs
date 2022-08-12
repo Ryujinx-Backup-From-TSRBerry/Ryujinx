@@ -171,7 +171,6 @@ namespace Ryujinx.Cpu
 
         public void Map(ulong va, ulong pa, ulong size, MemoryMapFlags flags)
         {
-            Console.WriteLine($"mapping request 0x{va:X} 0x{pa:X} 0x{size:X}");
             lock (_treeLock)
             {
                 ulong alignment = MemoryBlock.GetPageSize();
@@ -193,7 +192,6 @@ namespace Ryujinx.Cpu
                     Update(va, pa, size, MappingType.Shared);
                 }
             }
-            Console.WriteLine("map done");
         }
 
         public void Unmap(ulong va, ulong size)
@@ -202,6 +200,36 @@ namespace Ryujinx.Cpu
             {
                 Update(va, 0UL, size, MappingType.None);
             }
+        }
+
+        public void ReprotectCodeAsRx(ulong va, ulong size)
+        {
+            ulong endAddress = va + size;
+            ulong alignment = MemoryBlock.GetPageSize();
+
+            va = BitUtils.AlignDown(va, alignment);
+            endAddress = BitUtils.AlignUp(endAddress, alignment);
+            size = endAddress - va;
+
+            byte[] code = new byte[size];
+
+            Mirror.Read(va, code);
+
+            lock (_treeLock)
+            {
+                Update(va, 0UL, size, MappingType.None);
+            }
+
+            if (!Base.Commit(va, size))
+            {
+                throw new Exception($"Commmit of 0x{va:X} with size 0x{size:X} failed.");
+            }
+
+            Base.Write(va, code);
+            Base.Reprotect(va, size, MemoryPermission.ReadAndExecute);
+
+            Mirror.Commit(va, size);
+            Mirror.Write(va, code);
         }
 
         private void Update(ulong va, ulong pa, ulong size, MappingType type)
@@ -330,8 +358,6 @@ namespace Ryujinx.Cpu
             ulong endAddressAligned = BitUtils.AlignUp(endAddress, alignment);
 
             ulong sizeAligned = endAddressAligned - vaAligned;
-
-            Console.WriteLine($"map private 0x{vaAligned:X} 0x{sizeAligned:X}");
 
             PrivateMapping map = _privateTree.GetNode(new PrivateMapping(va, 1UL, default));
 
