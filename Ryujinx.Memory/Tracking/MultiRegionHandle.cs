@@ -94,7 +94,7 @@ namespace Ryujinx.Memory.Tracking
             int startHandle = (int)((address - Address) / Granularity);
             int lastHandle = (int)((address + (size - 1) - Address) / Granularity);
 
-            for (int i = startHandle; i <= lastHandle && i < _handles.Length; i++)
+            for (int i = startHandle; i <= lastHandle; i++)
             {
                 _handles[i].SequenceNumber--;
                 _handles[i].ForceDirty();
