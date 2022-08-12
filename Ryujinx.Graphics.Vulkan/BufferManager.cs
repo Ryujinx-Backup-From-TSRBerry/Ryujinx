@@ -89,6 +89,14 @@ namespace Ryujinx.Graphics.Vulkan
 
             var allocation = gd.MemoryAllocator.AllocateDeviceMemory(_physicalDevice, requirements, allocateFlags);
 
+            if(allocation.Memory.Handle == 0UL) 
+            {
+                // MemoryPropertyHostCachedBit isn't supported yet on turnip drivers
+                allocateFlags &= ~MemoryPropertyFlags.MemoryPropertyHostCachedBit;
+
+                allocation = gd.MemoryAllocator.AllocateDeviceMemory(_physicalDevice, requirements, allocateFlags);
+            }
+
             if (allocation.Memory.Handle == 0UL)
             {
                 gd.Api.DestroyBuffer(_device, buffer, null);
