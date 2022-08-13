@@ -63,20 +63,14 @@ namespace Ryujinx.Cpu.Nce
 
         public void Execute(IExecutionContext context, ulong address)
         {
-            Thread.BeginThreadAffinity();
-
             NceExecutionContext nec = (NceExecutionContext)context;
             NceNativeInterface.RegisterThread(nec, _tickSource);
-            NceThreadTable.Register(_getTpidrEl0(), nec.NativeContextPtr);
+            int tableIndex = NceThreadTable.Register(_getTpidrEl0(), nec.NativeContextPtr);
 
-            // System.Console.WriteLine($"going to start {System.Threading.Thread.CurrentThread.Name} at 0x{address:X} 0x{_codeBlock.Pointer.ToInt64():X} 0x{nec.NativeContextPtr.ToInt64():X}");
             nec.SetStartAddress(address);
             _threadStart(nec.NativeContextPtr);
-            // System.Console.WriteLine($"thread {System.Threading.Thread.CurrentThread.Name} exited successfully");
 
-            NceThreadTable.Unregister(nec.NativeContextPtr);
-
-            Thread.EndThreadAffinity();
+            NceThreadTable.Unregister(tableIndex);
         }
 
         public void InvalidateCacheRegion(ulong address, ulong size)

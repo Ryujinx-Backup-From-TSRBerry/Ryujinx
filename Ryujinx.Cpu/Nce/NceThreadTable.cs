@@ -22,7 +22,6 @@ namespace Ryujinx.Cpu.Nce
         }
 
         private static MemoryBlock _block;
-        private static Queue<int> _freeSlots;
 
         public static IntPtr EntriesPointer => _block.Pointer + 8;
 
@@ -30,59 +29,36 @@ namespace Ryujinx.Cpu.Nce
         {
             _block = new MemoryBlock((ulong)Unsafe.SizeOf<Entry>() * MaxThreads + 8UL);
             _block.Write(0UL, 0UL);
-            _freeSlots = new Queue<int>();
         }
 
-        public static void Register(IntPtr threadId, IntPtr nativeContextPtr)
+        public static int Register(IntPtr threadId, IntPtr nativeContextPtr)
         {
             Span<Entry> entries = GetStorage();
 
             lock (_block)
             {
-                if (_freeSlots.TryDequeue(out int freeSlot))
+                for (int i = 0; i < MaxThreads; i++)
                 {
-                    entries[freeSlot] = new Entry(threadId, nativeContextPtr);
-                }
-                else
-                {
-                    int slot = (int)(GetThreadsCount()++);
-                    if (slot == MaxThreads)
+                    if (entries[i].ThreadId == IntPtr.Zero)
                     {
-                        throw new Exception($"Number of active threads exceeds limit of {MaxThreads}.");
+                        entries[i] = new Entry(threadId, nativeContextPtr);
+                        GetThreadsCount()++;
+                        return i;
                     }
-
-                    entries[slot] = new Entry(threadId, nativeContextPtr);
                 }
             }
+
+            throw new Exception($"Number of active threads exceeds limit of {MaxThreads}.");
         }
 
-        public static void Unregister(IntPtr nativeContextPtr)
+        public static void Unregister(int tableIndex)
         {
             Span<Entry> entries = GetStorage();
 
-            lock (_block)
+            if (entries[tableIndex].ThreadId != IntPtr.Zero)
             {
-                ref ulong threadsCount = ref GetThreadsCount();
-
-                for (int i = 0; i < (int)threadsCount; i++)
-                {
-                    if (entries[i].NativeContextPtr == nativeContextPtr)
-                    {
-                        entries[i] = default;
-                        _freeSlots.Enqueue(i);
-                        break;
-                    }
-                }
-
-                for (int i = (int)threadsCount - 1; i >= 0; i--)
-                {
-                    if (entries[i].NativeContextPtr != IntPtr.Zero)
-                    {
-                        break;
-                    }
-
-                    threadsCount--;
-                }
+                entries[tableIndex] = default;
+                GetThreadsCount()--;
             }
         }
 
