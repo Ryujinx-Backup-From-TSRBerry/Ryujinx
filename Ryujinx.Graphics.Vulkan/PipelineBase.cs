@@ -22,6 +22,7 @@ namespace Ryujinx.Graphics.Vulkan
         private PipelineDynamicState _dynamicState;
         private PipelineState _newState;
         private bool _stateDirty;
+        private bool _hasNewShader;
         private GAL.PrimitiveTopology _topology;
 
         private ulong _currentPipelineHandle;
@@ -97,6 +98,10 @@ namespace Ryujinx.Graphics.Vulkan
             _newState.Initialize();
             _newState.LineWidth = 1f;
             _newState.SamplesCount = 1;
+
+            // Vulkan requires at least one viewport.
+            _dynamicState.ViewportsCount = 1;
+            _dynamicState.SetViewport(0, new(0, 0, 1, 1, 0f, 1f));
         }
 
         public void Initialize()
@@ -238,7 +243,7 @@ namespace Ryujinx.Graphics.Vulkan
             }
 
             EndRenderPass();
-            RecreatePipelineIfNeeded(PipelineBindPoint.Compute);
+            RecreateComputePipelineIfNeeded();
 
             Gd.Api.CmdDispatch(CommandBuffer, (uint)groupsX, (uint)groupsY, (uint)groupsZ);
         }
@@ -250,7 +255,7 @@ namespace Ryujinx.Graphics.Vulkan
                 return;
             }
 
-            RecreatePipelineIfNeeded(PipelineBindPoint.Graphics);
+            RecreateGraphicsPipelineIfNeeded();
             BeginRenderPass();
             ResumeTransformFeedbackInternal();
             DrawCount++;
@@ -277,7 +282,7 @@ namespace Ryujinx.Graphics.Vulkan
                 return;
             }
 
-            RecreatePipelineIfNeeded(PipelineBindPoint.Graphics);
+            RecreateGraphicsPipelineIfNeeded();
             BeginRenderPass();
             ResumeTransformFeedbackInternal();
             DrawCount++;
@@ -358,7 +363,7 @@ namespace Ryujinx.Graphics.Vulkan
                 return;
             }
 
-            RecreatePipelineIfNeeded(PipelineBindPoint.Graphics);
+            RecreateGraphicsPipelineIfNeeded();
             BeginRenderPass();
             ResumeTransformFeedbackInternal();
             DrawCount++;
@@ -388,7 +393,7 @@ namespace Ryujinx.Graphics.Vulkan
                 return;
             }
 
-            RecreatePipelineIfNeeded(PipelineBindPoint.Graphics);
+            RecreateGraphicsPipelineIfNeeded();
             BeginRenderPass();
             ResumeTransformFeedbackInternal();
             DrawCount++;
@@ -585,6 +590,7 @@ namespace Ryujinx.Graphics.Vulkan
 
             stages.CopyTo(_newState.Stages.ToSpan().Slice(0, stages.Length));
 
+            _hasNewShader = true;
             SignalStateChange();
         }
 
@@ -1045,18 +1051,34 @@ namespace Ryujinx.Graphics.Vulkan
             _stateDirty = true;
         }
 
-        private void RecreatePipelineIfNeeded(PipelineBindPoint pbp)
+        private void RecreateComputePipelineIfNeeded()
+        {
+            // Commit changes to the support buffer before drawing.
+            SupportBufferUpdater.Commit();
+
+            if (_hasNewShader || Pbp != PipelineBindPoint.Compute)
+            {
+                CreatePipeline(PipelineBindPoint.Compute);
+                Pbp = PipelineBindPoint.Compute;
+                _hasNewShader = false;
+            }
+
+            _descriptorSetUpdater.UpdateAndBindDescriptorSets(Cbs, PipelineBindPoint.Compute);
+        }
+
+        private void RecreateGraphicsPipelineIfNeeded()
         {
             _dynamicState.ReplayIfDirty(Gd.Api, CommandBuffer);
 
             // Commit changes to the support buffer before drawing.
             SupportBufferUpdater.Commit();
 
-            if (_stateDirty || Pbp != pbp)
+            if (_stateDirty || Pbp != PipelineBindPoint.Graphics)
             {
-                CreatePipeline(pbp);
+                CreatePipeline(PipelineBindPoint.Graphics);
                 _stateDirty = false;
-                Pbp = pbp;
+                _hasNewShader = false;
+                Pbp = PipelineBindPoint.Graphics;
             }
 
             if (_needsIndexBufferRebind)
@@ -1087,7 +1109,7 @@ namespace Ryujinx.Graphics.Vulkan
                 _needsVertexBuffersRebind = false;
             }
 
-            _descriptorSetUpdater.UpdateAndBindDescriptorSets(Cbs, pbp);
+            _descriptorSetUpdater.UpdateAndBindDescriptorSets(Cbs, PipelineBindPoint.Graphics);
         }
 
         private void CreatePipeline(PipelineBindPoint pbp)
