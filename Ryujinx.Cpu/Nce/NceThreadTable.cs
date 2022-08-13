@@ -55,13 +55,10 @@ namespace Ryujinx.Cpu.Nce
         {
             Span<Entry> entries = GetStorage();
 
-            lock (_block)
+            if (entries[tableIndex].ThreadId != IntPtr.Zero)
             {
-                if (entries[tableIndex].ThreadId != IntPtr.Zero)
-                {
-                    entries[tableIndex] = default;
-                    GetThreadsCount()--;
-                }
+                entries[tableIndex] = default;
+                GetThreadsCount()--;
             }
         }
 
