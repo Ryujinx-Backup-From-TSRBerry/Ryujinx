@@ -44,7 +44,7 @@
         <Color x:Key="SystemAccentColor">#FF00C3E3</Color>
         <Color x:Key="SystemAccentColorDark1">#FF99b000</Color>
         <Color x:Key="SystemAccentColorDark2">#FF006d7d</Color>
-        <Color x:Key="SystemAccentColorDark3">#FF00525E</Color>
+        <Color x:Key="SystemAccentColorDark3">#FF045ab0</Color>
         <Color x:Key="SystemAccentColorLight1">#FF00dbff</Color>
         <Color x:Key="SystemAccentColorLight2">#FF19dfff</Color>
         <Color x:Key="SystemAccentColorLight3">#FF33e3ff</Color>

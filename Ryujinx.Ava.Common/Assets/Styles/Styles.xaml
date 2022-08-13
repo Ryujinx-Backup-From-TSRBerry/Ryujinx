@@ -249,7 +249,7 @@
         <SolidColorBrush x:Key="DataGridSelectionBackgroundBrush" Color="{DynamicResource DataGridSelectionColor}" />
         <SolidColorBrush x:Key="MenuFlyoutPresenterBorderBrush" Color="{DynamicResource MenuFlyoutPresenterBorderColor}" />
         <SolidColorBrush x:Key="FlyoutBorderThemeBrush" Color="{DynamicResource MenuFlyoutPresenterBorderColor}" />
-        <SolidColorBrush x:Key="ListBoxBackground" Color="{DynamicResource ThemeContentBackgroundColor}" />
+        <SolidColorBrush x:Key="ListViewItemBackground" Color="{DynamicResource ThemeContentBackgroundColor}" />
         <SolidColorBrush x:Key="ThemeForegroundBrush" Color="{DynamicResource ThemeForegroundColor}" />
         <SolidColorBrush x:Key="ThemeAccentBrush4" Color="{DynamicResource ThemeAccentColor4}" />
         <SolidColorBrush x:Key="SplitButtonBackgroundChecked" Color="#00E81123" />
@@ -260,13 +260,13 @@
         <Thickness x:Key="Margin">0 5 0 5</Thickness>
         <Thickness x:Key="MenuItemPadding">5 0 5 0</Thickness>
         <Color x:Key="MenuFlyoutPresenterBorderColor">#00000000</Color>
-        <Color x:Key="SystemAccentColor">#FF00C3E3</Color>
-        <Color x:Key="SystemAccentColorDark1">#FF00C3E3</Color>
-        <Color x:Key="SystemAccentColorDark2">#FF00C3E3</Color>
-        <Color x:Key="SystemAccentColorDark3">#FF00C3E3</Color>
-        <Color x:Key="SystemAccentColorLight1">#FF00C3E3</Color>
-        <Color x:Key="SystemAccentColorLight2">#FF00C3E3</Color>
-        <Color x:Key="SystemAccentColorLight3">#FF00C3E3</Color>
+        <Color x:Key="SystemAccentColor">#FF045ab0</Color>
+        <Color x:Key="SystemAccentColorDark1">#FF045ab0</Color>
+        <Color x:Key="SystemAccentColorDark2">#FF045ab0</Color>
+        <Color x:Key="SystemAccentColorDark3">#FF045ab0</Color>
+        <Color x:Key="SystemAccentColorLight1">#FF045ab0</Color>
+        <Color x:Key="SystemAccentColorLight2">#FF045ab0</Color>
+        <Color x:Key="SystemAccentColorLight3">#FF045ab0</Color>
         <Color x:Key="DataGridSelectionColor">#FF00FABB</Color>
         <Color x:Key="ThemeContentBackgroundColor">#FF2D2D2D</Color>
         <Color x:Key="ThemeControlBorderColor">#FF505050</Color>

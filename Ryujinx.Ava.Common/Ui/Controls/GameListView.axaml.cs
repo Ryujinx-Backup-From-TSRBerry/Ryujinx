@@ -83,7 +83,7 @@ namespace Ryujinx.Ava.Common.Ui.Controls
             {
                 LongPressed?.Invoke(this, SelectedApplication);
             }
-            
+
         }
 
         private void SearchBox_OnKeyUp(object sender, KeyEventArgs e)

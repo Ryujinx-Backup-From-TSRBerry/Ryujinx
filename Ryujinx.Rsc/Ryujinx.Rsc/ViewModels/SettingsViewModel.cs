@@ -32,7 +32,7 @@ namespace Ryujinx.Rsc.ViewModels
         private string _title;
         private bool _showToolbar = true;
 
-        public bool CanSelectDriver => !OperatingSystem.IsAndroid();
+        public bool CanSelectDriver => OperatingSystem.IsAndroid();
 
         public string Title
         {

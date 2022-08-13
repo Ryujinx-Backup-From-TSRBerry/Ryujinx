@@ -353,7 +353,7 @@ namespace Ryujinx.Rsc.ViewModels
 
             ReloadGameList();
 
-            ShowNames = true;
+            ShowNames = false;
         }
 
         public void ToggleVirtualController()
