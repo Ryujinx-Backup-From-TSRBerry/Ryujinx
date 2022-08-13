@@ -296,6 +296,8 @@ namespace Ryujinx.Rsc
                 _parent.ViewModel.Title = $"Ryujinx Test {titleNameSection}{titleVersionSection}{titleIdSection}{titleArchSection}";
             });
 
+            App.RequestedOrientation = Orientation.Landscape;
+
             _parent.ViewModel.HandleShaderProgress(Device);
 
             Renderer.SizeChanged += Window_SizeChanged;
@@ -686,7 +688,6 @@ namespace Ryujinx.Rsc
                         if (!_renderingStarted)
                         {
                             _renderingStarted = true;
-                            App.RequestedOrientation = Orientation.Landscape;
                             _parent.ViewModel.ShowLoadProgress = false;
                             _parent.ViewModel.ShowOverlay = true;
                         }

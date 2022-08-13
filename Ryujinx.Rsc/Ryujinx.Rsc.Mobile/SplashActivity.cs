@@ -96,8 +96,6 @@ namespace Ryujinx.Rsc.Mobile
                 System.AppDomain.CurrentDomain.UnhandledException += (object sender, System.UnhandledExceptionEventArgs e) => ProcessUnhandledException(e.ExceptionObject as System.Exception);
 
                 AndroidEnvironment.UnhandledExceptionRaiser += (s, e) => ProcessUnhandledException(e.Exception as System.Exception);
-
-                Java.Lang.JavaSystem.LoadLibrary("c");
             }
         }
 
