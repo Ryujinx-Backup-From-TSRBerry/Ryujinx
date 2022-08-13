@@ -120,6 +120,10 @@ ldr \r1, [\r1, #-8]
 
 .global ExceptionHandlerEntryCode
 ExceptionHandlerEntryCode:
+stp x19, x20, [sp, #-0x40]!
+stp x21, x22, [sp, #0x10]
+stp x23, x24, [sp, #0x20]
+str x25, [sp, #0x30]
 // signo
 mov x19, x0
 // siginfo_t *si
@@ -163,6 +167,10 @@ str wzr, [x24, 0x31C]
 3:
 mov sp, x22
 mov x30, x23
+ldp x21, x22, [sp, #0x10]
+ldp x23, x24, [sp, #0x20]
+ldp x25, x26, [sp, #0x30]
+ldp x19, x20, [sp], #0x40
 ret
 4:
 // ThreadId is invalid, forward to other handler.
@@ -170,8 +178,12 @@ mov x0, x19
 mov x1, x20
 mov x2, x21
 mov sp, x22
-longmov0 x26
-br x26
+ldp x21, x22, [sp, #0x10]
+ldp x23, x24, [sp, #0x20]
+ldr x25, [sp, #0x30]
+ldp x19, x20, [sp], #0x40
+longmov0 x3
+br x3
 
 .global SvcPatchCode
 SvcPatchCode:
@@ -297,6 +309,18 @@ stp xzr, x19, [sp, #-0x20]!
 stp x20, x21, [sp, #0x10]
 loadctxptr
 ldr x19, [x19, #0x300]
+str x19, [sp]
+ldp x20, x21, [sp, #0x10]
+ldr x19, [sp, #8]
+ldr x0, [sp], #0x20
+b #0
+
+.global MrsCtrEl0PatchCode
+MrsCtrEl0PatchCode:
+stp xzr, x19, [sp, #-0x20]!
+stp x20, x21, [sp, #0x10]
+loadctxptr
+ldr x19, [x19, #0x338]
 str x19, [sp]
 ldp x20, x21, [sp, #0x10]
 ldr x19, [sp, #8]
