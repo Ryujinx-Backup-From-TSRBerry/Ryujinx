@@ -3,18 +3,72 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:locale="clr-namespace:Ryujinx.Ava.Common.Locale;assembly=Ryujinx.Ava.Common"
+             xmlns:viewModels="clr-namespace:Ryujinx.Rsc.ViewModels"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
              xmlns:models="clr-namespace:Ryujinx.Rsc.Models"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Ryujinx.Rsc.Views.SettingPages.InputPage">
-    <StackPanel HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Orientation="Vertical">
-            <Button BorderBrush="Transparent" HorizontalContentAlignment="Left" Command="{Binding MoveToPage}" Background="Transparent" Height="38" HorizontalAlignment="Stretch" CornerRadius="5">
+    <Grid HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid IsVisible="{Binding ShowToolbar}"
+              Margin=""
+              HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Background="Transparent"
+                    BorderBrush="Transparent"
+                    Grid.Column="0"
+                    VerticalAlignment="Stretch"
+                    Width="45"
+                    MinWidth="45"
+                    Height="45"
+                    Command="{Binding MoveBack}">
+                <ui:SymbolIcon Symbol="Back"
+                               FontSize="20" />
+            </Button>
+            <Label Grid.Column="1"
+                   Content="{Binding Title}"
+                   Margin="5"
+                   VerticalAlignment="Center"
+                   FontSize="16"
+                   Padding="0" />
+        </Grid>
+        <StackPanel HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Grid.Row="1"
+                    Margin="5"
+                    Orientation="Vertical">
+            <Button
+                BorderBrush="Transparent"
+                Command="{Binding MoveToPage}"
+                    Margin="5"
+                    HorizontalContentAlignment="Stretch"
+                    Height="50"
+                    HorizontalAlignment="Stretch"
+                    CornerRadius="5">
                 <Button.CommandParameter>
                     <models:SettingPages>VirtualController</models:SettingPages>
                 </Button.CommandParameter>
-                <Label VerticalAlignment="Center" Content="Edit Virtual Controller" FontSize="16"  Padding="0" />
+                <Grid HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Label VerticalAlignment="Center"
+                           Padding="0"
+                           Content="Edit Virtual Controller"/>
+                    <ui:SymbolIcon Symbol="ChevronRight"
+                                   Width="30"
+                                   Grid.Column="1"/>
+                </Grid>
             </Button>
-        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
-    </StackPanel>
+        </StackPanel>
+    </Grid>
 </UserControl>

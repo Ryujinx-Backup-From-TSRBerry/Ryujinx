@@ -1,31 +1,44 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+using Avalonia.Interactivity;
+using FluentAvalonia.UI.Controls;
+using FluentAvalonia.UI.Navigation;
+using Ryujinx.Ava.Common;
+using Ryujinx.Ava.Common.Locale;
 using Ryujinx.Rsc.ViewModels;
 
 namespace Ryujinx.Rsc.Views.SettingPages
 {
     public partial class DriverPage : UserControl
     {
-        public SettingsViewModel ViewModel { get; }
+        public SettingsViewModel ViewModel { get; set; }
 
-        public DriverPage(SettingsViewModel viewModel)
-        {
-            ViewModel = viewModel;
-            DataContext = ViewModel;
-            InitializeComponent();
-        }
-        
         public DriverPage()
         {
             ViewModel = new SettingsViewModel();
             InitializeComponent();
+
+            if (AppConfig.PreviewerDetached)
+            {
+                AddHandler(Frame.NavigatedToEvent, (s, e) =>
+                {
+                    NavigatedTo(e);
+                }, RoutingStrategies.Direct);
+            }
         }
-        
-        protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+
+        private void NavigatedTo(NavigationEventArgs arg)
         {
-            base.OnAttachedToVisualTree(e);
-            ViewModel.Title = "Driver";
+            if (AppConfig.PreviewerDetached)
+            {
+                if (arg.NavigationMode == NavigationMode.New)
+                {
+                    ViewModel = (SettingsViewModel)arg.Parameter;
+                    ViewModel.Title = LocaleManager.Instance["SettingsTabDriverInstalled"];
+                }
+
+                DataContext = ViewModel;
+            }
         }
     }
 }

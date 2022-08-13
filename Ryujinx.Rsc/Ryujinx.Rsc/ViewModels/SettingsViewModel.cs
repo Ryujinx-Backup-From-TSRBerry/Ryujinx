@@ -32,7 +32,7 @@ namespace Ryujinx.Rsc.ViewModels
         private string _title;
         private bool _showToolbar = true;
 
-        public bool CanSelectDriver => OperatingSystem.IsAndroid();
+        public bool CanSelectDriver => !OperatingSystem.IsAndroid();
 
         public string Title
         {
@@ -89,11 +89,6 @@ namespace Ryujinx.Rsc.ViewModels
             }
         }
 
-        public void NotifyPageChanged()
-        {
-            this.RaisePropertyChanged(nameof(HasBackStack));
-        }
-
         private void LoadDrivers()
         {
             if (!CanSelectDriver)
@@ -146,25 +141,25 @@ namespace Ryujinx.Rsc.ViewModels
             switch (page)
             {
                 case SettingPages.General:
-                    _owner.NavigateToPage(new GeneralPage(this));
+                    _owner.Owner.Navigate(typeof(GeneralPage), this);
                     break;
                 case SettingPages.Graphics:
-                    _owner.NavigateToPage(new GraphicsPage(this));
+                    _owner.Owner.Navigate(typeof(GraphicsPage), this);
                     break;
                 case SettingPages.System:
-                    _owner.NavigateToPage(new SystemPage(this));
+                    _owner.Owner.Navigate(typeof(SystemPage), this);
                     break;
                 case SettingPages.Log:
-                    _owner.NavigateToPage(new LoggingPage(this));
+                    _owner.Owner.Navigate(typeof(LoggingPage), this);
                     break;
                 case SettingPages.Input:
-                    _owner.NavigateToPage(new InputPage(this));
+                    _owner.Owner.Navigate(typeof(InputPage), this);
                     break;
                 case SettingPages.VirtualController:
-                    _owner.NavigateToPage(new VirtualControllerPage(this));
+                    _owner.Owner.Navigate(typeof(VirtualControllerPage), this);
                     break;
                 case SettingPages.Driver:
-                    _owner.NavigateToPage(new DriverPage(this));
+                    _owner.Owner.Navigate(typeof(DriverPage), this);
                     break;
             }
         }

@@ -3,309 +3,415 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:locale="clr-namespace:Ryujinx.Ava.Common.Locale;assembly=Ryujinx.Ava.Common"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="650"
+             xmlns:viewModels="clr-namespace:Ryujinx.Rsc.ViewModels"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             mc:Ignorable="d"
+             d:DesignWidth="800"
+             d:DesignHeight="650"
              x:Class="Ryujinx.Rsc.Views.SettingPages.SystemPage">
-    <StackPanel HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Orientation="Vertical">
-        <TextBlock FontWeight="Bold" FontSize="16" Margin="10" Text="{locale:Locale SettingsTabSystemCore}" />
-        <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="40" HorizontalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock VerticalAlignment="Center"
-                           HorizontalAlignment="Left"
-                           Text="{locale:Locale SettingsTabSystemSystemRegion}"
-                           Width="230" />
-                <ComboBox Grid.Column="1" VerticalAlignment="Center" SelectedIndex="{Binding Region}"
-                          Width="200"
-                          HorizontalContentAlignment="Right">
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabSystemSystemRegionJapan}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabSystemSystemRegionUSA}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabSystemSystemRegionEurope}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabSystemSystemRegionAustralia}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabSystemSystemRegionChina}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabSystemSystemRegionKorea}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabSystemSystemRegionTaiwan}" />
-                    </ComboBoxItem>
-                </ComboBox>
-            </Grid>
-        </Border>
-        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}" />
-        <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="40" HorizontalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock VerticalAlignment="Center"
-                           HorizontalAlignment="Left"
-                           Text="{locale:Locale SettingsTabSystemSystemLanguage}" />
-                <ComboBox Grid.Column="1" VerticalAlignment="Center" SelectedIndex="{Binding Language}"
-                          Width="200"
-                          HorizontalContentAlignment="Right">
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabSystemSystemLanguageJapanese}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock
-                            Text="{locale:Locale SettingsTabSystemSystemLanguageAmericanEnglish}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabSystemSystemLanguageFrench}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabSystemSystemLanguageGerman}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabSystemSystemLanguageItalian}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabSystemSystemLanguageSpanish}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabSystemSystemLanguageChinese}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabSystemSystemLanguageKorean}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabSystemSystemLanguageDutch}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabSystemSystemLanguagePortuguese}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabSystemSystemLanguageRussian}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabSystemSystemLanguageTaiwanese}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock
-                            Text="{locale:Locale SettingsTabSystemSystemLanguageBritishEnglish}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock
-                            Text="{locale:Locale SettingsTabSystemSystemLanguageCanadianFrench}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock
-                            Text="{locale:Locale SettingsTabSystemSystemLanguageLatinAmericanSpanish}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock
-                            Text="{locale:Locale SettingsTabSystemSystemLanguageSimplifiedChinese}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock
-                            Text="{locale:Locale SettingsTabSystemSystemLanguageTraditionalChinese}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock
-                            Text="{locale:Locale SettingsTabSystemSystemLanguageBrazilianPortuguese}" />
-                    </ComboBoxItem>
-                </ComboBox>
-            </Grid>
-        </Border>
-        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}" />
-        <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="40" HorizontalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock VerticalAlignment="Center"
-                           HorizontalAlignment="Left"
-                           Text="{locale:Locale SettingsTabSystemSystemTimeZone}"
-                           Width="230" />
-                <AutoCompleteBox Grid.Column="1"
-                                 Name="TimeZoneBox"
-                                 Width="300"
-                                 FilterMode="Contains"
-                                 Items="{Binding TimeZones}"
-                                 SelectionChanged="TimeZoneBox_OnSelectionChanged"
-                                 Text="{Binding Path=TimeZone, Mode=OneWay}"
-                                 TextChanged="TimeZoneBox_OnTextChanged"
-                                 ValueMemberBinding="{ReflectionBinding TzMultiBinding}"
-                                 ToolTip.Tip="{locale:Locale TimezoneTooltip}" />
-            </Grid>
-        </Border>
-        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}" />
-        <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" HorizontalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock VerticalAlignment="Center"
-                           HorizontalAlignment="Left"
-                           Text="{locale:Locale SettingsTabSystemSystemTime}"
-                           Width="230" />
-                <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Right" Spacing="10">
-                    <DatePicker Grid.Column="1" VerticalAlignment="Center" SelectedDate="{Binding DateOffset}"
+    <Design.DataContext>
+        <viewModels:SettingsViewModel />
+    </Design.DataContext>
+    <Grid HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid IsVisible="{Binding ShowToolbar}"
+              Margin=""
+              HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Background="Transparent"
+                    BorderBrush="Transparent"
+                    Grid.Column="0"
+                    VerticalAlignment="Stretch"
+                    Width="45"
+                    MinWidth="45"
+                    Height="45"
+                    Command="{Binding MoveBack}">
+                <ui:SymbolIcon Symbol="Back"
+                               FontSize="20" />
+            </Button>
+            <Label Grid.Column="1"
+                   Content="{Binding Title}"
+                   Margin="5"
+                   VerticalAlignment="Center"
+                   FontSize="16"
+                   Padding="0" />
+        </Grid>
+        <ScrollViewer HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      Grid.Row="1">
+            <StackPanel HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Orientation="Vertical"
+                        Margin="5"
+                        Grid.Row="1">
+                <TextBlock FontWeight="Bold"
+                           FontSize="16"
+                           Margin="10"
+                           Text="{locale:Locale SettingsTabSystemCore}" />
+                <Border HorizontalAlignment="Stretch"
+                        Classes="settingsItem"
+                        ClipToBounds="True">
+                    <Grid Background="Transparent"
+                          Height="40"
+                          HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center"
+                                   HorizontalAlignment="Left"
+                                   Text="{locale:Locale SettingsTabSystemSystemRegion}"
+                                   Width="230" />
+                        <ComboBox Grid.Column="1"
+                                  VerticalAlignment="Center"
+                                  SelectedIndex="{Binding Region}"
+                                  Width="200"
+                                  HorizontalContentAlignment="Right">
+                            <ComboBoxItem>
+                                <TextBlock Text="{locale:Locale SettingsTabSystemSystemRegionJapan}" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock Text="{locale:Locale SettingsTabSystemSystemRegionUSA}" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock Text="{locale:Locale SettingsTabSystemSystemRegionEurope}" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock Text="{locale:Locale SettingsTabSystemSystemRegionAustralia}" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock Text="{locale:Locale SettingsTabSystemSystemRegionChina}" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock Text="{locale:Locale SettingsTabSystemSystemRegionKorea}" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock Text="{locale:Locale SettingsTabSystemSystemRegionTaiwan}" />
+                            </ComboBoxItem>
+                        </ComboBox>
+                    </Grid>
+                </Border>
+                <Border HorizontalAlignment="Stretch"
+                        Classes="settingsItem"
+                        ClipToBounds="True">
+                    <Grid Background="Transparent"
+                          Height="40"
+                          HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center"
+                                   HorizontalAlignment="Left"
+                                   Text="{locale:Locale SettingsTabSystemSystemLanguage}" />
+                        <ComboBox Grid.Column="1"
+                                  VerticalAlignment="Center"
+                                  SelectedIndex="{Binding Language}"
+                                  Width="200"
+                                  HorizontalContentAlignment="Right">
+                            <ComboBoxItem>
+                                <TextBlock Text="{locale:Locale SettingsTabSystemSystemLanguageJapanese}" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock
+                                    Text="{locale:Locale SettingsTabSystemSystemLanguageAmericanEnglish}" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock Text="{locale:Locale SettingsTabSystemSystemLanguageFrench}" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock Text="{locale:Locale SettingsTabSystemSystemLanguageGerman}" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock Text="{locale:Locale SettingsTabSystemSystemLanguageItalian}" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock Text="{locale:Locale SettingsTabSystemSystemLanguageSpanish}" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock Text="{locale:Locale SettingsTabSystemSystemLanguageChinese}" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock Text="{locale:Locale SettingsTabSystemSystemLanguageKorean}" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock Text="{locale:Locale SettingsTabSystemSystemLanguageDutch}" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock Text="{locale:Locale SettingsTabSystemSystemLanguagePortuguese}" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock Text="{locale:Locale SettingsTabSystemSystemLanguageRussian}" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock Text="{locale:Locale SettingsTabSystemSystemLanguageTaiwanese}" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock
+                                    Text="{locale:Locale SettingsTabSystemSystemLanguageBritishEnglish}" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock
+                                    Text="{locale:Locale SettingsTabSystemSystemLanguageCanadianFrench}" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock
+                                    Text="{locale:Locale SettingsTabSystemSystemLanguageLatinAmericanSpanish}" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock
+                                    Text="{locale:Locale SettingsTabSystemSystemLanguageSimplifiedChinese}" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock
+                                    Text="{locale:Locale SettingsTabSystemSystemLanguageTraditionalChinese}" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock
+                                    Text="{locale:Locale SettingsTabSystemSystemLanguageBrazilianPortuguese}" />
+                            </ComboBoxItem>
+                        </ComboBox>
+                    </Grid>
+                </Border>
+                <Border HorizontalAlignment="Stretch"
+                        Classes="settingsItem"
+                        ClipToBounds="True">
+                    <Grid Background="Transparent"
+                          Height="40"
+                          HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center"
+                                   HorizontalAlignment="Left"
+                                   Text="{locale:Locale SettingsTabSystemSystemTimeZone}"
+                                   Width="230" />
+                        <AutoCompleteBox Grid.Column="1"
+                                         Name="TimeZoneBox"
+                                         Width="300"
+                                         VerticalAlignment="Center"
+                                         FilterMode="Contains"
+                                         Items="{Binding TimeZones}"
+                                         SelectionChanged="TimeZoneBox_OnSelectionChanged"
+                                         Text="{Binding Path=TimeZone, Mode=OneWay}"
+                                         TextChanged="TimeZoneBox_OnTextChanged"
+                                         ValueMemberBinding="{ReflectionBinding TzMultiBinding}"
+                                         ToolTip.Tip="{locale:Locale TimezoneTooltip}" />
+                    </Grid>
+                </Border>
+                <Border HorizontalAlignment="Stretch"
+                        Classes="settingsItem"
+                        ClipToBounds="True">
+                    <Grid Background="Transparent"
+                          HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center"
+                                   HorizontalAlignment="Left"
+                                   Text="{locale:Locale SettingsTabSystemSystemTime}"
+                                   Width="230" />
+                        <StackPanel Grid.Column="1"
+                                    Orientation="Vertical"
+                                    HorizontalAlignment="Right"
+                                    Spacing="10">
+                            <DatePicker Grid.Column="1"
+                                        VerticalAlignment="Center"
+                                        SelectedDate="{Binding DateOffset}"
+                                        ToolTip.Tip="{locale:Locale TimeTooltip}" />
+                            <TimePicker
+                                VerticalAlignment="Center"
+                                ClockIdentifier="24HourClock"
+                                HorizontalAlignment="Right"
+                                SelectedTime="{Binding TimeOffset}"
                                 ToolTip.Tip="{locale:Locale TimeTooltip}" />
-                    <TimePicker
-                        VerticalAlignment="Center"
-                        ClockIdentifier="24HourClock"
-                        HorizontalAlignment="Right"
-                        SelectedTime="{Binding TimeOffset}" 
-                        ToolTip.Tip="{locale:Locale TimeTooltip}" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                <Border HorizontalAlignment="Stretch"
+                        Classes="settingsItem"
+                        ClipToBounds="True">
+                    <Grid Background="Transparent"
+                          Height="40"
+                          HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center"
+                                   HorizontalAlignment="Left"
+                                   Text="{locale:Locale SettingsTabSystemEnableVsync}"
+                                   Width="230" />
+                        <ToggleSwitch Grid.Column="1"
+                                      IsChecked="{Binding EnableVsync}"
+                                      OffContent=""
+                                      Content=""
+                                      OnContent="" />
+                    </Grid>
+                </Border>
+                <Border HorizontalAlignment="Stretch"
+                        Classes="settingsItem"
+                        ClipToBounds="True">
+                    <Grid Background="Transparent"
+                          Height="40"
+                          HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center"
+                                   HorizontalAlignment="Left"
+                                   Text="{locale:Locale SettingsTabSystemEnableFsIntegrityChecks}"
+                                   Width="230" />
+                        <ToggleSwitch Grid.Column="1"
+                                      IsChecked="{Binding EnableFsIntegrityChecks}"
+                                      OffContent=""
+                                      Content=""
+                                      OnContent="" />
+                    </Grid>
+                </Border>
+                <Border HorizontalAlignment="Stretch"
+                        Classes="settingsItem"
+                        ClipToBounds="True">
+                    <Grid Background="Transparent"
+                          Height="40"
+                          HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center"
+                                   HorizontalAlignment="Left"
+                                   Text="{locale:Locale SettingsTabSystemEnablePptc}"
+                                   Width="230" />
+                        <ToggleSwitch Grid.Column="1"
+                                      IsChecked="{Binding EnablePptc}"
+                                      OffContent=""
+                                      Content=""
+                                      OnContent="" />
+                    </Grid>
+                </Border>
+                <Border HorizontalAlignment="Stretch"
+                        Classes="settingsItem"
+                        ClipToBounds="True">
+                    <Grid Background="Transparent"
+                          Height="40"
+                          HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center"
+                                   HorizontalAlignment="Left"
+                                   Text="Prefer Native Code Execution"
+                                   Width="230" />
+                        <ToggleSwitch Grid.Column="1"
+                                      IsChecked="{Binding PreferNativeCodeExecution}"
+                                      OffContent=""
+                                      Content=""
+                                      OnContent="" />
+                    </Grid>
+                </Border>
+                <Border HorizontalAlignment="Stretch"
+                        Classes="settingsItem"
+                        ClipToBounds="True">
+                    <Grid Background="Transparent"
+                          HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center"
+                                   HorizontalAlignment="Left"
+                                   Text="{locale:Locale SettingsTabSystemAudioVolume}"
+                                   Width="230" />
+                        <StackPanel Grid.Column="1"
+                                    Orientation="Vertical"
+                                    HorizontalAlignment="Right">
+                            <NumericUpDown Value="{Binding Volume}"
+                                           HorizontalAlignment="Right"
+                                           ToolTip.Tip="{locale:Locale AudioVolumeTooltip}"
+                                           Width="150"
+                                           Increment="1"
+                                           AllowSpin="True"
+                                           VerticalAlignment="Center"
+                                           ButtonSpinnerLocation="Right"
+                                           Minimum="0"
+                                           Maximum="100" />
+                            <Slider Value="{Binding Volume}"
+                                    Margin="260,0,0,0"
+                                    ToolTip.Tip="{locale:Locale AudioVolumeTooltip}"
+                                    Minimum="0"
+                                    Maximum="100"
+                                    SmallChange="5"
+                                    TickFrequency="5"
+                                    IsSnapToTickEnabled="True"
+                                    LargeChange="10"
+                                    Width="200" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                <StackPanel Margin="10"
+                            Orientation="Horizontal">
+                    <TextBlock FontSize="16"
+                               FontWeight="Bold"
+                               Text="{locale:Locale SettingsTabSystemHacks}" />
+                    <TextBlock VerticalAlignment="Center"
+                               Text="{locale:Locale SettingsTabSystemHacksNote}" />
                 </StackPanel>
-            </Grid>
-        </Border>
-        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}" />
-        <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="40" HorizontalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock VerticalAlignment="Center"
-                           HorizontalAlignment="Left"
-                           Text="{locale:Locale SettingsTabSystemEnableVsync}"
-                           Width="230" />
-                <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableVsync}" OffContent="" Content="" OnContent="" />
-            </Grid>
-        </Border>
-        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}" />
-        <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="40" HorizontalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock VerticalAlignment="Center"
-                           HorizontalAlignment="Left"
-                           Text="{locale:Locale SettingsTabSystemEnableFsIntegrityChecks}"
-                           Width="230" />
-                <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableFsIntegrityChecks}" OffContent="" Content=""
-                              OnContent="" />
-            </Grid>
-        </Border>
-        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}" />
-        <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="40" HorizontalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock VerticalAlignment="Center"
-                           HorizontalAlignment="Left"
-                           Text="{locale:Locale SettingsTabSystemEnablePptc}"
-                           Width="230" />
-                <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnablePptc}" OffContent="" Content="" OnContent="" />
-            </Grid>
-        </Border>
-        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}" />
-        <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="40" HorizontalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock VerticalAlignment="Center"
-                           HorizontalAlignment="Left"
-                           Text="Prefer Native Code Execution"
-                           Width="230" />
-                <ToggleSwitch Grid.Column="1" IsChecked="{Binding PreferNativeCodeExecution}" OffContent="" Content=""
-                              OnContent="" />
-            </Grid>
-        </Border>
-        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}" />
-        <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" HorizontalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock VerticalAlignment="Center"
-                           HorizontalAlignment="Left"
-                           Text="{locale:Locale SettingsTabSystemAudioVolume}"
-                           Width="230" />
-                <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Right">
-                    <NumericUpDown Value="{Binding Volume}"
-                                   HorizontalAlignment="Right"
-                                   ToolTip.Tip="{locale:Locale AudioVolumeTooltip}"
-                                   Width="150"
-                                   Increment="1"
-                                   AllowSpin="True"
-                                   ButtonSpinnerLocation="Right"
-                                   Minimum="0"
-                                   Maximum="100" />
-                    <Slider Value="{Binding Volume}"
-                            Margin="260,0,0,0"
-                            ToolTip.Tip="{locale:Locale AudioVolumeTooltip}"
-                            Minimum="0"
-                            Maximum="100"
-                            SmallChange="5"
-                            TickFrequency="5"
-                            IsSnapToTickEnabled="True"
-                            LargeChange="10"
-                            Width="200" />
-                </StackPanel>
-            </Grid>
-        </Border>
-        <Separator Height="1" Margin="0,5" />
-        <StackPanel Margin="10" Orientation="Horizontal">
-            <TextBlock FontSize="16" FontWeight="Bold" Text="{locale:Locale SettingsTabSystemHacks}" />
-            <TextBlock VerticalAlignment="Center" Text="{locale:Locale SettingsTabSystemHacksNote}" />
-        </StackPanel>
-        <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="40" HorizontalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock VerticalAlignment="Center"
-                           HorizontalAlignment="Left"
-                           Text="{locale:Locale SettingsTabSystemExpandDramSize}"
-                           Width="230" />
-                <ToggleSwitch Grid.Column="1" IsChecked="{Binding ExpandDramSize}" OffContent="" Content=""
-                              OnContent="" />
-            </Grid>
-        </Border>
-        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}" />
-        <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-            <Grid Background="Transparent" Height="40" HorizontalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock VerticalAlignment="Center"
-                           HorizontalAlignment="Left"
-                           Text="{locale:Locale SettingsTabSystemIgnoreMissingServices}"
-                           Width="230" />
-                <ToggleSwitch Grid.Column="1" IsChecked="{Binding IgnoreMissingServices}" OffContent="" Content=""
-                              OnContent="" />
-            </Grid>
-        </Border>
-        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}" />
-    </StackPanel>
+                <Border HorizontalAlignment="Stretch"
+                        Classes="settingsItem"
+                        ClipToBounds="True">
+                    <Grid Background="Transparent"
+                          Height="40"
+                          HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center"
+                                   HorizontalAlignment="Left"
+                                   Text="{locale:Locale SettingsTabSystemExpandDramSize}"
+                                   Width="230" />
+                        <ToggleSwitch Grid.Column="1"
+                                      IsChecked="{Binding ExpandDramSize}"
+                                      OffContent=""
+                                      Content=""
+                                      OnContent="" />
+                    </Grid>
+                </Border>
+                <Border HorizontalAlignment="Stretch"
+                        Classes="settingsItem"
+                        ClipToBounds="True">
+                    <Grid Background="Transparent"
+                          Height="40"
+                          HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center"
+                                   HorizontalAlignment="Left"
+                                   Text="{locale:Locale SettingsTabSystemIgnoreMissingServices}"
+                                   Width="230" />
+                        <ToggleSwitch Grid.Column="1"
+                                      IsChecked="{Binding IgnoreMissingServices}"
+                                      OffContent=""
+                                      Content=""
+                                      OnContent="" />
+                    </Grid>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
 </UserControl>

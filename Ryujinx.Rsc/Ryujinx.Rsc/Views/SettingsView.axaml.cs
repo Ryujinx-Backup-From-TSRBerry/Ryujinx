@@ -6,11 +6,13 @@ using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Navigation;
 using ReactiveUI;
 using Ryujinx.Ava.Common;
+using Ryujinx.Ava.Common.Locale;
 using Ryujinx.HLE.FileSystem;
 using Ryujinx.Rsc.Models;
 using Ryujinx.Rsc.ViewModels;
 using Ryujinx.Rsc.Views.SettingPages;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Ryujinx.Rsc.Views
 {
@@ -34,6 +36,11 @@ namespace Ryujinx.Rsc.Views
                 {
                     NavigatedTo(e);
                 }, RoutingStrategies.Direct);
+
+                AddHandler(Frame.NavigatingFromEvent, async (s, e) =>
+                {
+                    NavigatedFrom(e);
+                }, RoutingStrategies.Direct);
             }
         }
 
@@ -48,65 +55,31 @@ namespace Ryujinx.Rsc.Views
                 }
 
                 DataContext = ViewModel;
-                
-                ViewModel.NotifyPageChanged();
+
+                ViewModel.Title = LocaleManager.Instance["SettingsTabGeneralGeneral"];
             }
         }
 
-        protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+        private void NavigatedFrom(NavigatingCancelEventArgs arg)
         {
-            base.OnAttachedToVisualTree(e);
-            if (Pages.Count > 0)
+            if (AppConfig.PreviewerDetached)
             {
-                ContentFrame.Content = Pages.Peek();
+                if (arg.NavigationMode == NavigationMode.Back)
+                {
+                    
+                    ViewModel?.SaveSettings();
+                }
             }
-            else
-            {
-                NavigateToPage(new SettingsHome());
-            }
-            
-            ViewModel.NotifyPageChanged();
-        }
-
-        public void NavigateToPage(UserControl page)
-        {
-            if (page != null)
-            {
-                Pages.Push(page);
-                ContentFrame.Content = page;
-            }
-            
-            ViewModel.NotifyPageChanged();
         }
 
         public void MoveBack()
         {
-            lock (Pages)
-            {
-                if (Pages.Count > 1)
-                {
-                    Pages.Pop();
-                }
-
-                ContentFrame.Content = Pages.Peek();
-            }
-            
-            ViewModel.NotifyPageChanged();
+            Owner.GoBack();
         }
 
         private void BackButton_OnClick(object sender, RoutedEventArgs e)
         {
             MoveBack();
-        }
-
-        private void SaveButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            ViewModel.SaveSettings();
-        }
-
-        private void HomeButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            Owner.GoBack();
         }
     }
 }

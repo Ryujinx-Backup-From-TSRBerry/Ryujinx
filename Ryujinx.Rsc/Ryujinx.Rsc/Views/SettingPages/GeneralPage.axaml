@@ -3,53 +3,105 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:locale="clr-namespace:Ryujinx.Ava.Common.Locale;assembly=Ryujinx.Ava.Common"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="650"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             xmlns:viewModels="clr-namespace:Ryujinx.Rsc.ViewModels"
+             mc:Ignorable="d"
+             d:DesignWidth="800"
+             d:DesignHeight="650"
              x:Class="Ryujinx.Rsc.Views.SettingPages.GeneralPage">
-    <StackPanel HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Orientation="Vertical">
-        <TextBlock FontWeight="Bold" FontSize="16" Margin="10" Text="{locale:Locale SettingsTabGeneralGeneral}" />
-		<TextBlock FontWeight="Bold" FontSize="16" Margin="10" Text="{locale:Locale SettingsTabGeneralGameDirectories}" />
-		<Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5" Padding="10" ClipToBounds="True">
-			<Grid Background="Transparent" HorizontalAlignment="Stretch">
-				<Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition Height="Auto"/>
-				</Grid.RowDefinitions>
-				<ListBox
-					Name="GameList"
-					Height="300"
-					Items="{Binding GameDirectories}" />
-				<Grid HorizontalAlignment="Stretch" Grid.Row="1" Margin="10, 10, 0, 0">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-					</Grid.ColumnDefinitions>
-					<Button
-						Name="AddButton"
-						Grid.Column="1"
-						MinWidth="130"
-						Height="40"
-						Margin="10,0,0,0"
-						Click="AddButton_OnClick">
-						<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
-								   Text="{locale:Locale SettingsTabGeneralAdd}" />
-					</Button>
-					<Button
-						Name="RemoveButton"
-						Grid.Column="2"
-						MinWidth="130"
-						Height="40"
-						Margin="10,0,0,0"
-						ToolTip.Tip="{locale:Locale RemoveGameDirTooltip}"
-						Click="RemoveButton_OnClick">
-						<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
-								   Text="{locale:Locale SettingsTabGeneralRemove}" />
-					</Button>
-				</Grid>
-			</Grid>
-		</Border>
-    </StackPanel>
+    <Design.DataContext>
+        <viewModels:SettingsViewModel />
+    </Design.DataContext>
+    <Grid HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid IsVisible="{Binding ShowToolbar}"
+              Margin=""
+              HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Background="Transparent"
+                    BorderBrush="Transparent"
+                    Grid.Column="0"
+                    VerticalAlignment="Stretch"
+                    Width="45"
+                    MinWidth="45"
+                    Height="45"
+                    Command="{Binding MoveBack}">
+                <ui:SymbolIcon Symbol="Back"
+                               FontSize="20" />
+            </Button>
+            <Label Grid.Column="1"
+                   Content="{Binding Title}"
+                   Margin="5"
+                   VerticalAlignment="Center"
+                   FontSize="16"
+                   Padding="0"  />
+        </Grid>
+        <StackPanel HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Margin="5"
+                    Orientation="Vertical"
+                    Grid.Row="1">
+            <TextBlock FontWeight="Bold"
+                       FontSize="16"
+                       Margin="10"
+                       Text="{locale:Locale SettingsTabGeneralGameDirectories}" />
+            <Border HorizontalAlignment="Stretch"
+                    CornerRadius="5"
+                    Padding="10"
+                    ClipToBounds="True">
+                <Grid Background="Transparent"
+                      HorizontalAlignment="Stretch">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <ListBox
+                        Name="GameList"
+                        Background="{DynamicResource ListBoxBackground}"
+                        Height="300"
+                        Items="{Binding GameDirectories}" />
+                    <Grid HorizontalAlignment="Stretch"
+                          Grid.Row="1"
+                          Margin="10, 10, 0, 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Button
+                            Name="AddButton"
+                            Grid.Column="1"
+                            MinWidth="130"
+                            Height="40"
+                            Margin="10,0,0,0"
+                            Click="AddButton_OnClick">
+                            <TextBlock HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Text="{locale:Locale SettingsTabGeneralAdd}" />
+                        </Button>
+                        <Button
+                            Name="RemoveButton"
+                            Grid.Column="2"
+                            MinWidth="130"
+                            Height="40"
+                            Margin="10,0,0,0"
+                            ToolTip.Tip="{locale:Locale RemoveGameDirTooltip}"
+                            Click="RemoveButton_OnClick">
+                            <TextBlock HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Text="{locale:Locale SettingsTabGeneralRemove}" />
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Border>
+        </StackPanel>
+    </Grid>
 </UserControl>

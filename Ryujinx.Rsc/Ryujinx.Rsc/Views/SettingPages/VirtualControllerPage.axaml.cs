@@ -1,22 +1,17 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+using Avalonia.Interactivity;
+using FluentAvalonia.UI.Controls;
+using FluentAvalonia.UI.Navigation;
+using Ryujinx.Ava.Common;
+using Ryujinx.Ava.Common.Locale;
 using Ryujinx.Rsc.ViewModels;
 
 namespace Ryujinx.Rsc.Views.SettingPages
 {
     public partial class VirtualControllerPage : UserControl
     {
-        public SettingsViewModel ViewModel { get; }
-
-        public VirtualControllerPage(SettingsViewModel viewModel)
-        {
-            ViewModel = viewModel;
-            DataContext = ViewModel;
-            InitializeComponent();
-            Layout.IsEditMode = true;
-            Layout.OnBackRequested = OnBackRequested;
-        }
+        public SettingsViewModel ViewModel { get; set; }
 
         private void OnBackRequested()
         {
@@ -31,14 +26,34 @@ namespace Ryujinx.Rsc.Views.SettingPages
             ViewModel = new SettingsViewModel();
             InitializeComponent();
             Layout.IsEditMode = true;
+
+            if (AppConfig.PreviewerDetached)
+            {
+                AddHandler(Frame.NavigatedToEvent, (s, e) =>
+                {
+                    NavigatedTo(e);
+                }, RoutingStrategies.Direct);
+            }
         }
-        
+
+        private void NavigatedTo(NavigationEventArgs arg)
+        {
+            if (AppConfig.PreviewerDetached)
+            {
+                if (arg.NavigationMode == NavigationMode.New)
+                {
+                    ViewModel = (SettingsViewModel)arg.Parameter;
+                }
+
+                DataContext = ViewModel;
+            }
+        }
+
         protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
         {
             ViewModel.ShowToolbar = false;
             App.RequestedOrientation = Controls.Orientation.Landscape;
             base.OnAttachedToVisualTree(e);
-            ViewModel.Title = "VirtualController";
         }
     }
 }

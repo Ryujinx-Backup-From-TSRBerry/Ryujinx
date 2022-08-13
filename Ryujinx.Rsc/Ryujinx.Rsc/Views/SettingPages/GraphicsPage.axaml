@@ -3,174 +3,248 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:locale="clr-namespace:Ryujinx.Ava.Common.Locale;assembly=Ryujinx.Ava.Common"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="440"
+             xmlns:viewModels="clr-namespace:Ryujinx.Rsc.ViewModels"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             mc:Ignorable="d"
+             d:DesignWidth="800"
+             d:DesignHeight="440"
              x:Class="Ryujinx.Rsc.Views.SettingPages.GraphicsPage">
-    <StackPanel HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Orientation="Vertical">
-        <TextBlock FontWeight="Bold" FontSize="16" Margin="10" Text="{locale:Locale SettingsTabGraphicsEnhancements}" />
-		<Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5"   Padding="10, 0"  Height="40" ClipToBounds="True">
-			<Grid Background="Transparent"  HorizontalAlignment="Stretch">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition />
-					<ColumnDefinition Width="Auto" />
-				</Grid.ColumnDefinitions>
-				<TextBlock VerticalAlignment="Center"
-                           HorizontalAlignment="Left"
-                           Text="{locale:Locale SettingsTabGraphicsEnableShaderCache}"
-                           Width="230" />
-				<ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableShaderCache}"  OffContent="" Content="" OnContent=""/>
-			</Grid>
-		</Border>
-        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
-        <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5"   Padding="10, 0" Height="40"  ClipToBounds="True">
-            <Grid Background="Transparent"  HorizontalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock VerticalAlignment="Center"
-                           HorizontalAlignment="Left"
-                           Text="{locale:Locale SettingsTabGraphicsAnisotropicFiltering}"
-                           Width="230" />
-                <ComboBox Grid.Column="1" VerticalAlignment="Center" SelectedIndex="{Binding MaxAnisotropy}"
-                          Width="200"
-                          HorizontalContentAlignment="Right">
-                    <ComboBoxItem>
-                        <TextBlock
-                            Text="{locale:Locale SettingsTabGraphicsAnisotropicFilteringAuto}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabGraphicsAnisotropicFiltering2x}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabGraphicsAnisotropicFiltering4x}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabGraphicsAnisotropicFiltering8x}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock
-                            Text="{locale:Locale SettingsTabGraphicsAnisotropicFiltering16x}" />
-                    </ComboBoxItem>
-                </ComboBox>
-            </Grid>
-        </Border>
-        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
-        <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5"   Padding="10, 0" Height="40"  ClipToBounds="True">
-            <Grid Background="Transparent"  HorizontalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock VerticalAlignment="Center"
-                           HorizontalAlignment="Left"
-                           Text="{locale:Locale SettingsTabGraphicsResolutionScale}"
-                           Width="230" />
-                <ComboBox Grid.Column="1" VerticalAlignment="Center" SelectedIndex="{Binding ResolutionScale}"
-                          Width="200"
-                          HorizontalContentAlignment="Right">
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabGraphicsResolutionScaleCustom}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabGraphicsResolutionScaleNative}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabGraphicsResolutionScale2x}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabGraphicsResolutionScale3x}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabGraphicsResolutionScale4x}" />
-                    </ComboBoxItem>
-                </ComboBox>
-                <NumericUpDown Grid.Column="2"
-                    ToolTip.Tip="{locale:Locale ResolutionScaleEntryTooltip}"
-                    MinWidth="150"
-                    Margin="5,0,0,0"
-                    Increment="0.1"
-                    FormatString="F2"
-                    ButtonSpinnerLocation="Right"
-                    IsVisible="{Binding IsResolutionScaleActive}"
-                    Maximum="200"
-                    Minimum="0.1"
-                    Value="{Binding CustomResolutionScale}" />
-            </Grid>
-        </Border>
-        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
-        <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5"   Padding="10, 0" Height="40"  ClipToBounds="True">
-            <Grid Background="Transparent"  HorizontalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock VerticalAlignment="Center"
-                           HorizontalAlignment="Left"
-                           Text="{locale:Locale SettingsTabGraphicsAspectRatio}"
-                           Width="230" />
-                <ComboBox Grid.Column="1" VerticalAlignment="Center" SelectedIndex="{Binding AspectRatio}"
-                          Width="200"
-                          HorizontalContentAlignment="Right">
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabGraphicsAspectRatio4x3}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabGraphicsAspectRatio16x9}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabGraphicsAspectRatio16x10}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabGraphicsAspectRatio21x9}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabGraphicsAspectRatio32x9}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale SettingsTabGraphicsAspectRatioStretch}" />
-                    </ComboBoxItem>
-                </ComboBox>
-            </Grid>
-        </Border>
-        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
-        <Separator Height="1" Margin="0,5" />
-        <TextBlock FontSize="16" Margin="10" FontWeight="Bold" Text="{locale:Locale SettingsTabGraphicsFeatures}" />
-        <Border HorizontalAlignment="Stretch"
-                Classes="settingsItem" CornerRadius="5"   Padding="10, 0" Height="40"  ClipToBounds="True">
-            <Grid Background="Transparent"  HorizontalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock VerticalAlignment="Center"
-                           HorizontalAlignment="Left"
-                           Text="{locale:Locale SettingsTabGraphicsBackendMultithreading}" />
-                <ComboBox Grid.Column="1" VerticalAlignment="Center" SelectedIndex="{Binding GraphicsBackendMultithreadingIndex}"
-                          Width="200"
-                          HorizontalContentAlignment="Right">
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale CommonAuto}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale CommonOff}" />
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <TextBlock Text="{locale:Locale CommonOn}" />
-                    </ComboBoxItem>
-                </ComboBox>
-            </Grid>
-        </Border>
-        <Separator HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
-        <Button IsVisible="{Binding CanSelectDriver}" HorizontalAlignment="Stretch" CornerRadius="5" Height="50" HorizontalContentAlignment="Left" Padding="0"  ClipToBounds="True" Click="SelectDriver_OnClick">
-            <TextBlock Margin="10" VerticalAlignment="Center" Text="{locale:Locale SettingsTabGraphicsSelectDriver}"/>
-        </Button>
-        <Separator IsVisible="{Binding CanSelectDriver}" HorizontalAlignment="Stretch" Height="1" Background="{DynamicResource ButtonBorderBrush}"/>
-    </StackPanel>
+    <Design.DataContext>
+        <viewModels:SettingsViewModel />
+    </Design.DataContext>
+    <Grid HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid IsVisible="{Binding ShowToolbar}"
+              Margin=""
+              HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Background="Transparent"
+                    BorderBrush="Transparent"
+                    Grid.Column="0"
+                    VerticalAlignment="Stretch"
+                    Width="45"
+                    MinWidth="45"
+                    Height="45"
+                    Command="{Binding MoveBack}">
+                <ui:SymbolIcon Symbol="Back"
+                               FontSize="20" />
+            </Button>
+            <Label Grid.Column="1"
+                   Content="{Binding Title}"
+                   Margin="5"
+                   VerticalAlignment="Center"
+                   FontSize="16"
+                   Padding="0" />
+        </Grid>
+        <StackPanel HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Margin="5"
+                    Orientation="Vertical"
+                    Grid.Row="1">
+            <Border HorizontalAlignment="Stretch"
+                    Classes="settingsItem"
+                    ClipToBounds="True">
+                <Grid Background="Transparent"
+                      HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock VerticalAlignment="Center"
+                               HorizontalAlignment="Left"
+                               Text="{locale:Locale SettingsTabGraphicsEnableShaderCache}"
+                               Width="230" />
+                    <ToggleSwitch Grid.Column="1"
+                                  IsChecked="{Binding EnableShaderCache}"
+                                  OffContent=""
+                                  Content=""
+                                  OnContent=""/>
+                </Grid>
+            </Border>
+            <Border HorizontalAlignment="Stretch"
+                    Classes="settingsItem"
+                    ClipToBounds="True">
+                <Grid Background="Transparent"
+                      HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock VerticalAlignment="Center"
+                               HorizontalAlignment="Left"
+                               Text="{locale:Locale SettingsTabGraphicsAnisotropicFiltering}"
+                               Width="230" />
+                    <ComboBox Grid.Column="1"
+                              VerticalAlignment="Center"
+                              SelectedIndex="{Binding MaxAnisotropy}"
+                              Width="200"
+                              HorizontalContentAlignment="Right">
+                        <ComboBoxItem>
+                            <TextBlock
+                                Text="{locale:Locale SettingsTabGraphicsAnisotropicFilteringAuto}" />
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <TextBlock Text="{locale:Locale SettingsTabGraphicsAnisotropicFiltering2x}" />
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <TextBlock Text="{locale:Locale SettingsTabGraphicsAnisotropicFiltering4x}" />
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <TextBlock Text="{locale:Locale SettingsTabGraphicsAnisotropicFiltering8x}" />
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <TextBlock
+                                Text="{locale:Locale SettingsTabGraphicsAnisotropicFiltering16x}" />
+                        </ComboBoxItem>
+                    </ComboBox>
+                </Grid>
+            </Border>
+            <Border HorizontalAlignment="Stretch"
+                    Classes="settingsItem"
+                    ClipToBounds="True">
+                <Grid Background="Transparent"
+                      HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock VerticalAlignment="Center"
+                               HorizontalAlignment="Left"
+                               Text="{locale:Locale SettingsTabGraphicsResolutionScale}"
+                               Width="230" />
+                    <ComboBox Grid.Column="1"
+                              VerticalAlignment="Center"
+                              SelectedIndex="{Binding ResolutionScale}"
+                              Width="200"
+                              HorizontalContentAlignment="Right">
+                        <ComboBoxItem>
+                            <TextBlock Text="{locale:Locale SettingsTabGraphicsResolutionScaleCustom}" />
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <TextBlock Text="{locale:Locale SettingsTabGraphicsResolutionScaleNative}" />
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <TextBlock Text="{locale:Locale SettingsTabGraphicsResolutionScale2x}" />
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <TextBlock Text="{locale:Locale SettingsTabGraphicsResolutionScale3x}" />
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <TextBlock Text="{locale:Locale SettingsTabGraphicsResolutionScale4x}" />
+                        </ComboBoxItem>
+                    </ComboBox>
+                    <NumericUpDown Grid.Column="2"
+                                   ToolTip.Tip="{locale:Locale ResolutionScaleEntryTooltip}"
+                                   MinWidth="150"
+                                   Margin="5,0,0,0"
+                                   Increment="0.1"
+                                   VerticalAlignment="Center"
+                                   FormatString="F2"
+                                   ButtonSpinnerLocation="Right"
+                                   IsVisible="{Binding IsResolutionScaleActive}"
+                                   Maximum="200"
+                                   Minimum="0.1"
+                                   Value="{Binding CustomResolutionScale}" />
+                </Grid>
+            </Border>
+            <Border HorizontalAlignment="Stretch"
+                    Classes="settingsItem"
+                    ClipToBounds="True">
+                <Grid Background="Transparent"
+                      HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock VerticalAlignment="Center"
+                               HorizontalAlignment="Left"
+                               Text="{locale:Locale SettingsTabGraphicsAspectRatio}"
+                               Width="230" />
+                    <ComboBox Grid.Column="1"
+                              VerticalAlignment="Center"
+                              SelectedIndex="{Binding AspectRatio}"
+                              Width="200"
+                              HorizontalContentAlignment="Right">
+                        <ComboBoxItem>
+                            <TextBlock Text="{locale:Locale SettingsTabGraphicsAspectRatio4x3}" />
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <TextBlock Text="{locale:Locale SettingsTabGraphicsAspectRatio16x9}" />
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <TextBlock Text="{locale:Locale SettingsTabGraphicsAspectRatio16x10}" />
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <TextBlock Text="{locale:Locale SettingsTabGraphicsAspectRatio21x9}" />
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <TextBlock Text="{locale:Locale SettingsTabGraphicsAspectRatio32x9}" />
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <TextBlock Text="{locale:Locale SettingsTabGraphicsAspectRatioStretch}" />
+                        </ComboBoxItem>
+                    </ComboBox>
+                </Grid>
+            </Border>
+            <Border HorizontalAlignment="Stretch"
+                    Classes="settingsItem"
+                    ClipToBounds="True">
+                <Grid Background="Transparent"
+                      HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock VerticalAlignment="Center"
+                               HorizontalAlignment="Left"
+                               Text="{locale:Locale SettingsTabGraphicsBackendMultithreading}" />
+                    <ComboBox Grid.Column="1"
+                              VerticalAlignment="Center"
+                              SelectedIndex="{Binding GraphicsBackendMultithreadingIndex}"
+                              Width="200"
+                              HorizontalContentAlignment="Right">
+                        <ComboBoxItem>
+                            <TextBlock Text="{locale:Locale CommonAuto}" />
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <TextBlock Text="{locale:Locale CommonOff}" />
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <TextBlock Text="{locale:Locale CommonOn}" />
+                        </ComboBoxItem>
+                    </ComboBox>
+                </Grid>
+            </Border>
+            <Button IsVisible="{Binding CanSelectDriver}"
+                    BorderBrush="Transparent"
+                    Click="SelectDriver_OnClick"
+                    Margin="5"
+                    HorizontalContentAlignment="Stretch"
+                    Height="50"
+                    HorizontalAlignment="Stretch"
+                    CornerRadius="5">
+                <Grid HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Label VerticalAlignment="Center"
+                           Padding="0"
+                           Content="{locale:Locale SettingsTabGraphicsSelectDriver}"/>
+                    <ui:SymbolIcon Symbol="ChevronRight"
+                                   Width="30"
+                                   Grid.Column="1"/>
+                </Grid>
+            </Button>
+        </StackPanel>
+    </Grid>
 </UserControl>

@@ -5,27 +5,15 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
              xmlns:viewModels="clr-namespace:Ryujinx.Rsc.ViewModels"
+             xmlns:locale="clr-namespace:Ryujinx.Ava.Common.Locale;assembly=Ryujinx.Ava.Common"
+             xmlns:controls="clr-namespace:Ryujinx.Ava.Common.Ui.Controls;assembly=Ryujinx.Ava.Common"
+             xmlns:models="clr-namespace:Ryujinx.Rsc.Models"
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch"
              HorizontalContentAlignment="Stretch"
              VerticalContentAlignment="Stretch"
 			 Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
              x:Class="Ryujinx.Rsc.Views.SettingsView">
-    <UserControl.Styles>
-        <Style Selector="Border.settingsItem">
-            <Setter Property="Padding" Value="2" />
-            <Setter Property="Margin" Value="0, 2" />
-            <Setter Property="CornerRadius" Value="0" />
-        </Style>
-        <Style Selector="ToggleSwitch">
-            <Setter Property="MinWidth" Value="0"/>
-            <Setter Property="MinHeight" Value="0"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-        </Style>
-        <Style Selector="ToggleSwitch /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="IsVisible" Value="False"/>
-        </Style>
-    </UserControl.Styles>
     <Design.DataContext>
         <viewModels:SettingsViewModel />
     </Design.DataContext>
@@ -34,26 +22,110 @@
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Grid IsVisible="{Binding ShowToolbar}" Margin="" Background="{DynamicResource ButtonBackground}"
+        <Grid IsVisible="{Binding ShowToolbar}" Margin=""
                     HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" VerticalAlignment="Stretch"  Width="40" MinWidth="40" Height="35" Click="BackButton_OnClick" IsVisible="{Binding HasBackStack}">
-                <ui:SymbolIcon Symbol="Back" />
-            </Button>
-            <Button Grid.Column="0" Width="40" MinWidth="40" Height="35" Click="HomeButton_OnClick" VerticalAlignment="Stretch" IsVisible="{Binding !HasBackStack}">
-                <ui:SymbolIcon FontSize="25" Symbol="Home" />
+            <Button Background="Transparent" BorderBrush="Transparent" Grid.Column="0" VerticalAlignment="Stretch"  Width="45" MinWidth="45" Height="45" Click="BackButton_OnClick">
+                <ui:SymbolIcon Symbol="Back" FontSize="20" />
             </Button>
             <Label Grid.Column="1" Content="{Binding Title}" Margin="5" VerticalAlignment="Center" FontSize="16"  Padding="0"  />
-            <Button Grid.Column="2"  Width="40" MinWidth="40" Height="35" Click="SaveButton_OnClick">
-                <ui:SymbolIcon FontSize="20" Symbol="Save" />
-            </Button>
         </Grid>
         <ScrollViewer Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <ContentControl x:Name="ContentFrame" />
+            <StackPanel HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Margin="5"
+                Orientation="Vertical">
+                <Button BorderBrush="Transparent" Margin="5" Command="{Binding MoveToPage}" HorizontalContentAlignment="Stretch"
+                         Height="50" HorizontalAlignment="Stretch" CornerRadius="5">
+                    <Button.CommandParameter>
+                        <models:SettingPages>General</models:SettingPages>
+                    </Button.CommandParameter>
+                    <Grid HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Spacing="20">
+                            <ui:SymbolIcon Symbol="New" />
+                            <Label VerticalAlignment="Center" Padding="0" Content="{locale:Locale SettingsTabGeneralGeneral}" FontSize="16" />
+                        </StackPanel>
+                        <ui:SymbolIcon Symbol="ChevronRight" Width="30" Grid.Column="1"/>
+                    </Grid>
+                </Button>
+                <Button BorderBrush="Transparent" Margin="5" Command="{Binding MoveToPage}" HorizontalContentAlignment="Stretch"
+                         Height="50" HorizontalAlignment="Stretch" CornerRadius="5">
+                    <Button.CommandParameter>
+                        <models:SettingPages>Graphics</models:SettingPages>
+                    </Button.CommandParameter>
+                    <Grid HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Spacing="20">
+                            <ui:SymbolIcon Symbol="Pictures" />
+                            <Label VerticalAlignment="Center" Padding="0" Content="{locale:Locale SettingsTabGraphics}" FontSize="16" />
+                        </StackPanel>
+                        <ui:SymbolIcon Symbol="ChevronRight" Width="30" Grid.Column="1"/>
+                    </Grid>
+                </Button>
+                <Button BorderBrush="Transparent" Margin="5" Command="{Binding MoveToPage}" HorizontalContentAlignment="Stretch"
+                         Height="50" HorizontalAlignment="Stretch" CornerRadius="5">
+                    <Button.CommandParameter>
+                        <models:SettingPages>System</models:SettingPages>
+                    </Button.CommandParameter>
+                    <Grid HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Spacing="20">
+                            <ui:FontIcon FontFamily="avares://Ryujinx.Ava.Common/Assets/Fonts#Segoe Fluent Icons"
+                                         Glyph="{controls:GlyphValueConverter Chip}" />
+                            <Label VerticalAlignment="Center" Padding="0" Content="{locale:Locale SettingsTabSystem}" FontSize="16" />
+                        </StackPanel>
+                        <ui:SymbolIcon Symbol="ChevronRight" Width="30" Grid.Column="1"/>
+                    </Grid>
+                </Button>
+                <Button BorderBrush="Transparent" Margin="5" Command="{Binding MoveToPage}" HorizontalContentAlignment="Stretch"
+                         Height="50" HorizontalAlignment="Stretch" CornerRadius="5">
+                    <Button.CommandParameter>
+                        <models:SettingPages>Log</models:SettingPages>
+                    </Button.CommandParameter>
+                    <Grid HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Spacing="20">
+                            <ui:SymbolIcon Symbol="Document" />
+                            <Label VerticalAlignment="Center" Padding="0" Content="{locale:Locale SettingsTabLogging}" FontSize="16" />
+                        </StackPanel>
+                        <ui:SymbolIcon Symbol="ChevronRight" Width="30" Grid.Column="1"/>
+                    </Grid>
+                </Button>
+                <Button BorderBrush="Transparent" Margin="5" Command="{Binding MoveToPage}" HorizontalContentAlignment="Stretch"
+                         Height="50" HorizontalAlignment="Stretch" CornerRadius="5">
+                    <Button.CommandParameter>
+                        <models:SettingPages>Input</models:SettingPages>
+                    </Button.CommandParameter>
+                    <Grid HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Spacing="20">
+                            <ui:SymbolIcon Symbol="Games" />
+                            <Label VerticalAlignment="Center" Padding="0" Content="{locale:Locale SettingsTabInput}" FontSize="16" />
+                        </StackPanel>
+                        <ui:SymbolIcon Symbol="ChevronRight" Width="30" Grid.Column="1"/>
+                    </Grid>
+                </Button>
+            </StackPanel>
         </ScrollViewer>
     </Grid>
 </UserControl>
