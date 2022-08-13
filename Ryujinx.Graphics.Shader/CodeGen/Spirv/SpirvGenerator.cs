@@ -50,11 +50,11 @@ namespace Ryujinx.Graphics.Shader.CodeGen.Spirv
             CodeGenContext context = new CodeGenContext(info, config, instPool, integerPool);
 
             context.AddCapability(Capability.GroupNonUniformBallot);
+            context.AddCapability(Capability.GroupNonUniformShuffle);
             context.AddCapability(Capability.ImageBuffer);
             context.AddCapability(Capability.ImageGatherExtended);
             context.AddCapability(Capability.ImageQuery);
             context.AddCapability(Capability.SampledBuffer);
-            context.AddCapability(Capability.SubgroupBallotKHR);
             context.AddCapability(Capability.SubgroupVoteKHR);
 
             if (config.TransformFeedbackEnabled && config.LastInVertexPipeline)
@@ -82,7 +82,6 @@ namespace Ryujinx.Graphics.Shader.CodeGen.Spirv
                 context.AddCapability(Capability.Tessellation);
             }
 
-            context.AddExtension("SPV_KHR_shader_ballot");
             context.AddExtension("SPV_KHR_subgroup_vote");
 
             Declarations.DeclareAll(context, info);

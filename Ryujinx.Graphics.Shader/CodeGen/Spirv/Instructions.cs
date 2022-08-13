@@ -1232,7 +1232,7 @@ namespace Ryujinx.Graphics.Shader.CodeGen.Spirv
             var maxThreadId = context.BitwiseOr(context.TypeU32(), minThreadId, clampNotSegMask);
             var srcThreadId = context.BitwiseOr(context.TypeU32(), indexNotSegMask, minThreadId);
             var valid = context.ULessThanEqual(context.TypeBool(), srcThreadId, maxThreadId);
-            var value = context.SubgroupReadInvocationKHR(context.TypeFP32(), x, srcThreadId);
+            var value = context.GroupNonUniformShuffle(context.TypeFP32(), context.Constant(context.TypeU32(), (int)Scope.Subgroup), x, srcThreadId);
             var result = context.Select(context.TypeFP32(), valid, value, x);
 
             var validLocal = (AstOperand)operation.GetSource(3);
@@ -1262,7 +1262,7 @@ namespace Ryujinx.Graphics.Shader.CodeGen.Spirv
             var maxThreadId = context.BitwiseOr(context.TypeU32(), minThreadId, clampNotSegMask);
             var srcThreadId = context.IAdd(context.TypeU32(), threadId, index);
             var valid = context.ULessThanEqual(context.TypeBool(), srcThreadId, maxThreadId);
-            var value = context.SubgroupReadInvocationKHR(context.TypeFP32(), x, srcThreadId);
+            var value = context.GroupNonUniformShuffle(context.TypeFP32(), context.Constant(context.TypeU32(), (int)Scope.Subgroup), x, srcThreadId);
             var result = context.Select(context.TypeFP32(), valid, value, x);
 
             var validLocal = (AstOperand)operation.GetSource(3);
@@ -1288,7 +1288,7 @@ namespace Ryujinx.Graphics.Shader.CodeGen.Spirv
             var minThreadId = context.BitwiseAnd(context.TypeU32(), threadId, segMask);
             var srcThreadId = context.ISub(context.TypeU32(), threadId, index);
             var valid = context.SGreaterThanEqual(context.TypeBool(), srcThreadId, minThreadId);
-            var value = context.SubgroupReadInvocationKHR(context.TypeFP32(), x, srcThreadId);
+            var value = context.GroupNonUniformShuffle(context.TypeFP32(), context.Constant(context.TypeU32(), (int)Scope.Subgroup), x, srcThreadId);
             var result = context.Select(context.TypeFP32(), valid, value, x);
 
             var validLocal = (AstOperand)operation.GetSource(3);
@@ -1318,7 +1318,7 @@ namespace Ryujinx.Graphics.Shader.CodeGen.Spirv
             var maxThreadId = context.BitwiseOr(context.TypeU32(), minThreadId, clampNotSegMask);
             var srcThreadId = context.BitwiseXor(context.TypeU32(), threadId, index);
             var valid = context.ULessThanEqual(context.TypeBool(), srcThreadId, maxThreadId);
-            var value = context.SubgroupReadInvocationKHR(context.TypeFP32(), x, srcThreadId);
+            var value = context.GroupNonUniformShuffle(context.TypeFP32(), context.Constant(context.TypeU32(), (int)Scope.Subgroup), x, srcThreadId);
             var result = context.Select(context.TypeFP32(), valid, value, x);
 
             var validLocal = (AstOperand)operation.GetSource(3);
