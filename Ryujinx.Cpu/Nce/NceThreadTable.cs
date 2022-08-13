@@ -1,6 +1,5 @@
 using Ryujinx.Memory;
 using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace Ryujinx.Cpu.Nce
@@ -37,12 +36,19 @@ namespace Ryujinx.Cpu.Nce
 
             lock (_block)
             {
+                ref ulong currentThreadCount = ref GetThreadsCount();
+
                 for (int i = 0; i < MaxThreads; i++)
                 {
                     if (entries[i].ThreadId == IntPtr.Zero)
                     {
                         entries[i] = new Entry(threadId, nativeContextPtr);
-                        GetThreadsCount()++;
+
+                        if (currentThreadCount < (ulong)i + 1)
+                        {
+                            currentThreadCount = (ulong)i + 1;
+                        }
+
                         return i;
                     }
                 }
@@ -60,7 +66,20 @@ namespace Ryujinx.Cpu.Nce
                 if (entries[tableIndex].ThreadId != IntPtr.Zero)
                 {
                     entries[tableIndex] = default;
-                    GetThreadsCount()--;
+
+                    ulong currentThreadCount = GetThreadsCount();
+
+                    for (int i = (int)currentThreadCount - 1; i >= 0; i--)
+                    {
+                        if (entries[i].ThreadId != IntPtr.Zero)
+                        {
+                            break;
+                        }
+
+                        currentThreadCount = (ulong)i;
+                    }
+
+                    GetThreadsCount() = currentThreadCount;
                 }
             }
         }
