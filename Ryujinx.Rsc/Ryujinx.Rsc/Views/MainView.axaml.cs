@@ -121,25 +121,6 @@ namespace Ryujinx.Rsc.Views
 
         public InputManager InputManager { get; set; }
 
-        private void Application_Opened(object sender, ApplicationOpenedEventArgs e)
-        {
-            if (e.Application != null)
-            {
-                string path = OperatingSystem.IsAndroid() ? e.Application.Path : new FileInfo(e.Application.Path).FullName;
-
-                LoadApplication(path);
-            }
-
-            e.Handled = true;
-        }
-
-#pragma warning disable CS1998
-        public async void LoadApplication(string path, bool startFullscreen = false, string titleName = "")
-#pragma warning restore CS1998
-        {
-            
-        }
-
         public static void UpdateGraphicsConfig()
         {
             int resScale = ConfigurationState.Instance.Graphics.ResScale;

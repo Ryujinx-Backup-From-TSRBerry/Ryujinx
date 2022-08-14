@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Navigation;
 using Ryujinx.Ava.Common;
@@ -14,6 +15,7 @@ using Ryujinx.Ui.App.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Ryujinx.Rsc.Views
 {
@@ -62,7 +64,10 @@ namespace Ryujinx.Rsc.Views
         {
             if (!ViewModel.ShowContextOptions && e.Application != null)
             {
-                LoadApplication(e.Application);
+                Task.Run(() =>
+                {
+                    LoadApplication(e.Application);
+                });
             }
 
             e.Handled = true;
@@ -76,7 +81,10 @@ namespace Ryujinx.Rsc.Views
 
             ViewModel.SelectedIcon = application.Icon;
 
-            ViewModel.Owner.Navigate(typeof(GamePage), ViewModel);
+            Dispatcher.UIThread.Post(() =>
+            {
+                ViewModel.Owner.Navigate(typeof(GamePage), ViewModel);
+            });
         }
 
         public void Sort_Checked(object sender, RoutedEventArgs args)
