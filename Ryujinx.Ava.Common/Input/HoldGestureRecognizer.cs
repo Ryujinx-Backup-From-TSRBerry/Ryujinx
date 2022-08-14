@@ -11,6 +11,7 @@ namespace Ryujinx.Ava.Common.Input
     public class HoldGestureRecognizer : StyledElement, IGestureRecognizer
     {
         private int _holdDelayMs = 500;
+        private Point _startLocation;
         
         public static readonly RoutedEvent<HoldGestureEventArgs> HoldGestureEvent = RoutedEvent.Register<Control, HoldGestureEventArgs>("HoldGesture", RoutingStrategies.Direct);
         
@@ -61,6 +62,7 @@ namespace Ryujinx.Ava.Common.Input
         public void PointerPressed(PointerPressedEventArgs e)
         {
             _isHolding = true;
+            _startLocation = e.GetPosition(_target);
             _holdTimer.Interval = _holdDelayMs;
             _holdTimer.Start();
         }
@@ -73,8 +75,13 @@ namespace Ryujinx.Ava.Common.Input
 
         public void PointerMoved(PointerEventArgs e)
         {
-            _holdTimer.Stop();
-            _isHolding = false;
+            var currentPoint = e.GetCurrentPoint(_target).Position;
+            var difference = currentPoint - _startLocation;
+            if (new Vector(difference.X, difference.Y).Length > 5)
+            {
+                _holdTimer.Stop();
+                _isHolding = false;
+            }
         }
 
         public void PointerCaptureLost(IPointer pointer)

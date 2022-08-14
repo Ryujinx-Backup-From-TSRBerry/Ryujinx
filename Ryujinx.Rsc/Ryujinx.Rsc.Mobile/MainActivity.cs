@@ -16,15 +16,20 @@ using Ryujinx.Ava.Common.Ui.Backend;
 using Ryujinx.Ava.Common;
 using Silk.NET.Vulkan;
 using System.IO;
+using Ryujinx.Rsc.Mobile.Input;
 
 namespace Ryujinx.Rsc.Mobile
 {
-    [Activity(Label = "Ryujinx.Rsc.Mobile", Theme = "@style/MyTheme.NoActionBar", Icon = "@drawable/ryujinx", WindowSoftInputMode=SoftInput.AdjustResize, LaunchMode = LaunchMode.SingleInstance, ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize)]
+    [Activity(Label = "Ryujinx.Rsc.Mobile", Theme = "@style/MyTheme.NoActionBar", Icon = "@drawable/ryujinx", WindowSoftInputMode=SoftInput.AdjustResize, LaunchMode = LaunchMode.SingleInstance, ConfigurationChanges =
+        ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.Keyboard | ConfigChanges.KeyboardHidden)]
     public class MainActivity : AvaloniaActivity<App>
     {
         public event EventHandler<FileSystemResultEventArgs> FileSystemResult;
         private AndroidFileSystemHelper _fileSystemHelper;
         private VulkanLoader _loader;
+
+        internal event EventHandler<KeyEvent> KeyDispatched;
+        internal event EventHandler<MotionEvent> MotionDispatched;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -38,13 +43,15 @@ namespace Ryujinx.Rsc.Mobile
             var driver = "libvulkan.so";
 
             string preferredDriverSetting = Path.Combine(publicFolder, "Drivers", "selected");
-            if(File.Exists(preferredDriverSetting))
+            if (File.Exists(preferredDriverSetting))
             {
                 driver = File.ReadAllText(preferredDriverSetting);
             }
 
             _loader = new VulkanLoader(driver, publicFolder, privateFolder, libFolder);
-            
+
+            App.GetNativeGamepadDriver = () => { return new AndroidControllerDriver(this); };
+
             base.OnCreate(savedInstanceState);
         }
 
@@ -128,6 +135,24 @@ namespace Ryujinx.Rsc.Mobile
             {
                 FinishAndRemoveTask();
             }
+        }
+
+        public override bool DispatchGenericMotionEvent(MotionEvent ev)
+        {
+            if (ev.Source.HasFlag(InputSourceType.Joystick))
+            {
+                MotionDispatched?.Invoke(this, ev);
+            }
+            return base.DispatchGenericMotionEvent(ev);
+        }
+
+        public override bool DispatchKeyEvent(KeyEvent e)
+        {
+            if (e.Source.HasFlag(InputSourceType.Gamepad) || e.Source.HasFlag(InputSourceType.Dpad) || e.Source.HasFlag(InputSourceType.Joystick))
+            {
+                KeyDispatched?.Invoke(this, e);
+            }
+            return base.DispatchKeyEvent(e);
         }
     }
 }

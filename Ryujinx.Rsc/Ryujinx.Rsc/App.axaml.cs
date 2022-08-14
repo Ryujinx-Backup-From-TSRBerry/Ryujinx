@@ -17,6 +17,7 @@ using Ryujinx.Ava.Common;
 using Ryujinx.Common;
 using Avalonia.Interactivity;
 using Silk.NET.Vulkan;
+using Ryujinx.Input;
 
 namespace Ryujinx.Rsc
 {
@@ -105,6 +106,7 @@ namespace Ryujinx.Rsc
         }
 
         public static Func<IFileSystemHelper> FileSystemHelperFactory{ get; set; }
+        public static Func<IGamepadDriver> GetNativeGamepadDriver { get; set; }
 
         public override void OnFrameworkInitializationCompleted()
         {

@@ -95,7 +95,7 @@ namespace Ryujinx.Rsc
         public VirtualFileSystem VirtualFileSystem { get; }
         public ContentManager ContentManager { get; }
         public Switch Device { get; set; }
-        public NpadManager NpadManager { get; }
+        public NpadManager NpadManager { get; private set; }
         public TouchScreenManager TouchScreenManager { get; }
 
         public int Width { get; private set; }
@@ -107,6 +107,7 @@ namespace Ryujinx.Rsc
         public bool ScreenshotRequested { get; set; }
 
         private object _lockObject = new();
+        private bool _wasVirtualControllerEnabled = true;
         private readonly GamePage _parent;
 
         public AppHost(
@@ -261,6 +262,7 @@ namespace Ryujinx.Rsc
                     new StandardControllerInputConfig()
                     {
                         ControllerType = Ryujinx.Common.Configuration.Hid.ControllerType.ProController,
+                        Id = "default",
                         Motion = new StandardMotionConfigController()
                         {
                             MotionBackend = MotionInputBackendType.Invalid
@@ -313,6 +315,20 @@ namespace Ryujinx.Rsc
             MainLoop();
 
             Exit();
+        }
+
+        private void EnsureControllerAvailable()
+        {
+            if (_wasVirtualControllerEnabled != _parent.ViewModel.EnableVirtualController)
+            {
+                _wasVirtualControllerEnabled = _parent.ViewModel.EnableVirtualController;
+                _inputManager.SetGamepadDriver(_wasVirtualControllerEnabled ? AvaloniaVirtualControllerDriver.Instance : App.GetNativeGamepadDriver());
+
+                NpadManager?.Dispose();
+                NpadManager = _inputManager.CreateNpadManager();
+
+                NpadManager.Initialize(Device, ConfigurationState.Instance.Hid.InputConfig, ConfigurationState.Instance.Hid.EnableKeyboard, ConfigurationState.Instance.Hid.EnableMouse);
+            }
         }
 
         private void UpdateIgnoreMissingServicesState(object sender, ReactiveEventArgs<bool> args)
@@ -764,19 +780,22 @@ namespace Ryujinx.Rsc
             {
                 return false;
             }
-                Dispatcher.UIThread.Post(() =>
+
+            Dispatcher.UIThread.Post(() =>
+            {
+                KeyboardStateSnapshot keyboard = _keyboardInterface.GetKeyboardStateSnapshot();
+
+                HandleScreenState(keyboard, _lastKeyboardSnapshot);
+
+                if (keyboard.IsPressed(Key.Delete))
                 {
-                    KeyboardStateSnapshot keyboard = _keyboardInterface.GetKeyboardStateSnapshot();
+                    Ptc.Continue();
+                }
 
-                    HandleScreenState(keyboard, _lastKeyboardSnapshot);
+                _lastKeyboardSnapshot = keyboard;
+            });
 
-                    if (keyboard.IsPressed(Key.Delete))
-                    {
-                            Ptc.Continue();
-                    }
-
-                    _lastKeyboardSnapshot = keyboard;
-                });
+            EnsureControllerAvailable();
 
             NpadManager.Update(ConfigurationState.Instance.Graphics.AspectRatio.Value.ToFloat(), _parent.ViewModel.EnableVirtualController);
 

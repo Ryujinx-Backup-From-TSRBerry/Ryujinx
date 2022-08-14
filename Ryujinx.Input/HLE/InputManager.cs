@@ -21,6 +21,13 @@ namespace Ryujinx.Input.HLE
             MouseDriver = mouseDriver;
         }
 
+        public void SetGamepadDriver(IGamepadDriver gamepadDriver)
+        {
+            GamepadDriver?.Dispose();
+
+            GamepadDriver = gamepadDriver;
+        }
+
         public NpadManager CreateNpadManager()
         {
             return new NpadManager(KeyboardDriver, GamepadDriver, MouseDriver);

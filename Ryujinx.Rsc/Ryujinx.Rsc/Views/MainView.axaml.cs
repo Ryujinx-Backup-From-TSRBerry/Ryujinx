@@ -21,8 +21,6 @@ namespace Ryujinx.Rsc.Views
 {
     public partial class MainView : UserControl
     {
-        private ManualResetEvent _rendererWaitEvent;
-        private bool _isClosing;
         public UserChannelPersistence ChannelPersistence { get; private set; }
         public ApplicationLibrary ApplicationLibrary { get; set; }
 
@@ -36,9 +34,13 @@ namespace Ryujinx.Rsc.Views
         public MainView()
         {
             InitializeComponent();
-            _rendererWaitEvent = new ManualResetEvent(false);
 
             App.BackPressed += App_BackPressed;
+        }
+
+        private void MainView_KeyDown(object sender, Avalonia.Input.KeyEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void App_BackPressed(object sender, RoutedEventArgs e)
@@ -108,8 +110,6 @@ namespace Ryujinx.Rsc.Views
 
             VirtualFileSystem.ReloadKeySet();
 
-            InputManager = new InputManager(new AvaloniaKeyboardDriver(this), AvaloniaVirtualControllerDriver.Instance);
-
             ConfigurationState.Instance.Ui.GameDirs.Event += (sender, args) =>
             {
                 if (args.OldValue != args.NewValue)
@@ -118,8 +118,6 @@ namespace Ryujinx.Rsc.Views
                 }
             };
         }
-
-        public InputManager InputManager { get; set; }
 
         public static void UpdateGraphicsConfig()
         {

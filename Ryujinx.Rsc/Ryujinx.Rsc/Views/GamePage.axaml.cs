@@ -5,10 +5,12 @@ using Avalonia.Threading;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Navigation;
 using Ryujinx.Ava.Common;
+using Ryujinx.Ava.Common.Input;
 using Ryujinx.Ava.Common.Locale;
 using Ryujinx.Ava.Common.Ui.Controls;
 using Ryujinx.Ava.Common.Ui.Models;
 using Ryujinx.Common.Logging;
+using Ryujinx.Input.HLE;
 using Ryujinx.Rsc.Controls;
 using Ryujinx.Rsc.ViewModels;
 using Ryujinx.Ui.Common.Configuration;
@@ -26,7 +28,7 @@ namespace Ryujinx.Rsc.Views
         private bool _canNavigateFrom;
         private ManualResetEvent _rendererWaitEvent;
         public VulkanRendererControl VkRenderer { get; set; }
-
+        public InputManager InputManager { get; private set; }
         public AppHost AppHost { get; set; }
 
         public GamePage()
@@ -109,7 +111,9 @@ namespace Ryujinx.Rsc.Views
             Scaling = VisualRoot.RenderScaling;
 
             VkRenderer = new VulkanRendererControl(ConfigurationState.Instance.Logger.GraphicsDebugLevel);
-            AppHost = new AppHost(VkRenderer, ViewModel.Owner.InputManager, path, ViewModel.Owner.VirtualFileSystem,
+
+            InputManager = new InputManager(new AvaloniaKeyboardDriver(this), AvaloniaVirtualControllerDriver.Instance);
+            AppHost = new AppHost(VkRenderer, InputManager, path, ViewModel.Owner.VirtualFileSystem,
                 ViewModel.Owner.ContentManager, ViewModel.Owner.AccountManager, ViewModel.Owner.ChannelPersistence,
                 this);
 
@@ -210,6 +214,8 @@ namespace Ryujinx.Rsc.Views
             }
 
             ViewModel.IsGameRunning = false;
+
+            InputManager?.Dispose();
 
             ViewModel.ShowOverlay = false;
             AppHost.StatusUpdatedEvent -= AppHost_StatusUpdatedEvent;
