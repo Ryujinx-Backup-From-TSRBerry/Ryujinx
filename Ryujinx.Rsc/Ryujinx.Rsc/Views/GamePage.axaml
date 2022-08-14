@@ -163,6 +163,7 @@
                         Margin="10"
                         FontSize="20"
                         FontWeight="Bold"
+                        FontFamily="avares://Ryujinx.Ava.Common/Assets/Fonts/NotoSansJP-Regular.otf#Noto Sans JP"
                         IsVisible="{Binding ShowLoadProgress}"
                         Text="{Binding LoadHeading}"
                         TextAlignment="Left"
@@ -196,6 +197,7 @@
                     <TextBlock
                         Grid.Row="2"
                         Margin="10"
+                        FontFamily="avares://Ryujinx.Ava.Common/Assets/Fonts/NotoSansJP-Regular.otf#Noto Sans JP"
                         FontSize="16"
                         IsVisible="{Binding ShowLoadProgress}"
                         Text="{Binding CacheLoadStatus}"

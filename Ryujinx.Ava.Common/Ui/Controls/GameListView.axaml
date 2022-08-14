@@ -175,16 +175,19 @@
                                     <TextBlock
                                         HorizontalAlignment="Stretch"
                                         Text="{Binding TitleName}"
+                                        FontFamily="avares://Ryujinx.Ava.Common/Assets/Fonts/NotoSansJP-Regular.otf#Noto Sans JP"
                                         TextAlignment="Left"
                                         TextWrapping="Wrap" />
                                     <TextBlock
                                         HorizontalAlignment="Stretch"
+                                        FontFamily="avares://Ryujinx.Ava.Common/Assets/Fonts/NotoSansJP-Regular.otf#Noto Sans JP"
                                         Text="{Binding Developer}"
                                         TextAlignment="Left"
                                         TextWrapping="Wrap" />
                                     <TextBlock
                                         HorizontalAlignment="Stretch"
                                         Text="{Binding Version}"
+                                        FontFamily="avares://Ryujinx.Ava.Common/Assets/Fonts/NotoSansJP-Regular.otf#Noto Sans JP"
                                         TextAlignment="Left"
                                         TextWrapping="Wrap" />
                                 </StackPanel>
@@ -197,16 +200,19 @@
                                     <TextBlock
                                         HorizontalAlignment="Stretch"
                                         Text="{Binding TimePlayed}"
+                                        FontFamily="avares://Ryujinx.Ava.Common/Assets/Fonts/NotoSansJP-Regular.otf#Noto Sans JP"
                                         TextAlignment="Right"
                                         TextWrapping="Wrap" />
                                     <TextBlock
                                         HorizontalAlignment="Stretch"
+                                        FontFamily="avares://Ryujinx.Ava.Common/Assets/Fonts/NotoSansJP-Regular.otf#Noto Sans JP"
                                         Text="{Binding LastPlayed}"
                                         TextAlignment="Right"
                                         TextWrapping="Wrap" />
                                     <TextBlock
                                         HorizontalAlignment="Stretch"
                                         Text="{Binding FileSize}"
+                                        FontFamily="avares://Ryujinx.Ava.Common/Assets/Fonts/NotoSansJP-Regular.otf#Noto Sans JP"
                                         TextAlignment="Right"
                                         TextWrapping="Wrap" />
                                 </StackPanel>

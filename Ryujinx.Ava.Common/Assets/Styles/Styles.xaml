@@ -48,6 +48,36 @@
     <Style Selector="Border.normal">
         <Setter Property="Width" Value="130" />
     </Style>
+    <Style Selector="Label">
+        <Setter Property="FontSize"
+                Value="14"/>
+        <Setter Property="FontFamily"
+                Value="avares://Ryujinx.Ava.Common/Assets/Fonts/NotoSansJP-Regular.otf#Noto Sans JP"></Setter>
+    </Style>
+    <Style Selector="TextElement">
+        <Setter Property="FontSize"
+                Value="14"/>
+        <Setter Property="FontFamily"
+                Value="avares://Ryujinx.Ava.Common/Assets/Fonts/NotoSansJP-Regular.otf#Noto Sans JP"></Setter>
+    </Style>
+    <Style Selector="TextBox">
+        <Setter Property="FontSize"
+                Value="14"/>
+        <Setter Property="FontFamily"
+                Value="avares://Ryujinx.Ava.Common/Assets/Fonts/NotoSansJP-Regular.otf#Noto Sans JP"></Setter>
+    </Style>
+    <Style Selector="TextBlock">
+        <Setter Property="FontSize"
+                Value="14"/>
+        <Setter Property="FontFamily"
+                Value="avares://Ryujinx.Ava.Common/Assets/Fonts/NotoSansJP-Regular.otf#Noto Sans JP"></Setter>
+    </Style>
+    <Style Selector="TemplatedControl">
+        <Setter Property="FontSize"
+                Value="14"/>
+        <Setter Property="FontFamily"
+                Value="avares://Ryujinx.Ava.Common/Assets/Fonts/NotoSansJP-Regular.otf#Noto Sans JP"></Setter>
+    </Style>
     <Style Selector="Border.large">
         <Setter Property="Width" Value="160" />
     </Style>

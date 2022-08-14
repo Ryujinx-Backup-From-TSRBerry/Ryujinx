@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Fonts\NotoSansJP-Regular.otf" />
     <None Remove="Assets\Fonts\SegoeFluentIcons.ttf" />
     <None Remove="Assets\Locales\de_DE.json" />
     <None Remove="Assets\Locales\el_GR.json" />
@@ -25,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AvaloniaResource Include="Assets\Fonts\NotoSansJP-Regular.otf" />
     <AvaloniaResource Include="Assets\Fonts\SegoeFluentIcons.ttf" />
     <AvaloniaResource Include="Assets\Styles\BaseDark.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -73,10 +73,18 @@ namespace Ryujinx.Ava.Common.Ui.Vulkan
 
             if (options.UseDebug)
             {
-                enabledExtensions.Add(ExtDebugUtils.ExtensionName);
-                enabledExtensions.Add(ExtDebugReport.ExtensionName);
+                if (IsLayerAvailable(api, ExtDebugUtils.ExtensionName))
+                {
+                    enabledLayers.Add(ExtDebugUtils.ExtensionName);
+                }
+                if (IsLayerAvailable(api, ExtDebugReport.ExtensionName))
+                {
+                    enabledLayers.Add(ExtDebugReport.ExtensionName);
+                }
                 if (IsLayerAvailable(api, "VK_LAYER_KHRONOS_validation"))
+                {
                     enabledLayers.Add("VK_LAYER_KHRONOS_validation");
+                }
             }
 
             foreach (var layer in options.EnabledLayers)
