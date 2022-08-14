@@ -254,7 +254,7 @@ namespace Ryujinx.Rsc
             DisplaySleep.Prevent();
 
             // Add dummy input config for android
-            if(OperatingSystem.IsAndroid())
+            if (OperatingSystem.IsAndroid())
             {
                 ConfigurationState.Instance.Hid.InputConfig.Value = new System.Collections.Generic.List<Ryujinx.Common.Configuration.Hid.InputConfig>()
                 {
@@ -264,6 +264,10 @@ namespace Ryujinx.Rsc
                         Motion = new StandardMotionConfigController()
                         {
                             MotionBackend = MotionInputBackendType.Invalid
+                        },
+                        Rumble = new RumbleConfigController()
+                        {
+                            EnableRumble = false
                         }
                     }
                 };
