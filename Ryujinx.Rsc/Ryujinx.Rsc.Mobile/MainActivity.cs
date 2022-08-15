@@ -111,7 +111,7 @@ namespace Ryujinx.Rsc.Mobile
             }
         }
 
-        protected override void OnActivityResult(int requestCode, [GeneratedEnum] Android.App.Result resultCode, Intent? data)
+        protected override void OnActivityResult(int requestCode, [GeneratedEnum] Android.App.Result resultCode, Intent data)
         {
             base.OnActivityResult(requestCode, resultCode, data);
 

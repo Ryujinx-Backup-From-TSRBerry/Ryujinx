@@ -41,7 +41,7 @@ namespace Ryujinx.Rsc.Views.SettingPages
                 if (arg.NavigationMode == NavigationMode.New)
                 {
                     ViewModel = (SettingsViewModel)arg.Parameter;
-                    ViewModel.Title = LocaleManager.Instance["SettingsTabGraphics"];
+                    ViewModel.Title = LocaleManager.Instance["SettingsTabGeneralGeneral"];
                 }
 
                 DataContext = ViewModel;
@@ -52,15 +52,20 @@ namespace Ryujinx.Rsc.Views.SettingPages
         {
             string path = string.Empty;
 
+            var fileHelper = App.FileSystemHelperFactory();
+
             var storage = await (VisualRoot as TopLevel).StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions());
 
             if (storage.Count > 0)
             {
                 var folder = storage.First();
 
-                if (folder.TryGetUri(out _))
+                if (folder.TryGetUri(out var uri))
                 {
-                    path = await folder.SaveBookmarkAsync();
+                    path = uri.AbsoluteUri;
+
+                    // Used to ensure path permission are acquired. Returned value is not needed
+                    _ = fileHelper.DirectoryExist(path);
                 }
             }
 
