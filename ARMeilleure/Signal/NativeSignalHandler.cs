@@ -71,8 +71,8 @@ namespace ARMeilleure.Signal
 
         private const uint EXCEPTION_ACCESS_VIOLATION = 0xc0000005;
 
-        private const ulong PageSize = 0x1000;
-        private const ulong PageMask = PageSize - 1;
+        private static ulong _pageSize = GetPageSize();
+        private static ulong _pageMask = _pageSize - 1;
 
         private static IntPtr _handlerConfig;
         private static IntPtr _signalHandlerPtr;
@@ -80,6 +80,19 @@ namespace ARMeilleure.Signal
 
         private static readonly object _lock = new object();
         private static bool _initialized;
+
+        private static ulong GetPageSize()
+        {
+            // TODO: Actually query this from the OS instead of assuming.
+            if (OperatingSystem.IsMacOS() && RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
+            {
+                return 1UL << 14;
+            }
+            else
+            {
+                return 1UL << 12;
+            }
+        }
 
         static NativeSignalHandler()
         {
@@ -231,7 +244,7 @@ namespace ARMeilleure.Signal
                 // Only call tracking if in range.
                 context.BranchIfFalse(nextLabel, inRange, BasicBlockFrequency.Cold);
 
-                Operand offset = context.BitwiseAnd(context.Subtract(faultAddress, rangeAddress), Const(~PageMask));
+                Operand offset = context.BitwiseAnd(context.Subtract(faultAddress, rangeAddress), Const(~_pageMask));
 
                 // Call the tracking action, with the pointer's relative offset to the base address.
                 Operand trackingActionPtr = context.Load(OperandType.I64, Const((ulong)signalStructPtr + rangeBaseOffset + 20));
@@ -242,7 +255,7 @@ namespace ARMeilleure.Signal
 
                 // Tracking action should be non-null to call it, otherwise assume false return.
                 context.BranchIfFalse(skipActionLabel, trackingActionPtr);
-                Operand result = context.Call(trackingActionPtr, OperandType.I32, offset, Const(PageSize), isWrite, Const(0));
+                Operand result = context.Call(trackingActionPtr, OperandType.I32, offset, Const(_pageSize), isWrite, Const(0));
                 context.Copy(inRegionLocal, result);
 
                 context.MarkLabel(skipActionLabel);

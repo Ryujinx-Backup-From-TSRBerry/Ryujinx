@@ -21,7 +21,7 @@ namespace Ryujinx.Memory.Tracking
 
         internal MultiRegionHandle(MemoryTracking tracking, ulong address, ulong size, IEnumerable<IRegionHandle> handles, ulong granularity)
         {
-            _handles = new RegionHandle[size / granularity];
+            _handles = new RegionHandle[(size + granularity - 1) / granularity];
             Granularity = granularity;
 
             int i = 0;
@@ -35,7 +35,7 @@ namespace Ryujinx.Memory.Tracking
 
                 foreach (RegionHandle handle in handles)
                 {
-                    int startIndex = (int)((handle.Address - address) / granularity);
+                    int startIndex = (int)((handle.RealAddress - address) / granularity);
 
                     // Fill any gap left before this handle.
                     while (i < startIndex)
@@ -45,14 +45,14 @@ namespace Ryujinx.Memory.Tracking
                         _handles[i++] = fillHandle;
                     }
 
-                    if (handle.Size == granularity)
+                    if (Granularity == granularity)
                     {
                         handle.Parent = this;
                         _handles[i++] = handle;
                     }
                     else
                     {
-                        int endIndex = (int)((handle.EndAddress - address) / granularity);
+                        int endIndex = (int)((handle.RealEndAddress - address) / granularity);
 
                         while (i < endIndex)
                         {
@@ -128,7 +128,7 @@ namespace Ryujinx.Memory.Tracking
             int startHandle = (int)((address - Address) / Granularity);
             int lastHandle = (int)((address + (size - 1) - Address) / Granularity);
 
-            ulong rgStart = _handles[startHandle].Address;
+            ulong rgStart = Address + (ulong)startHandle * Granularity;
             ulong rgSize = 0;
 
             for (int i = startHandle; i <= lastHandle; i++)
@@ -137,7 +137,7 @@ namespace Ryujinx.Memory.Tracking
 
                 if (handle.Dirty)
                 {
-                    rgSize += handle.Size;
+                    rgSize += Granularity;
                     handle.Reprotect();
                 }
                 else
@@ -148,7 +148,7 @@ namespace Ryujinx.Memory.Tracking
                         modifiedAction(rgStart, rgSize);
                         rgSize = 0;
                     }
-                    rgStart = handle.EndAddress;
+                    rgStart = handle.RealEndAddress;
                 }
             }
 
@@ -163,7 +163,7 @@ namespace Ryujinx.Memory.Tracking
             int startHandle = (int)((address - Address) / Granularity);
             int lastHandle = (int)((address + (size - 1) - Address) / Granularity);
 
-            ulong rgStart = _handles[startHandle].Address;
+            ulong rgStart = Address + (ulong)startHandle * Granularity;
             ulong rgSize = 0;
 
             for (int i = startHandle; i <= lastHandle; i++)
@@ -172,7 +172,7 @@ namespace Ryujinx.Memory.Tracking
 
                 if (sequenceNumber != handle.SequenceNumber && handle.DirtyOrVolatile())
                 {
-                    rgSize += handle.Size;
+                    rgSize += Granularity;
                     handle.Reprotect();
                 }
                 else
@@ -183,7 +183,7 @@ namespace Ryujinx.Memory.Tracking
                         modifiedAction(rgStart, rgSize);
                         rgSize = 0;
                     }
-                    rgStart = handle.EndAddress;
+                    rgStart = handle.RealEndAddress;
                 }
 
                 handle.SequenceNumber = sequenceNumber;

@@ -30,6 +30,10 @@ namespace Ryujinx.Memory.Tracking
         public ulong Size { get; }
         public ulong EndAddress { get; }
 
+        public ulong RealAddress { get; }
+        public ulong RealSize { get; }
+        public ulong RealEndAddress { get; }
+
         internal IMultiRegionHandle Parent { get; set; }
         internal int SequenceNumber { get; set; }
 
@@ -75,14 +79,21 @@ namespace Ryujinx.Memory.Tracking
         /// <param name="tracking">Tracking object for the target memory block</param>
         /// <param name="address">Virtual address of the region to track</param>
         /// <param name="size">Size of the region to track</param>
+        /// <param name="realAddress">The real, unaligned address of the handle</param>
+        /// <param name="realSize">The real, unaligned size of the handle</param>
         /// <param name="mapped">True if the region handle starts mapped</param>
-        internal RegionHandle(MemoryTracking tracking, ulong address, ulong size, bool mapped = true)
+        internal RegionHandle(MemoryTracking tracking, ulong address, ulong size, ulong realAddress, ulong realSize, bool mapped = true)
         {
             Dirty = mapped;
             Unmapped = !mapped;
+
             Address = address;
             Size = size;
             EndAddress = address + size;
+
+            RealAddress = realAddress;
+            RealSize = realSize;
+            RealEndAddress = realAddress + realSize;
 
             _tracking = tracking;
             _regions = tracking.GetVirtualRegionsForHandle(address, size);
