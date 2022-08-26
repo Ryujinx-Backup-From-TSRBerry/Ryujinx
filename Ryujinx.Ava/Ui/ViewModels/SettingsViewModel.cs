@@ -170,6 +170,7 @@ namespace Ryujinx.Ava.Ui.ViewModels
             {
                 _ldnPassphrase = value;
                 IsInvalidLdnPassphraseVisible = !ValidateLdnPassphrase(value);
+
                 OnPropertyChanged(nameof(LdnPassphrase));
                 OnPropertyChanged(nameof(IsInvalidLdnPassphraseVisible));
             }
@@ -345,9 +346,10 @@ namespace Ryujinx.Ava.Ui.ViewModels
         {
             _networkInterfaces.Clear();
             _networkInterfaces.Add(LocaleManager.Instance["NetworkInterfaceDefault"], "0");
-            foreach (NetworkInterface nif in NetworkInterface.GetAllNetworkInterfaces())
+
+            foreach (NetworkInterface networkInterface in NetworkInterface.GetAllNetworkInterfaces())
             {
-                _networkInterfaces.Add(nif.Name, nif.Id);
+                _networkInterfaces.Add(networkInterface.Name, networkInterface.Id);
             }
         }
 
@@ -361,8 +363,7 @@ namespace Ryujinx.Ava.Ui.ViewModels
 
         public bool ValidateLdnPassphrase(string passphrase)
         {
-            Regex match = new Regex("Ryujinx-[0-9a-f]{8}");
-            return passphrase == null || passphrase == "" || (passphrase.Length == 16 && match.IsMatch(passphrase));
+            return passphrase == null || passphrase == "" || (passphrase.Length == 16 && new Regex("Ryujinx-[0-9a-f]{8}").IsMatch(passphrase));
         }
 
         public async void BrowseTheme()
