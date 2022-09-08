@@ -28,9 +28,9 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
         private LdnProxyUdpServer        _udp;
         private List<LdnProxyTcpSession> _stations = new List<LdnProxyTcpSession>();
 
-        internal readonly IPAddress      localAddr;
-        internal readonly IPAddress      localAddrMask;
-        internal NetworkInfo             networkInfo;
+        internal readonly IPAddress      LocalAddr;
+        internal readonly IPAddress      LocalAddrMask;
+        internal NetworkInfo             NetworkInfo;
 
         private static NetworkInfo GetEmptyNetworkInfo()
         {
@@ -76,8 +76,8 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
             Logger.Info?.PrintMsg(LogClass.ServiceLdn, $"Initialize LanDiscovery using IP: {ipAddress}");
 
             _parent       = parent;
-            localAddr     = ipAddress;
-            localAddrMask = ipv4mask;
+            LocalAddr     = ipAddress;
+            LocalAddrMask = ipv4mask;
 
             _fakeSsid = new()
             {
@@ -91,7 +91,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
             _protocol.SyncNetwork       += OnSyncNetwork;
             _protocol.DisconnectStation += DisconnectStation;
 
-            networkInfo = LanDiscovery.GetEmptyNetworkInfo();
+            NetworkInfo = GetEmptyNetworkInfo();
 
             Initialize(listening);
         }
@@ -112,9 +112,9 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
 
         protected void OnSyncNetwork(NetworkInfo info)
         {
-            if (!networkInfo.Equals(info))
+            if (!NetworkInfo.Equals(info))
             {
-                networkInfo = info;
+                NetworkInfo = info;
 
                 Logger.Debug?.PrintMsg(LogClass.ServiceLdn, $"Received NetworkInfo:\n{JsonHelper.Serialize(info, true)}");
                 Logger.Debug?.PrintMsg(LogClass.ServiceLdn, $"Host IP: {NetworkHelpers.ConvertUint(info.Ldn.Nodes[0].Ipv4Address)}");
@@ -135,7 +135,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
 
             _stations.Add(station);
 
-            station.nodeId = _stations.Count + 1;
+            station.NodeId = _stations.Count + 1;
 
             UpdateNodes();
         }
@@ -152,7 +152,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
                 station.Dispose();
             }
 
-            networkInfo.Ldn.Nodes[_stations.IndexOf(station)] = new NodeInfo()
+            NetworkInfo.Ldn.Nodes[_stations.IndexOf(station)] = new NodeInfo()
             {
                 MacAddress = new byte[6],
                 UserName   = new byte[LanProtocol.UserNameBytesMax + 1],
@@ -166,7 +166,6 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
 
         public bool SetAdvertiseData(byte[] data)
         {
-
             if (data.Length > (int)LanProtocol.AdvertiseDataSizeMax)
             {
                 Logger.Error?.PrintMsg(LogClass.ServiceLdn, "AdvertiseData exceeds size limit.");
@@ -174,14 +173,14 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
                 return false;
             }
 
-            networkInfo.Ldn.AdvertiseData     = data;
-            networkInfo.Ldn.AdvertiseDataSize = (ushort)data.Length;
-            Array.Resize(ref networkInfo.Ldn.AdvertiseData, (int)LanProtocol.AdvertiseDataSizeMax);
+            NetworkInfo.Ldn.AdvertiseData     = data;
+            NetworkInfo.Ldn.AdvertiseDataSize = (ushort)data.Length;
+            Array.Resize(ref NetworkInfo.Ldn.AdvertiseData, (int)LanProtocol.AdvertiseDataSizeMax);
             Logger.Debug?.PrintMsg(LogClass.ServiceLdn, $"AdvertiseData: {BitConverter.ToString(data)}");
-            Logger.Debug?.PrintMsg(LogClass.ServiceLdn, $"NetworkInfo:\n{JsonHelper.Serialize(networkInfo, true)}");
+            Logger.Debug?.PrintMsg(LogClass.ServiceLdn, $"NetworkInfo:\n{JsonHelper.Serialize(NetworkInfo, true)}");
 
             // NOTE: Otherwise this results in SessionKeepFailed or MasterDisconnected
-            if (networkInfo.Ldn.Nodes[0].IsConnected == 1)
+            if (NetworkInfo.Ldn.Nodes[0].IsConnected == 1)
             {
                 UpdateNodes();
             }
@@ -191,18 +190,18 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
 
         public void InitNetworkInfo()
         {
-            networkInfo.Common.MacAddress  = GetFakeMac();
-            networkInfo.Common.Channel     = COMMON_CHANNEL;
-            networkInfo.Common.LinkLevel   = COMMON_LINK_LEVEL;
-            networkInfo.Common.NetworkType = COMMON_NETWORK_TYPE;
-            networkInfo.Common.Ssid        = _fakeSsid;
+            NetworkInfo.Common.MacAddress  = GetFakeMac();
+            NetworkInfo.Common.Channel     = COMMON_CHANNEL;
+            NetworkInfo.Common.LinkLevel   = COMMON_LINK_LEVEL;
+            NetworkInfo.Common.NetworkType = COMMON_NETWORK_TYPE;
+            NetworkInfo.Common.Ssid        = _fakeSsid;
 
-            networkInfo.Ldn.Nodes = new NodeInfo[LanProtocol.NodeCountMax];
+            NetworkInfo.Ldn.Nodes = new NodeInfo[LanProtocol.NodeCountMax];
 
             for (int i = 0; i < LanProtocol.NodeCountMax; i++)
             {
-                networkInfo.Ldn.Nodes[i].NodeId      = (byte)i;
-                networkInfo.Ldn.Nodes[i].IsConnected = 0;
+                NetworkInfo.Ldn.Nodes[i].NodeId      = (byte)i;
+                NetworkInfo.Ldn.Nodes[i].IsConnected = 0;
             }
         }
 
@@ -210,7 +209,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
         {
             if (address == null)
             {
-                address = localAddr;
+                address = LocalAddr;
             }
 
             byte[] ip  = address.GetAddressBytes();
@@ -237,7 +236,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
                 {
                     if (address == null)
                     {
-                        address = localAddr;
+                        address = LocalAddr;
                     }
 
                     tcpSocket = new LdnProxyTcpServer(_protocol, address, port);
@@ -289,7 +288,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
             {
                 try
                 {
-                    _udp = new LdnProxyUdpServer(_protocol, localAddr, DEFAULT_PORT);
+                    _udp = new LdnProxyUdpServer(_protocol, LocalAddr, DEFAULT_PORT);
 
                     return true;
                 }
@@ -320,23 +319,23 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
             foreach (KeyValuePair<byte[], NetworkInfo> item in _udp.scanResults)
             {
                 bool copy = true;
-                if ((filter.Flag & ScanFilterFlag.LocalCommunicationId) > 0)
+                if (filter.Flag.HasFlag(ScanFilterFlag.LocalCommunicationId))
                 {
                     copy &= filter.NetworkId.IntentId.LocalCommunicationId == item.Value.NetworkId.IntentId.LocalCommunicationId;
                 }
-                if ((filter.Flag & ScanFilterFlag.SessionId) > 0)
+                if (filter.Flag.HasFlag(ScanFilterFlag.SessionId))
                 {
                     copy &= filter.NetworkId.SessionId == item.Value.NetworkId.SessionId;
                 }
-                if ((filter.Flag & ScanFilterFlag.NetworkType) > 0)
+                if (filter.Flag.HasFlag(ScanFilterFlag.NetworkType))
                 {
                     copy &= filter.NetworkType == (NetworkType)item.Value.Common.NetworkType;
                 }
-                if ((filter.Flag & ScanFilterFlag.Ssid) > 0)
+                if (filter.Flag.HasFlag(ScanFilterFlag.Ssid))
                 {
                     copy &= filter.Ssid.Equals(item.Value.Common.Ssid);
                 }
-                if ((filter.Flag & ScanFilterFlag.SceneId) > 0)
+                if (filter.Flag.HasFlag(ScanFilterFlag.SceneId))
                 {
                     copy &= filter.NetworkId.IntentId.SceneId == item.Value.NetworkId.IntentId.SceneId;
                 }
@@ -349,7 +348,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
                     }
                     else
                     {
-                        Logger.Warning?.PrintMsg(LogClass.ServiceLdn, $"LanDiscovery Scan: Got empty UserName. There might be a timing issue somewhere...");
+                        Logger.Warning?.PrintMsg(LogClass.ServiceLdn, $"LanDiscovery Scan: Got empty Username. There might be a timing issue somewhere...");
                     }
                 }
             }
@@ -364,6 +363,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
                 station.Disconnect();
                 station.Dispose();
             }
+
             _stations.Clear();
         }
 
@@ -378,37 +378,38 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
                     countConnected++;
                     station.OverrideInfo();
                     // NOTE: This is not part of the original implementation.
-                    networkInfo.Ldn.Nodes[station.nodeId - 1] = station.nodeInfo;
+                    NetworkInfo.Ldn.Nodes[station.NodeId - 1] = station.NodeInfo;
                 }
             }
+
             byte nodeCount = (byte)(countConnected + 1);
 
-            Logger.Debug?.PrintMsg(LogClass.ServiceLdn, $"NetworkInfoNodeCount: {networkInfo.Ldn.NodeCount} | new NodeCount: {nodeCount}");
+            Logger.Debug?.PrintMsg(LogClass.ServiceLdn, $"NetworkInfoNodeCount: {NetworkInfo.Ldn.NodeCount} | new NodeCount: {nodeCount}");
 
-            bool networkInfoChanged = networkInfo.Ldn.NodeCount != nodeCount;
+            bool networkInfoChanged = NetworkInfo.Ldn.NodeCount != nodeCount;
 
-            networkInfo.Ldn.NodeCount = nodeCount;
+            NetworkInfo.Ldn.NodeCount = nodeCount;
 
             foreach (LdnProxyTcpSession station in _stations)
             {
                 if (station.IsConnected)
                 {
-                    if (_protocol.SendPacket(station, LanPacketType.SyncNetwork, LdnHelper.StructureToByteArray(networkInfo)) < 0)
+                    if (_protocol.SendPacket(station, LanPacketType.SyncNetwork, LdnHelper.StructureToByteArray(NetworkInfo)) < 0)
                     {
-                        Logger.Error?.PrintMsg(LogClass.ServiceLdn, $"Failed to send {LanPacketType.SyncNetwork} to station {station.nodeId}");
+                        Logger.Error?.PrintMsg(LogClass.ServiceLdn, $"Failed to send {LanPacketType.SyncNetwork} to station {station.NodeId}");
                     }
                 }
             }
 
             if (networkInfoChanged)
             {
-                _parent.InvokeNetworkChange(networkInfo, true);
+                _parent.InvokeNetworkChange(NetworkInfo, true);
             }
         }
 
         protected NodeInfo GetNodeInfo(NodeInfo node, UserConfig userConfig, ushort localCommunicationVersion)
         {
-            uint ipAddress = NetworkHelpers.ConvertIpv4Address(localAddr);
+            uint ipAddress = NetworkHelpers.ConvertIpv4Address(LocalAddr);
 
             node.MacAddress                = GetFakeMac();
             node.IsConnected               = 1;
@@ -428,27 +429,27 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
 
             InitNetworkInfo();
 
-            networkInfo.Ldn.NodeCountMax = networkConfig.NodeCountMax;
-            networkInfo.Ldn.SecurityMode = (ushort)securityConfig.SecurityMode;
+            NetworkInfo.Ldn.NodeCountMax = networkConfig.NodeCountMax;
+            NetworkInfo.Ldn.SecurityMode = (ushort)securityConfig.SecurityMode;
 
             if (networkConfig.Channel == 0)
             {
-                networkInfo.Common.Channel = 6;
+                NetworkInfo.Common.Channel = 6;
             }
             else
             {
-                networkInfo.Common.Channel = networkConfig.Channel;
+                NetworkInfo.Common.Channel = networkConfig.Channel;
             }
 
-            networkInfo.NetworkId.SessionId = new byte[16];
-            networkInfo.NetworkId.IntentId  = networkConfig.IntentId;
-            new Random().NextBytes(networkInfo.NetworkId.SessionId);
+            NetworkInfo.NetworkId.SessionId = new byte[16];
+            NetworkInfo.NetworkId.IntentId  = networkConfig.IntentId;
+            new Random().NextBytes(NetworkInfo.NetworkId.SessionId);
 
-            networkInfo.Ldn.Nodes[0] = GetNodeInfo(networkInfo.Ldn.Nodes[0], userConfig, networkConfig.LocalCommunicationVersion);
-            networkInfo.Ldn.Nodes[0].IsConnected = 1;
-            networkInfo.Ldn.NodeCount++;
+            NetworkInfo.Ldn.Nodes[0] = GetNodeInfo(NetworkInfo.Ldn.Nodes[0], userConfig, networkConfig.LocalCommunicationVersion);
+            NetworkInfo.Ldn.Nodes[0].IsConnected = 1;
+            NetworkInfo.Ldn.NodeCount++;
 
-            _parent.InvokeNetworkChange(networkInfo, true);
+            _parent.InvokeNetworkChange(NetworkInfo, true);
 
             return true;
         }
@@ -537,6 +538,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
                     _udp = null;
                 }
             }
+
             if (_tcp != null)
             {
                 try
