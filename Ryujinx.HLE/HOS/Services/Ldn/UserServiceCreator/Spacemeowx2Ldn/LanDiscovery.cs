@@ -319,22 +319,27 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
             foreach (KeyValuePair<byte[], NetworkInfo> item in _udp.scanResults)
             {
                 bool copy = true;
+
                 if (filter.Flag.HasFlag(ScanFilterFlag.LocalCommunicationId))
                 {
                     copy &= filter.NetworkId.IntentId.LocalCommunicationId == item.Value.NetworkId.IntentId.LocalCommunicationId;
                 }
+
                 if (filter.Flag.HasFlag(ScanFilterFlag.SessionId))
                 {
                     copy &= filter.NetworkId.SessionId == item.Value.NetworkId.SessionId;
                 }
+
                 if (filter.Flag.HasFlag(ScanFilterFlag.NetworkType))
                 {
                     copy &= filter.NetworkType == (NetworkType)item.Value.Common.NetworkType;
                 }
+
                 if (filter.Flag.HasFlag(ScanFilterFlag.Ssid))
                 {
                     copy &= filter.Ssid.Equals(item.Value.Common.Ssid);
                 }
+
                 if (filter.Flag.HasFlag(ScanFilterFlag.SceneId))
                 {
                     copy &= filter.NetworkId.IntentId.SceneId == item.Value.NetworkId.IntentId.SceneId;
