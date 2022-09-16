@@ -19,6 +19,8 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
         private const byte   COMMON_LINK_LEVEL   = 3;
         private const byte   COMMON_NETWORK_TYPE = 2;
 
+        private const int FailureTimeout = 4000;
+
         private Spacemeowx2LdnClient     _parent;
         private LanProtocol              _protocol;
         private bool                     _initialized;
@@ -26,6 +28,8 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
         private ILdnTcpSocket            _tcp;
         private LdnProxyUdpServer        _udp, _udp2;
         private List<LdnProxyTcpSession> _stations = new List<LdnProxyTcpSession>();
+
+        private AutoResetEvent _apConnected = new AutoResetEvent(false);
 
         internal readonly IPAddress      LocalAddr;
         internal readonly IPAddress      LocalBroadcastAddr;
@@ -125,6 +129,8 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
 
                 _parent.InvokeNetworkChange(info, true);
             }
+
+            _apConnected.Set();
         }
 
         protected void OnConnect(LdnProxyTcpSession station)
@@ -156,16 +162,17 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
                 station.Dispose();
             }
 
-            NetworkInfo.Ldn.Nodes[station.NodeId] = new NodeInfo()
+            if (_stations.Remove(station))
             {
-                MacAddress = new byte[6],
-                UserName   = new byte[LanProtocol.UserNameBytesMax + 1],
-                Reserved2  = new byte[16]
-            };
+                NetworkInfo.Ldn.Nodes[station.NodeId] = new NodeInfo()
+                {
+                    MacAddress = new byte[6],
+                    UserName = new byte[LanProtocol.UserNameBytesMax + 1],
+                    Reserved2 = new byte[16]
+                };
 
-            _stations.Remove(station);
-
-            UpdateNodes();
+                UpdateNodes();
+            }
         }
 
         public bool SetAdvertiseData(byte[] data)
@@ -501,6 +508,8 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
 
         public NetworkError Connect(NetworkInfo networkInfo, UserConfig userConfig, uint localCommunicationVersion)
         {
+            _apConnected.Reset();
+
             if (networkInfo.Ldn.NodeCount == 0)
             {
                 return NetworkError.Unknown;
@@ -530,11 +539,9 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
                 return NetworkError.Unknown;
             }
 
-            _parent.InvokeNetworkChange(networkInfo, true);
+            bool signalled = _apConnected.WaitOne(FailureTimeout);
 
-            Thread.Sleep(1000);
-
-            return NetworkError.None;
+            return signalled ? NetworkError.None : NetworkError.ConnectTimeout;
         }
 
         public void Dispose()
