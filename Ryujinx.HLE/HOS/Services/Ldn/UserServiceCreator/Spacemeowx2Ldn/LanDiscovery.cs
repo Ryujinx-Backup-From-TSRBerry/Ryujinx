@@ -6,6 +6,7 @@ using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.RyuLdn.Types;
 using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn.Proxy;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
@@ -332,7 +333,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
 
             List<NetworkInfo> outNetworkInfo = new List<NetworkInfo>();
 
-            foreach (KeyValuePair<byte[], NetworkInfo> item in _udp.scanResults)
+            foreach (KeyValuePair<ulong, NetworkInfo> item in _udp.scanResults)
             {
                 bool copy = true;
 
@@ -343,7 +344,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
 
                 if (filter.Flag.HasFlag(ScanFilterFlag.SessionId))
                 {
-                    copy &= filter.NetworkId.SessionId == item.Value.NetworkId.SessionId;
+                    copy &= filter.NetworkId.SessionId.SequenceEqual(item.Value.NetworkId.SessionId);
                 }
 
                 if (filter.Flag.HasFlag(ScanFilterFlag.NetworkType))
@@ -353,7 +354,9 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
 
                 if (filter.Flag.HasFlag(ScanFilterFlag.Ssid))
                 {
-                    copy &= filter.Ssid.Equals(item.Value.Common.Ssid);
+                    IEnumerable<byte> gameSsid = item.Value.Common.Ssid.Name.Take(item.Value.Common.Ssid.Length);
+                    IEnumerable<byte> scanSsid = filter.Ssid.Name.Take(filter.Ssid.Length);
+                    copy &= gameSsid.SequenceEqual(scanSsid);
                 }
 
                 if (filter.Flag.HasFlag(ScanFilterFlag.SceneId))
