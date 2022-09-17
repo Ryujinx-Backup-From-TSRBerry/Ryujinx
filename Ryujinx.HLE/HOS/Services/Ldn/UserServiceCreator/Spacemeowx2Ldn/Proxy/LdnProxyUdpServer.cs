@@ -1,6 +1,7 @@
 ﻿using Ryujinx.Common.Logging;
 using Ryujinx.HLE.HOS.Services.Ldn.Spacemeowx2Ldn;
 using Ryujinx.HLE.HOS.Services.Ldn.Types;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -75,7 +76,11 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn.Proxy
 
         private void HandleScanResponse(NetworkInfo info)
         {
-            scanResults.Add(LdnHelper.FromBytes<ulong>(info.Common.MacAddress), info);
+            Span<byte> mac = stackalloc byte[8];
+
+            info.Common.MacAddress.AsSpan().CopyTo(mac);
+
+            scanResults.Add(BitConverter.ToUInt64(mac), info);
         }
     }
 }
