@@ -216,7 +216,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
             {
                 if (NetworkInfo.Ldn.Nodes[0].IsConnected == 1)
                 {
-                    UpdateNodes();
+                    UpdateNodes(true);
                 }
             }
 
@@ -428,7 +428,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
             return -1;
         }
 
-        protected void UpdateNodes()
+        protected void UpdateNodes(bool forceUpdate = false)
         {
             int countConnected = 1;
 
@@ -444,7 +444,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
 
             Logger.Debug?.PrintMsg(LogClass.ServiceLdn, $"NetworkInfoNodeCount: {NetworkInfo.Ldn.NodeCount} | new NodeCount: {nodeCount}");
 
-            bool networkInfoChanged = NetworkInfo.Ldn.NodeCount != nodeCount;
+            bool networkInfoChanged = forceUpdate || NetworkInfo.Ldn.NodeCount != nodeCount;
 
             NetworkInfo.Ldn.NodeCount = nodeCount;
 
