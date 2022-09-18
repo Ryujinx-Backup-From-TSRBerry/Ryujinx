@@ -29,6 +29,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
         private ILdnTcpSocket            _tcp;
         private LdnProxyUdpServer        _udp, _udp2;
         private List<LdnProxyTcpSession> _stations = new List<LdnProxyTcpSession>();
+        private object                   _lock = new object();
 
         private AutoResetEvent _apConnected = new AutoResetEvent(false);
 
@@ -123,13 +124,22 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
 
         protected void OnSyncNetwork(NetworkInfo info)
         {
-            if (!NetworkInfo.Equals(info))
+            bool updated = false;
+
+            lock (_lock)
             {
-                NetworkInfo = info;
+                if (!NetworkInfo.Equals(info))
+                {
+                    NetworkInfo = info;
+                    updated = true;
 
-                Logger.Debug?.PrintMsg(LogClass.ServiceLdn, $"Received NetworkInfo:\n{JsonHelper.Serialize(info, true)}");
-                Logger.Debug?.PrintMsg(LogClass.ServiceLdn, $"Host IP: {NetworkHelpers.ConvertUint(info.Ldn.Nodes[0].Ipv4Address)}");
+                    Logger.Debug?.PrintMsg(LogClass.ServiceLdn, $"Received NetworkInfo:\n{JsonHelper.Serialize(info, true)}");
+                    Logger.Debug?.PrintMsg(LogClass.ServiceLdn, $"Host IP: {NetworkHelpers.ConvertUint(info.Ldn.Nodes[0].Ipv4Address)}");
+                }
+            }
 
+            if (updated)
+            {
                 _parent.InvokeNetworkChange(info, true);
             }
 
@@ -138,19 +148,22 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
 
         protected void OnConnect(LdnProxyTcpSession station)
         {
-            station.NodeId = LocateEmptyNode();
-
-            if (_stations.Count > LanProtocol.StationCountMax || station.NodeId == -1)
+            lock (_lock)
             {
-                station.Disconnect();
-                station.Dispose();
+                station.NodeId = LocateEmptyNode();
 
-                return;
+                if (_stations.Count > LanProtocol.StationCountMax || station.NodeId == -1)
+                {
+                    station.Disconnect();
+                    station.Dispose();
+
+                    return;
+                }
+
+                _stations.Add(station);
+
+                UpdateNodes();
             }
-
-            _stations.Add(station);
-
-            UpdateNodes();
         }
 
         public void DisconnectStation(LdnProxyTcpSession station)
@@ -165,16 +178,19 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
                 station.Dispose();
             }
 
-            if (_stations.Remove(station))
+            lock (_lock)
             {
-                NetworkInfo.Ldn.Nodes[station.NodeId] = new NodeInfo()
+                if (_stations.Remove(station))
                 {
-                    MacAddress = new byte[6],
-                    UserName = new byte[LanProtocol.UserNameBytesMax + 1],
-                    Reserved2 = new byte[16]
-                };
+                    NetworkInfo.Ldn.Nodes[station.NodeId] = new NodeInfo()
+                    {
+                        MacAddress = new byte[6],
+                        UserName = new byte[LanProtocol.UserNameBytesMax + 1],
+                        Reserved2 = new byte[16]
+                    };
 
-                UpdateNodes();
+                    UpdateNodes();
+                }
             }
         }
 
@@ -196,9 +212,12 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
             Logger.Debug?.PrintMsg(LogClass.ServiceLdn, $"NetworkInfo:\n{JsonHelper.Serialize(NetworkInfo, true)}");
 
             // NOTE: Otherwise this results in SessionKeepFailed or MasterDisconnected
-            if (NetworkInfo.Ldn.Nodes[0].IsConnected == 1)
+            lock (_lock)
             {
-                UpdateNodes();
+                if (NetworkInfo.Ldn.Nodes[0].IsConnected == 1)
+                {
+                    UpdateNodes();
+                }
             }
 
             return true;
@@ -206,18 +225,21 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
 
         public void InitNetworkInfo()
         {
-            NetworkInfo.Common.MacAddress  = GetFakeMac();
-            NetworkInfo.Common.Channel     = COMMON_CHANNEL;
-            NetworkInfo.Common.LinkLevel   = COMMON_LINK_LEVEL;
-            NetworkInfo.Common.NetworkType = COMMON_NETWORK_TYPE;
-            NetworkInfo.Common.Ssid        = _fakeSsid;
-
-            NetworkInfo.Ldn.Nodes = new NodeInfo[LanProtocol.NodeCountMax];
-
-            for (int i = 0; i < LanProtocol.NodeCountMax; i++)
+            lock (_lock)
             {
-                NetworkInfo.Ldn.Nodes[i].NodeId      = (byte)i;
-                NetworkInfo.Ldn.Nodes[i].IsConnected = 0;
+                NetworkInfo.Common.MacAddress  = GetFakeMac();
+                NetworkInfo.Common.Channel     = COMMON_CHANNEL;
+                NetworkInfo.Common.LinkLevel   = COMMON_LINK_LEVEL;
+                NetworkInfo.Common.NetworkType = COMMON_NETWORK_TYPE;
+                NetworkInfo.Common.Ssid        = _fakeSsid;
+
+                NetworkInfo.Ldn.Nodes = new NodeInfo[LanProtocol.NodeCountMax];
+
+                for (int i = 0; i < LanProtocol.NodeCountMax; i++)
+                {
+                    NetworkInfo.Ldn.Nodes[i].NodeId = (byte)i;
+                    NetworkInfo.Ldn.Nodes[i].IsConnected = 0;
+                }
             }
         }
 
@@ -382,13 +404,16 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
 
         protected void ResetStations()
         {
-            foreach (LdnProxyTcpSession station in _stations)
+            lock (_lock)
             {
-                station.Disconnect();
-                station.Dispose();
-            }
+                foreach (LdnProxyTcpSession station in _stations)
+                {
+                    station.Disconnect();
+                    station.Dispose();
+                }
 
-            _stations.Clear();
+                _stations.Clear();
+            }
         }
 
         private int LocateEmptyNode()
