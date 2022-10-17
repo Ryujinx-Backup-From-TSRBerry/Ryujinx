@@ -252,7 +252,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
 
             byte[] ip  = address.GetAddressBytes();
 
-            return new byte[] { 0x02, 0x00, ip[0], ip[1], ip[2], ip[3] };
+            return new byte[] { 0x02, 0x00, ip[3], ip[2], ip[1], ip[0] };
         }
 
         public bool InitTcp(bool listening, IPAddress address = null, int port = DEFAULT_PORT)
