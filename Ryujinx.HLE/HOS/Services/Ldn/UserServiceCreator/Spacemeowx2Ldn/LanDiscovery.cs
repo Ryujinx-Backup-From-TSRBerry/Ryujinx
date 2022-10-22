@@ -39,6 +39,8 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
 
         public bool IsHost => _tcp is LdnProxyTcpServer;
 
+        private Random _random = new();
+
         // NOTE: Credit to https://stackoverflow.com/a/39338188
         private static IPAddress GetBroadcastAddress(IPAddress address, IPAddress mask)
         {
@@ -99,8 +101,10 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
             _fakeSsid = new()
             {
                 Length = (byte)LanProtocol.SsidLengthMax,
-                Name   = Encoding.ASCII.GetBytes("12345678123456781234567812345678")
+                Name   = new byte[32]
             };
+
+            _random.NextBytes(_fakeSsid.Name);
             Array.Resize(ref _fakeSsid.Name, (int)(LanProtocol.SsidLengthMax + 1));
 
             _protocol                   = new LanProtocol(this);
@@ -494,7 +498,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
 
             NetworkInfo.NetworkId.SessionId = new byte[16];
             NetworkInfo.NetworkId.IntentId  = networkConfig.IntentId;
-            new Random().NextBytes(NetworkInfo.NetworkId.SessionId);
+            _random.NextBytes(NetworkInfo.NetworkId.SessionId);
 
             NetworkInfo.Ldn.Nodes[0] = GetNodeInfo(NetworkInfo.Ldn.Nodes[0], userConfig, networkConfig.LocalCommunicationVersion);
             NetworkInfo.Ldn.Nodes[0].IsConnected = 1;
