@@ -212,9 +212,6 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
 
             Array.Resize(ref NetworkInfo.Ldn.AdvertiseData, (int)LanProtocol.AdvertiseDataSizeMax);
 
-            Logger.Debug?.PrintMsg(LogClass.ServiceLdn, $"AdvertiseData: {BitConverter.ToString(data)}");
-            Logger.Debug?.PrintMsg(LogClass.ServiceLdn, $"NetworkInfo:\n{JsonHelper.Serialize(NetworkInfo, true)}");
-
             // NOTE: Otherwise this results in SessionKeepFailed or MasterDisconnected
             lock (_lock)
             {
@@ -445,8 +442,6 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
             }
 
             byte nodeCount = (byte)countConnected;
-
-            Logger.Debug?.PrintMsg(LogClass.ServiceLdn, $"NetworkInfoNodeCount: {NetworkInfo.Ldn.NodeCount} | new NodeCount: {nodeCount}");
 
             bool networkInfoChanged = forceUpdate || NetworkInfo.Ldn.NodeCount != nodeCount;
 
