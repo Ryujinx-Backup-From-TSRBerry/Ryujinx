@@ -64,25 +64,25 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
                     MacAddress = new byte[6],
                     Ssid = new()
                     {
-                        Name = new byte[LanProtocol.SsidLengthMax + 1]
+                        Name = new byte[LdnConst.SsidLengthMax + 1]
                     }
                 },
                 Ldn = new()
                 {
-                    NodeCountMax      = LanProtocol.NodeCountMax,
+                    NodeCountMax      = (byte)LdnConst.NodeCountMax,
                     SecurityParameter = new byte[16],
-                    Nodes             = new NodeInfo[LanProtocol.NodeCountMax],
-                    AdvertiseData     = new byte[LanProtocol.AdvertiseDataSizeMax],
+                    Nodes             = new NodeInfo[LdnConst.NodeCountMax],
+                    AdvertiseData     = new byte[LdnConst.AdvertiseDataSizeMax],
                     Unknown2          = new byte[140]
                 }
             };
 
-            for (int i = 0; i < LanProtocol.NodeCountMax; i++)
+            for (int i = 0; i < LdnConst.NodeCountMax; i++)
             {
                 networkInfo.Ldn.Nodes[i] = new()
                 {
                     MacAddress = new byte[6],
-                    UserName   = new byte[LanProtocol.UserNameBytesMax + 1],
+                    UserName   = new byte[LdnConst.UserNameBytesMax + 1],
                     Reserved2  = new byte[16]
                 };
             }
@@ -100,12 +100,12 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
 
             _fakeSsid = new()
             {
-                Length = (byte)LanProtocol.SsidLengthMax,
+                Length = (byte)LdnConst.SsidLengthMax,
                 Name   = new byte[32]
             };
 
             _random.NextBytes(_fakeSsid.Name);
-            Array.Resize(ref _fakeSsid.Name, (int)(LanProtocol.SsidLengthMax + 1));
+            Array.Resize(ref _fakeSsid.Name, (int)(LdnConst.SsidLengthMax + 1));
 
             _protocol                   = new LanProtocol(this);
             _protocol.Accept            += OnConnect;
@@ -156,7 +156,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
             {
                 station.NodeId = LocateEmptyNode();
 
-                if (_stations.Count > LanProtocol.StationCountMax || station.NodeId == -1)
+                if (_stations.Count > LdnConst.StationCountMax || station.NodeId == -1)
                 {
                     station.Disconnect();
                     station.Dispose();
@@ -189,7 +189,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
                     NetworkInfo.Ldn.Nodes[station.NodeId] = new NodeInfo()
                     {
                         MacAddress = new byte[6],
-                        UserName = new byte[LanProtocol.UserNameBytesMax + 1],
+                        UserName = new byte[LdnConst.UserNameBytesMax + 1],
                         Reserved2 = new byte[16]
                     };
 
@@ -200,7 +200,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
 
         public bool SetAdvertiseData(byte[] data)
         {
-            if (data.Length > (int)LanProtocol.AdvertiseDataSizeMax)
+            if (data.Length > (int)LdnConst.AdvertiseDataSizeMax)
             {
                 Logger.Error?.PrintMsg(LogClass.ServiceLdn, "AdvertiseData exceeds size limit.");
 
@@ -210,7 +210,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
             NetworkInfo.Ldn.AdvertiseData     = data;
             NetworkInfo.Ldn.AdvertiseDataSize = (ushort)data.Length;
 
-            Array.Resize(ref NetworkInfo.Ldn.AdvertiseData, (int)LanProtocol.AdvertiseDataSizeMax);
+            Array.Resize(ref NetworkInfo.Ldn.AdvertiseData, (int)LdnConst.AdvertiseDataSizeMax);
 
             // NOTE: Otherwise this results in SessionKeepFailed or MasterDisconnected
             lock (_lock)
@@ -234,9 +234,9 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
                 NetworkInfo.Common.NetworkType = COMMON_NETWORK_TYPE;
                 NetworkInfo.Common.Ssid        = _fakeSsid;
 
-                NetworkInfo.Ldn.Nodes = new NodeInfo[LanProtocol.NodeCountMax];
+                NetworkInfo.Ldn.Nodes = new NodeInfo[LdnConst.NodeCountMax];
 
-                for (int i = 0; i < LanProtocol.NodeCountMax; i++)
+                for (int i = 0; i < LdnConst.NodeCountMax; i++)
                 {
                     NetworkInfo.Ldn.Nodes[i].NodeId = (byte)i;
                     NetworkInfo.Ldn.Nodes[i].IsConnected = 0;
