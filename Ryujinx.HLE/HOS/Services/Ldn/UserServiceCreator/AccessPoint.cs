@@ -11,8 +11,8 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator
         private IUserLocalCommunicationService _parent;
 
         public NetworkInfo NetworkInfo;
-        public NodeLatestUpdate[] LatestUpdates = new NodeLatestUpdate[8];
-        
+        public NodeLatestUpdate[] LatestUpdates = new NodeLatestUpdate[LdnConst.NodeCountMax];
+
         public bool Connected { get; private set; }
 
         public ProxyConfig Config => _parent.NetworkClient.Config;
@@ -44,7 +44,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator
                 if (Connected)
                 {
                     _parent.SetState(NetworkState.AccessPointCreated);
-                } 
+                }
                 else
                 {
                     _parent.SetDisconnectReason(e.DisconnectReasonOrDefault(DisconnectReason.DestroyedBySystem));

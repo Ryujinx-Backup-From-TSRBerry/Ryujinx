@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator;
+using System.Runtime.InteropServices;
 
 namespace Ryujinx.HLE.HOS.Services.Ldn.Types
 {
@@ -10,7 +11,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.Types
         public byte[] MacAddress;
         public byte   NodeId;
         public byte   IsConnected;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 0x21)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = LdnConst.UserNameBytesMax + 1)]
         public byte[] UserName;
         public byte   Reserved1;
         public ushort LocalCommunicationVersion;

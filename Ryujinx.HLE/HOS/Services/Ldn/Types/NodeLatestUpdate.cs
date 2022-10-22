@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator;
+using System;
 using System.Runtime.InteropServices;
 
 namespace Ryujinx.HLE.HOS.Services.Ldn.Types
@@ -56,7 +57,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.Types
                 {
                     result[i].Reserved = new byte[7];
 
-                    if (i < 8)
+                    if (i < LdnConst.NodeCountMax)
                     {
                         result[i].State = array[i].State;
                         array[i].State = NodeLatestUpdateFlags.None;

@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator;
+using System.Runtime.InteropServices;
 
 namespace Ryujinx.HLE.HOS.Services.Ldn.Types
 {
@@ -13,11 +14,11 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.Types
         public ushort     Reserved1;
         public byte       NodeCountMax;
         public byte       NodeCount;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = LdnConst.NodeCountMax)]
         public NodeInfo[] Nodes;
         public ushort     Reserved2;
         public ushort     AdvertiseDataSize;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 0x180)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = LdnConst.AdvertiseDataSizeMax)]
         public byte[]     AdvertiseData;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 0x8C)]
         public byte[]     Unknown2;

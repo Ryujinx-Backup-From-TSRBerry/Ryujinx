@@ -69,7 +69,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
                 },
                 Ldn = new()
                 {
-                    NodeCountMax      = (byte)LdnConst.NodeCountMax,
+                    NodeCountMax      = LdnConst.NodeCountMax,
                     SecurityParameter = new byte[16],
                     Nodes             = new NodeInfo[LdnConst.NodeCountMax],
                     AdvertiseData     = new byte[LdnConst.AdvertiseDataSizeMax],
@@ -100,12 +100,12 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
 
             _fakeSsid = new()
             {
-                Length = (byte)LdnConst.SsidLengthMax,
-                Name   = new byte[32]
+                Length = LdnConst.SsidLengthMax,
+                Name   = new byte[LdnConst.SsidLengthMax]
             };
 
             _random.NextBytes(_fakeSsid.Name);
-            Array.Resize(ref _fakeSsid.Name, (int)(LdnConst.SsidLengthMax + 1));
+            Array.Resize(ref _fakeSsid.Name, LdnConst.SsidLengthMax + 1);
 
             _protocol                   = new LanProtocol(this);
             _protocol.Accept            += OnConnect;
@@ -200,7 +200,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
 
         public bool SetAdvertiseData(byte[] data)
         {
-            if (data.Length > (int)LdnConst.AdvertiseDataSizeMax)
+            if (data.Length > LdnConst.AdvertiseDataSizeMax)
             {
                 Logger.Error?.PrintMsg(LogClass.ServiceLdn, "AdvertiseData exceeds size limit.");
 
@@ -210,7 +210,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Spacemeowx2Ldn
             NetworkInfo.Ldn.AdvertiseData     = data;
             NetworkInfo.Ldn.AdvertiseDataSize = (ushort)data.Length;
 
-            Array.Resize(ref NetworkInfo.Ldn.AdvertiseData, (int)LdnConst.AdvertiseDataSizeMax);
+            Array.Resize(ref NetworkInfo.Ldn.AdvertiseData, LdnConst.AdvertiseDataSizeMax);
 
             // NOTE: Otherwise this results in SessionKeepFailed or MasterDisconnected
             lock (_lock)

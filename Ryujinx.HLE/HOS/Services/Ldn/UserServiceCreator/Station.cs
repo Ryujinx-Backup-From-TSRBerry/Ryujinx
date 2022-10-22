@@ -7,7 +7,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator
     class Station : IDisposable
     {
         public NetworkInfo NetworkInfo;
-        public NodeLatestUpdate[] LatestUpdates = new NodeLatestUpdate[8];
+        public NodeLatestUpdate[] LatestUpdates = new NodeLatestUpdate[LdnConst.NodeCountMax];
 
         private IUserLocalCommunicationService _parent;
 
