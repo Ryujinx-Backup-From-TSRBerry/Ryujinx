@@ -9,8 +9,8 @@ using Ryujinx.HLE.HOS.Kernel.Common;
 using Ryujinx.HLE.HOS.Kernel.Threading;
 using Ryujinx.HLE.HOS.Services.Ldn.Types;
 using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm;
-using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.RyuLdn;
-using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.RyuLdn.Types;
+using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnRyu;
+using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnRyu.Types;
 using Ryujinx.Memory;
 using System;
 using System.Net;
@@ -1075,7 +1075,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator
                         MultiplayerMode mode = context.Device.Configuration.MultiplayerMode;
                         switch (mode)
                         {
-                            case MultiplayerMode.RyuLdn:
+                            case MultiplayerMode.LdnRyu:
                                 try
                                 {
                                     if (!IPAddress.TryParse(LanPlayHost, out IPAddress ipAddress))
@@ -1086,7 +1086,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator
                                 }
                                 catch (Exception)
                                 {
-                                    Logger.Error?.Print(LogClass.ServiceLdn, "Could not locate RyuLdn server. Defaulting to stubbed wireless.");
+                                    Logger.Error?.Print(LogClass.ServiceLdn, "Could not locate LdnRyu server. Defaulting to stubbed wireless.");
                                     NetworkClient = new LdnDisabledClient();
                                 }
                                 break;
