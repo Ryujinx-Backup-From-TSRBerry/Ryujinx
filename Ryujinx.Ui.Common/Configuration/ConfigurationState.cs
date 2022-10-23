@@ -743,7 +743,7 @@ namespace Ryujinx.Ui.Common.Configuration
             System.ExpandRam.Value                    = false;
             System.IgnoreMissingServices.Value        = false;
             System.UseHypervisor.Value                = true;
-            Multiplayer.Mode.Value                    = MultiplayerMode.RyuLdn;
+            Multiplayer.Mode.Value                    = MultiplayerMode.LdnRyu;
             Multiplayer.DisableP2p.Value              = false;
             Multiplayer.Username.Value                = "Player";
             Multiplayer.LdnPassphrase.Value           = "";
@@ -753,6 +753,7 @@ namespace Ryujinx.Ui.Common.Configuration
             Ui.GuiColumns.AppColumn.Value             = true;
             Ui.GuiColumns.DevColumn.Value             = true;
             Ui.GuiColumns.VersionColumn.Value         = true;
+            Ui.GuiColumns.LdnInfoColumn.Value         = true;
             Ui.GuiColumns.TimePlayedColumn.Value      = true;
             Ui.GuiColumns.LastPlayedColumn.Value      = true;
             Ui.GuiColumns.FileExtColumn.Value         = true;
@@ -1003,7 +1004,7 @@ namespace Ryujinx.Ui.Common.Configuration
 
                 // Initialize network config.
 
-                configurationFileFormat.MultiplayerMode           = MultiplayerMode.RyuLdn;
+                configurationFileFormat.MultiplayerMode           = MultiplayerMode.LdnRyu;
                 configurationFileFormat.MultiplayerDisableP2p     = false;
                 configurationFileFormat.MultiplayerUsername       = "Player";
                 configurationFileFormat.MultiplayerLdnPassphrase  = "";
@@ -1389,6 +1390,7 @@ namespace Ryujinx.Ui.Common.Configuration
             Ui.GuiColumns.AppColumn.Value             = configurationFileFormat.GuiColumns.AppColumn;
             Ui.GuiColumns.DevColumn.Value             = configurationFileFormat.GuiColumns.DevColumn;
             Ui.GuiColumns.VersionColumn.Value         = configurationFileFormat.GuiColumns.VersionColumn;
+            Ui.GuiColumns.LdnInfoColumn.Value         = configurationFileFormat.GuiColumns.LdnInfoColumn;
             Ui.GuiColumns.TimePlayedColumn.Value      = configurationFileFormat.GuiColumns.TimePlayedColumn;
             Ui.GuiColumns.LastPlayedColumn.Value      = configurationFileFormat.GuiColumns.LastPlayedColumn;
             Ui.GuiColumns.FileExtColumn.Value         = configurationFileFormat.GuiColumns.FileExtColumn;
