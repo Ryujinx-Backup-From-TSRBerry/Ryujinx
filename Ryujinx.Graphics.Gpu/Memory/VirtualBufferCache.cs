@@ -25,6 +25,10 @@ namespace Ryujinx.Graphics.Gpu.Memory
         private readonly MemoryManager _memoryManager;
         private readonly BufferCache _bufferCache;
 
+        /// <remarks>
+        /// Only modified from the main thread, take the lock to do so.
+        /// External threads should lock for access, internal threads don't have to.
+        /// </remarks>
         private readonly RangeList<BufferView> _buffers;
 
         private BufferView[] _viewOverlaps;
@@ -99,12 +103,7 @@ namespace Ryujinx.Graphics.Gpu.Memory
             while (_pendingUnmaps.TryDequeue(out UnmapEventArgs unmapRegion))
             {
                 BufferView[] overlaps = _viewOverlaps;
-                int overlapCount;
-
-                lock (_buffers)
-                {
-                    overlapCount = _buffers.FindOverlapsNonOverlapping(unmapRegion.Address, unmapRegion.Size, ref overlaps);
-                }
+                int overlapCount = _buffers.FindOverlapsNonOverlapping(unmapRegion.Address, unmapRegion.Size, ref overlaps);
 
                 for (int i = 0; i < overlapCount; i++)
                 {
@@ -326,12 +325,7 @@ namespace Ryujinx.Graphics.Gpu.Memory
         private void CreateBufferAligned(ulong gpuVa, ulong size)
         {
             BufferView[] overlaps = _viewOverlaps;
-            int overlapsCount;
-
-            lock (_buffers)
-            {
-                overlapsCount = _buffers.FindOverlapsNonOverlapping(gpuVa, size, ref overlaps);
-            }
+            int overlapsCount = _buffers.FindOverlapsNonOverlapping(gpuVa, size, ref overlaps);
 
             bool anyVirtualOverlap = false;
 
@@ -380,10 +374,7 @@ namespace Ryujinx.Graphics.Gpu.Memory
                         size = growthSize;
                         endAddress = gpuVa + size;
 
-                        lock (_buffers)
-                        {
-                            overlapsCount = _buffers.FindOverlapsNonOverlapping(gpuVa, size, ref overlaps);
-                        }
+                        overlapsCount = _buffers.FindOverlapsNonOverlapping(gpuVa, size, ref overlaps);
                     }
                 }
 
@@ -767,10 +758,7 @@ namespace Ryujinx.Graphics.Gpu.Memory
             {
                 BufferView view;
 
-                lock (_buffers)
-                {
-                    view = _buffers.FindFirstOverlap(gpuVa, size);
-                }
+                view = _buffers.FindFirstOverlap(gpuVa, size);
 
                 buffer = view.Buffer;
                 bufferOffset = view.BaseOffset + (int)(gpuVa - view.Address);
@@ -798,12 +786,7 @@ namespace Ryujinx.Graphics.Gpu.Memory
         {
             if (size != 0)
             {
-                BufferView view;
-
-                lock (_buffers)
-                {
-                    view = _buffers.FindFirstOverlap(gpuVa, size);
-                }
+                BufferView view = _buffers.FindFirstOverlap(gpuVa, size);
 
                 if (view.Buffer == null)
                 {
