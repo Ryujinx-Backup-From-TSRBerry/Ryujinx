@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization.Json;
 
 namespace Ryujinx.Graphics.Gpu.Memory
 {
@@ -75,9 +76,19 @@ namespace Ryujinx.Graphics.Gpu.Memory
             /// <param name="gpuVa">GPU virtual address of the buffer</param>
             /// <param name="size">Size of the buffer in bytes</param>
             /// <param name="flags">Buffer usage flags</param>
-            public void SetBounds(int index, ulong gpuVa, ulong size, BufferUsageFlags flags = BufferUsageFlags.None)
+            /// <returns>True if the bounds have changed, false otherwise</returns>
+            public bool SetBounds(int index, ulong gpuVa, ulong size, BufferUsageFlags flags = BufferUsageFlags.None)
             {
-                Buffers[index] = new BufferBounds(gpuVa, size, flags);
+                ref BufferBounds bounds = ref Buffers[index];
+
+                if (gpuVa == bounds.GpuVa && size == bounds.Size && flags == bounds.Flags)
+                {
+                    return false;
+                }
+
+                bounds = new BufferBounds(gpuVa, size, flags);
+
+                return true;
             }
 
             /// <summary>
@@ -289,9 +300,10 @@ namespace Ryujinx.Graphics.Gpu.Memory
 
             gpuVa = BitUtils.AlignDown(gpuVa, _context.Capabilities.StorageBufferOffsetAlignment);
 
-            _channel.MemoryManager.VirtualBufferCache.CreateBuffer(gpuVa, size);
-
-            _cpStorageBuffers.SetBounds(index, gpuVa, size, flags);
+            if (_cpStorageBuffers.SetBounds(index, gpuVa, size, flags) && gpuVa != 0)
+            {
+                _channel.MemoryManager.VirtualBufferCache.CreateBuffer(gpuVa, size);
+            }
         }
 
         /// <summary>
@@ -313,15 +325,15 @@ namespace Ryujinx.Graphics.Gpu.Memory
 
             gpuVa = BitUtils.AlignDown(gpuVa, _context.Capabilities.StorageBufferOffsetAlignment);
 
-            _channel.MemoryManager.VirtualBufferCache.CreateBuffer(gpuVa, size);
-
-            if (buffers.Buffers[index].GpuVa != gpuVa ||
-                buffers.Buffers[index].Size != size)
+            if (buffers.SetBounds(index, gpuVa, size, flags))
             {
+                if (gpuVa != 0)
+                {
+                    _channel.MemoryManager.VirtualBufferCache.CreateBuffer(gpuVa, size);
+                }
+
                 _gpStorageBuffersDirty = true;
             }
-
-            buffers.SetBounds(index, gpuVa, size, flags);
         }
 
         /// <summary>
@@ -333,9 +345,10 @@ namespace Ryujinx.Graphics.Gpu.Memory
         /// <param name="size">Size in bytes of the storage buffer</param>
         public void SetComputeUniformBuffer(int index, ulong gpuVa, ulong size)
         {
-            _channel.MemoryManager.VirtualBufferCache.CreateBuffer(gpuVa, size);
-
-            _cpUniformBuffers.SetBounds(index, gpuVa, size);
+            if (_cpUniformBuffers.SetBounds(index, gpuVa, size) && gpuVa != 0)
+            {
+                _channel.MemoryManager.VirtualBufferCache.CreateBuffer(gpuVa, size);
+            }
         }
 
         /// <summary>
@@ -348,10 +361,15 @@ namespace Ryujinx.Graphics.Gpu.Memory
         /// <param name="size">Size in bytes of the storage buffer</param>
         public void SetGraphicsUniformBuffer(int stage, int index, ulong gpuVa, ulong size)
         {
-            _channel.MemoryManager.VirtualBufferCache.CreateBuffer(gpuVa, size);
+            if (_gpUniformBuffers[stage].SetBounds(index, gpuVa, size))
+            {
+                if (gpuVa != 0)
+                {
+                    _channel.MemoryManager.VirtualBufferCache.CreateBuffer(gpuVa, size);
+                }
 
-            _gpUniformBuffers[stage].SetBounds(index, gpuVa, size);
-            _gpUniformBuffersDirty = true;
+                _gpUniformBuffersDirty = true;
+            }
         }
 
         /// <summary>
