@@ -480,17 +480,17 @@ namespace Ryujinx.Graphics.Gpu.Engine.Threed
         /// </summary>
         /// <param name="engine">3D engine where this method is being called</param>
         /// <param name="topology">Primitive topology</param>
-        /// <param name="indirectBufferAddress">Address of the buffer with the draw parameters, such as count, first index, etc</param>
-        /// <param name="parameterBufferAddress">Address of the buffer with the draw count</param>
+        /// <param name="indirectBufferGpuVa">Address of the buffer with the draw parameters, such as count, first index, etc</param>
+        /// <param name="parameterBufferGpuVa">Address of the buffer with the draw count</param>
         /// <param name="maxDrawCount">Maximum number of draws that can be made</param>
-        /// <param name="stride">Distance in bytes between each entry on the data pointed to by <paramref name="indirectBufferAddress"/></param>
+        /// <param name="stride">Distance in bytes between each entry on the data pointed to by <paramref name="indirectBufferGpuVa"/></param>
         /// <param name="indexCount">Maximum number of indices that the draw can consume</param>
         /// <param name="drawType">Type of the indirect draw, which can be indexed or non-indexed, with or without a draw count</param>
         public void DrawIndirect(
             ThreedClass engine,
             PrimitiveTopology topology,
-            ulong indirectBufferAddress,
-            ulong parameterBufferAddress,
+            ulong indirectBufferGpuVa,
+            ulong parameterBufferGpuVa,
             int maxDrawCount,
             int stride,
             int indexCount,
@@ -527,12 +527,23 @@ namespace Ryujinx.Graphics.Gpu.Engine.Threed
             _drawState.DrawIndirect = true;
             _drawState.HasConstantBufferDrawParameters = true;
 
+            ulong indirectBufferSize = (hasCount ? (ulong)maxDrawCount : 1UL) * (ulong)stride;
+
+            if (hasCount)
+            {
+                _channel.BufferManager.SetIndirectBuffer(indirectBufferGpuVa, indirectBufferSize, parameterBufferGpuVa, 4);
+            }
+            else
+            {
+                _channel.BufferManager.SetIndirectBuffer(indirectBufferGpuVa, indirectBufferSize);
+            }
+
             engine.UpdateState();
 
             if (hasCount)
             {
-                var indirectBuffer = memory.BufferCache.GetBufferRange(indirectBufferAddress, (ulong)maxDrawCount * (ulong)stride);
-                var parameterBuffer = memory.BufferCache.GetBufferRange(parameterBufferAddress, 4);
+                var indirectBuffer = _channel.MemoryManager.VirtualBufferCache.GetBufferRange(indirectBufferGpuVa, indirectBufferSize);
+                var parameterBuffer = _channel.MemoryManager.VirtualBufferCache.GetBufferRange(parameterBufferGpuVa, 4);
 
                 if (indexed)
                 {
@@ -545,7 +556,7 @@ namespace Ryujinx.Graphics.Gpu.Engine.Threed
             }
             else
             {
-                var indirectBuffer = memory.BufferCache.GetBufferRange(indirectBufferAddress, (ulong)stride);
+                var indirectBuffer = _channel.MemoryManager.VirtualBufferCache.GetBufferRange(indirectBufferGpuVa, indirectBufferSize);
 
                 if (indexed)
                 {
@@ -556,6 +567,8 @@ namespace Ryujinx.Graphics.Gpu.Engine.Threed
                     _context.Renderer.Pipeline.DrawIndirect(indirectBuffer);
                 }
             }
+
+            _channel.BufferManager.SetIndirectBuffer(0, 0, 0, 0);
 
             _drawState.DrawIndexed = false;
             _drawState.DrawIndirect = false;
