@@ -130,7 +130,7 @@ namespace Ryujinx.Tests.Memory
                     });
                 }
 
-                testThread.Start();
+                testThread.UnsafeStart();
 
                 // Create a smaller mapping, covering the larger mapping.
                 // Immediately try to write to the part of the larger mapping that did not change.
