@@ -46,7 +46,7 @@ jobs:
     env:
       POWERSHELL_TELEMETRY_OPTOUT: 1
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
-      RYUJINX_BASE_VERSION: "TB-1.1.0"
+      RYUJINX_BASE_VERSION: "0.0.0"
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-dotnet@v3
