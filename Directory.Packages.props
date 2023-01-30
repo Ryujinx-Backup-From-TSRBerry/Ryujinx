@@ -50,7 +50,7 @@
     <PackageVersion Include="System.Net.NameResolution" Version="4.3.0" />
     <PackageVersion Include="System.Threading.ThreadPool" Version="4.3.0" />
     <PackageVersion Include="XamlNameReferenceGenerator" Version="1.5.1" />
-    <PackageVersion Include="NetCoreServer" Version="5.1.0" />
+    <PackageVersion Include="NetCoreServer" Version="7.0.0" />
     <PackageVersion Include="Open.NAT.Core" Version="2.1.0.5" />
   </ItemGroup>
 </Project>
