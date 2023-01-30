@@ -35,6 +35,8 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
             OptionReceiveBufferSize = LanProtocol.RxBufferSizeMax;
             OptionSendBufferSize    = LanProtocol.TxBufferSizeMax;
 
+            Logger.Info?.PrintMsg(LogClass.ServiceLdn, $"LdnProxyUdpServer: Starting server on: {address}:{port}");
+
             Start();
         }
 

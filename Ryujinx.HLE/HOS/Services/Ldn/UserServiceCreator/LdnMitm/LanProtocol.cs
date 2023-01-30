@@ -48,6 +48,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
 
         private void DecodeAndHandle(LanPacketHeader header, byte[] data, EndPoint endPoint = null)
         {
+            Logger.Info?.PrintMsg(LogClass.ServiceLdn, $"LanProtocol: Received packet of type '{header.Type}' from: {endPoint}");
             switch (header.Type)
             {
                 case LanPacketType.Scan:

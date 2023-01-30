@@ -134,8 +134,8 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
                     NetworkInfo = info;
                     updated = true;
 
-                    Logger.Debug?.PrintMsg(LogClass.ServiceLdn, $"Received NetworkInfo:\n{JsonHelper.Serialize(info, true)}");
-                    Logger.Debug?.PrintMsg(LogClass.ServiceLdn, $"Host IP: {NetworkHelpers.ConvertUint(info.Ldn.Nodes[0].Ipv4Address)}");
+                    Logger.Info?.PrintMsg(LogClass.ServiceLdn, $"Received NetworkInfo:\n{JsonHelper.Serialize(info, true)}");
+                    Logger.Info?.PrintMsg(LogClass.ServiceLdn, $"Host IP: {NetworkHelpers.ConvertUint(info.Ldn.Nodes[0].Ipv4Address)}");
                 }
             }
 
@@ -256,7 +256,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
 
         public bool InitTcp(bool listening, IPAddress address = null, int port = DEFAULT_PORT)
         {
-            Logger.Debug?.PrintMsg(LogClass.ServiceLdn, $"LanDiscovery InitTcp: IP: {address}, listening: {listening}");
+            Logger.Info?.PrintMsg(LogClass.ServiceLdn, $"LanDiscovery InitTcp: IP: {address}, listening: {listening}");
 
             if (_tcp != null)
             {
@@ -430,6 +430,8 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
 
         protected void UpdateNodes(bool forceUpdate = false)
         {
+            Logger.Info?.PrintMsg(LogClass.ServiceLdn, "LanDiscovery UpdateNodes");
+
             int countConnected = 1;
 
             foreach (LdnProxyTcpSession station in _stations.Where(station => station.IsConnected))
@@ -472,6 +474,8 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
             node.UserName                  = userConfig.UserName;
             node.LocalCommunicationVersion = localCommunicationVersion;
             node.Ipv4Address               = ipAddress;
+
+            Logger.Info?.PrintMsg(LogClass.ServiceLdn, $"LanDiscovery GetNodeInfo: {JsonHelper.Serialize(node, true)}");
 
             return node;
         }

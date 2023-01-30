@@ -24,12 +24,16 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
             OptionReceiveBufferSize  = LanProtocol.TcpRxBufferSize;
             OptionSendBufferLimit    = LanProtocol.TxBufferSizeMax;
             OptionReceiveBufferLimit = LanProtocol.RxBufferSizeMax;
+
+            Logger.Info?.PrintMsg(LogClass.ServiceLdn, $"LdnProxyTcpSession: New session created.");
         }
 
         public void OverrideInfo()
         {
             NodeInfo.NodeId      = (byte)NodeId;
             NodeInfo.IsConnected = (byte)(IsConnected ? 1 : 0);
+
+            Logger.Info?.PrintMsg(LogClass.ServiceLdn, $"LdnProxyTcpSession: Writing node id: {NodeId}");
         }
 
         protected override void OnConnected()
