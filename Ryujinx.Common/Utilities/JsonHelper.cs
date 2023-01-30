@@ -60,6 +60,7 @@ namespace Ryujinx.Common.Utilities
                 DictionaryKeyPolicy  = SnakeCase,
                 PropertyNamingPolicy = SnakeCase,
                 WriteIndented        = prettyPrint,
+                IncludeFields        = true,
                 AllowTrailingCommas  = true,
                 ReadCommentHandling  = JsonCommentHandling.Skip
             };
