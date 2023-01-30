@@ -24,16 +24,20 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
         {
             UnicastIPAddressInformation localIpInterface = NetworkHelpers.GetLocalInterface(config.MultiplayerLanInterfaceId).Item2;
 
+            Logger.Info?.PrintMsg(LogClass.ServiceLdn, $"LdnMitm: Creating LDN client with address: {localIpInterface.Address} - mask: {localIpInterface.IPv4Mask}");
+
             _lanDiscovery = new LanDiscovery(this, localIpInterface.Address, localIpInterface.IPv4Mask);
         }
 
         internal void InvokeNetworkChange(NetworkInfo info, bool connected, DisconnectReason reason = DisconnectReason.None)
         {
+            Logger.Info?.PrintMsg(LogClass.ServiceLdn, $"LdnMitm InvokeNetworkChange: connected: {connected} - disconnectReason: {reason}\nnetInfo: {JsonHelper.Serialize(info, true)}");
             NetworkChange?.Invoke(this, new NetworkChangeEventArgs(info, connected: connected, disconnectReason: reason));
         }
 
         public NetworkError Connect(ConnectRequest request)
         {
+            Logger.Info?.PrintMsg(LogClass.ServiceLdn, "LdnMitm Connect");
             return _lanDiscovery.Connect(request.NetworkInfo, request.UserConfig, request.LocalCommunicationVersion);
         }
 
