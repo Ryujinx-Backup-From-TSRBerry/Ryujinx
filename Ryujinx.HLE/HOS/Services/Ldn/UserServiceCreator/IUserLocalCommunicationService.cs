@@ -140,7 +140,28 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator
             }
             else
             {
-                networkInfo = new NetworkInfo();
+                networkInfo = new NetworkInfo()
+                {
+                    NetworkId = new NetworkId()
+                    {
+                        SessionId = new byte[0x10]
+                    },
+                    Common = new CommonNetworkInfo()
+                    {
+                        MacAddress = new byte[6],
+                        Ssid = new Ssid()
+                        {
+                            Name = new byte[33]
+                        }
+                    },
+                    Ldn = new LdnNetworkInfo()
+                    {
+                        SecurityParameter = new byte[0x10],
+                        Nodes = new NodeInfo[8],
+                        AdvertiseData = new byte[LdnConst.AdvertiseDataSizeMax],
+                        Unknown2 = new byte[0x8C]
+                    }
+                };
 
                 return ResultCode.InvalidState;
             }
