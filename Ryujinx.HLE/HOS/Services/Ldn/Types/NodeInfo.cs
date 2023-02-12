@@ -1,4 +1,4 @@
-using Ryujinx.Common.Memory;
+using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator;
 using System.Runtime.InteropServices;
 
 namespace Ryujinx.HLE.HOS.Services.Ldn.Types
@@ -7,12 +7,15 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.Types
     struct NodeInfo
     {
         public uint          Ipv4Address;
-        public Array6<byte>  MacAddress;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
+        public byte[] MacAddress;
         public byte          NodeId;
         public byte          IsConnected;
-        public Array33<byte> UserName;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = LdnConst.UserNameBytesMax + 1)]
+        public byte[] UserName;
         public byte          Reserved1;
         public ushort        LocalCommunicationVersion;
-        public Array16<byte> Reserved2;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 0x10)]
+        public byte[] Reserved2;
     }
 }

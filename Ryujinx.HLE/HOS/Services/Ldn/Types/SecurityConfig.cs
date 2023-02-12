@@ -1,4 +1,4 @@
-using Ryujinx.Common.Memory;
+using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator;
 using System.Runtime.InteropServices;
 
 namespace Ryujinx.HLE.HOS.Services.Ldn.Types
@@ -8,6 +8,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.Types
     {
         public SecurityMode  SecurityMode;
         public ushort        PassphraseSize;
-        public Array64<byte> Passphrase;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = LdnConst.PassphraseLengthMax)]
+        public byte[]       Passphrase;
     }
 }

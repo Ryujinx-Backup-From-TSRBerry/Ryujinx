@@ -2,7 +2,6 @@ using LibHac.Ns;
 using Ryujinx.Common;
 using Ryujinx.Common.Configuration.Multiplayer;
 using Ryujinx.Common.Logging;
-using Ryujinx.Common.Memory;
 using Ryujinx.Common.Utilities;
 using Ryujinx.Cpu;
 using Ryujinx.HLE.HOS.Ipc;
@@ -11,8 +10,8 @@ using Ryujinx.HLE.HOS.Services.Ldn.Types;
 using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm;
 using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnRyu;
 using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnRyu.Types;
-using Ryujinx.Memory;
 using Ryujinx.Horizon.Common;
+using Ryujinx.Memory;
 using System;
 using System.Net;
 using System.Net.NetworkInformation;
@@ -121,9 +120,10 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator
                 return resultCode;
             }
 
-            ulong infoSize = MemoryHelper.Write(context.Memory, bufferPosition, networkInfo);
+            byte[] data = LdnHelper.StructureToByteArray(networkInfo);
+            context.Memory.Write(bufferPosition, data);
 
-            context.Response.PtrBuff[0] = context.Response.PtrBuff[0].WithSize(infoSize);
+            context.Response.PtrBuff[0] = context.Response.PtrBuff[0].WithSize((ulong)data.Length);
 
             return ResultCode.Success;
         }
@@ -256,11 +256,12 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator
 
             SecurityParameter securityParameter = new SecurityParameter()
             {
-                Data      = new Array16<byte>(),
+                Data      = new byte[0x10],
                 SessionId = networkInfo.NetworkId.SessionId
             };
 
-            context.ResponseData.WriteStruct(securityParameter);
+            byte[] data = LdnHelper.StructureToByteArray(securityParameter);
+            context.ResponseData.Write(data);
 
             return ResultCode.Success;
         }
@@ -286,10 +287,11 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator
                 Channel                   = networkInfo.Common.Channel,
                 NodeCountMax              = networkInfo.Ldn.NodeCountMax,
                 LocalCommunicationVersion = networkInfo.Ldn.Nodes[0].LocalCommunicationVersion,
-                Reserved2                 = new Array10<byte>()
+                Reserved2                 = new byte[10]
             };
 
-            context.ResponseData.WriteStruct(networkConfig);
+            byte[] data = LdnHelper.StructureToByteArray(networkConfig);
+            context.ResponseData.Write(data);
 
             return ResultCode.Success;
         }
@@ -341,14 +343,17 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator
 
             foreach (NodeLatestUpdate node in latestUpdate)
             {
-                MemoryHelper.Write(context.Memory, outputPosition, node);
+                byte[] data = LdnHelper.StructureToByteArray(node);
+                context.Memory.Write(outputPosition, data);
 
                 outputPosition += latestUpdateSize;
             }
 
-            ulong infoSize = MemoryHelper.Write(context.Memory, bufferPosition, networkInfo);
+            byte[] networkInfoData = LdnHelper.StructureToByteArray(networkInfo);
 
-            context.Response.PtrBuff[0] = context.Response.PtrBuff[0].WithSize(infoSize);
+            context.Memory.Write(bufferPosition, networkInfoData);
+
+            context.Response.PtrBuff[0] = context.Response.PtrBuff[0].WithSize((ulong)networkInfoData.Length);
 
             return ResultCode.Success;
         }
@@ -370,7 +375,10 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator
         private ResultCode ScanImpl(ServiceCtx context, bool isPrivate = false)
         {
             ushort     channel    = (ushort)context.RequestData.ReadUInt64();
-            ScanFilter scanFilter = context.RequestData.ReadStruct<ScanFilter>();
+            byte[] scanFilterData = new byte[Marshal.SizeOf<ScanFilter>()];
+
+            context.RequestData.Read(scanFilterData);
+            ScanFilter scanFilter = LdnHelper.FromBytes<ScanFilter>(scanFilterData);
 
             (ulong bufferPosition, ulong bufferSize) = context.Request.GetBufferType0x22(0);
 
@@ -452,7 +460,8 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator
 
             foreach (NetworkInfo networkInfo in availableGames)
             {
-                MemoryHelper.Write(memory, bufferPosition + (networkInfoSize * counter), networkInfo);
+                byte[] data = LdnHelper.StructureToByteArray(networkInfo);
+                memory.Write(bufferPosition + (networkInfoSize * counter), data);
 
                 if (++counter >= maxGames)
                 {
@@ -560,12 +569,32 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator
 
         public ResultCode CreateNetworkImpl(ServiceCtx context, bool isPrivate = false)
         {
-            SecurityConfig    securityConfig    = context.RequestData.ReadStruct<SecurityConfig>();
-            SecurityParameter securityParameter = isPrivate ? context.RequestData.ReadStruct<SecurityParameter>() : new SecurityParameter();
+            byte[] securityConfigData = new byte[Marshal.SizeOf<SecurityConfig>()];
+            byte[] securityParamData = new byte[Marshal.SizeOf<SecurityParameter>()];
 
-            UserConfig    userConfig    = context.RequestData.ReadStruct<UserConfig>();
+            context.RequestData.Read(securityConfigData);
+            SecurityConfig securityConfig = LdnHelper.FromBytes<SecurityConfig>(securityConfigData);
+
+            SecurityParameter securityParameter;
+            if (isPrivate)
+            {
+                context.RequestData.Read(securityParamData);
+                securityParameter = LdnHelper.FromBytes<SecurityParameter>(securityParamData);
+            }
+            else
+            {
+                securityParameter = new SecurityParameter();
+            }
+
+            byte[] userConfigData = new byte[Marshal.SizeOf<UserConfig>()];
+            context.RequestData.Read(userConfigData);
+
+            UserConfig    userConfig    = LdnHelper.FromBytes<UserConfig>(userConfigData);
             uint          unknown       = context.RequestData.ReadUInt32(); // Alignment?
-            NetworkConfig networkConfig = context.RequestData.ReadStruct<NetworkConfig>();
+
+            byte[] networkConfigData = new byte[Marshal.SizeOf<NetworkConfig>()];
+            context.RequestData.Read(networkConfigData);
+            NetworkConfig networkConfig = LdnHelper.FromBytes<NetworkConfig>(networkConfigData);
 
             if (networkConfig.IntentId.LocalCommunicationId == -1 && NetworkClient.NeedsRealId)
             {
@@ -846,10 +875,26 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator
 
         private ResultCode ConnectImpl(ServiceCtx context, bool isPrivate = false)
         {
-            SecurityConfig    securityConfig    = context.RequestData.ReadStruct<SecurityConfig>();
-            SecurityParameter securityParameter = isPrivate ? context.RequestData.ReadStruct<SecurityParameter>() : new SecurityParameter();
+            byte[] securityConfigData = new byte[Marshal.SizeOf<SecurityConfig>()];
+            context.RequestData.Read(securityConfigData);
+            SecurityConfig    securityConfig    = LdnHelper.FromBytes<SecurityConfig>(securityConfigData);
 
-            UserConfig userConfig                = context.RequestData.ReadStruct<UserConfig>();
+            byte[] securityParamData = new byte[Marshal.SizeOf<SecurityParameter>()];
+            SecurityParameter securityParameter;
+            if (isPrivate)
+            {
+                context.RequestData.Read(securityParamData);
+                securityParameter = LdnHelper.FromBytes<SecurityParameter>(securityParamData);
+            }
+            else
+            {
+                securityParameter = new SecurityParameter();
+            }
+
+            byte[] userConfigData = new byte[Marshal.SizeOf<UserConfig>()];
+            context.RequestData.Read(userConfigData);
+
+            UserConfig userConfig                = LdnHelper.FromBytes<UserConfig>(userConfigData);
             uint       localCommunicationVersion = context.RequestData.ReadUInt32();
             uint       optionUnknown             = context.RequestData.ReadUInt32();
 
@@ -860,7 +905,9 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator
             {
                 context.RequestData.ReadUInt32(); // Padding.
 
-                networkConfig = context.RequestData.ReadStruct<NetworkConfig>();
+                byte[] networkConfigData = new byte[Marshal.SizeOf<NetworkConfig>()];
+                context.RequestData.Read(networkConfigData);
+                networkConfig = LdnHelper.FromBytes<NetworkConfig>(networkConfigData);
             }
             else
             {

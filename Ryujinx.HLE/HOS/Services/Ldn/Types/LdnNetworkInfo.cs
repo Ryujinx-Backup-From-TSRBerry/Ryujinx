@@ -1,4 +1,4 @@
-using Ryujinx.Common.Memory;
+using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator;
 using System.Runtime.InteropServices;
 
 namespace Ryujinx.HLE.HOS.Services.Ldn.Types
@@ -6,18 +6,22 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.Types
     [StructLayout(LayoutKind.Sequential, Size = 0x430)]
     struct LdnNetworkInfo
     {
-        public Array16<byte>    SecurityParameter;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 0x10)]
+        public byte[]     SecurityParameter;
         public ushort           SecurityMode;
         public byte             StationAcceptPolicy;
         public byte             Unknown1;
         public ushort           Reserved1;
         public byte             NodeCountMax;
         public byte             NodeCount;
-        public Array8<NodeInfo> Nodes;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = LdnConst.NodeCountMax)]
+        public NodeInfo[] Nodes;
         public ushort           Reserved2;
         public ushort           AdvertiseDataSize;
-        public Array384<byte>   AdvertiseData;
-        public Array140<byte>   Unknown2;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = LdnConst.AdvertiseDataSizeMax)]
+        public byte[]     AdvertiseData;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 0x8C)]
+        public byte[]     Unknown2;
         public ulong            AuthenticationId;
     }
 }

@@ -1,4 +1,4 @@
-using Ryujinx.Common.Memory;
+using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator;
 using System.Runtime.InteropServices;
 
 namespace Ryujinx.HLE.HOS.Services.Ldn.Types
@@ -7,6 +7,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.Types
     struct Ssid
     {
         public byte          Length;
-        public Array33<byte> Name;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = LdnConst.SsidLengthMax + 1)]
+        public byte[] Name;
     }
 }

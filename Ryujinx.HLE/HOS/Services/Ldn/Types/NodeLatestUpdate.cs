@@ -1,4 +1,5 @@
-using Ryujinx.Common.Memory;
+using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator;
+using System;
 using System.Runtime.InteropServices;
 
 namespace Ryujinx.HLE.HOS.Services.Ldn.Types
@@ -7,29 +8,37 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.Types
     struct NodeLatestUpdate
     {
         public NodeLatestUpdateFlags State;
-        public Array7<byte>          Reserved;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 7)]
+        public byte[] Reserved;
     }
 
     static class NodeLatestUpdateHelper
     {
-        private static readonly object _lock = new();
-
-        public static void CalculateLatestUpdate(this Array8<NodeLatestUpdate> array, Array8<NodeInfo> beforeNodes, Array8<NodeInfo> afterNodes)
+        public static void CalculateLatestUpdate(this NodeLatestUpdate[] array, NodeInfo[] beforeNodes, NodeInfo[] afterNodes)
         {
-            lock (_lock)
+            if (beforeNodes == null)
+        {
+                // If there is no initial state, do not flag anyone as connected. (they are assumed to be connected before we joined)
+                return;
+            }
+
+            lock (array)
             {
                 for (int i = 0; i < 8; i++)
                 {
-                    if (beforeNodes[i].IsConnected == 0)
+                    NodeInfo before = beforeNodes == null ? new NodeInfo() : beforeNodes[i];
+                    NodeInfo after = afterNodes == null ? new NodeInfo() : afterNodes[i];
+
+                    if (before.IsConnected == 0)
                     {
-                        if (afterNodes[i].IsConnected != 0)
+                        if (after.IsConnected != 0)
                         {
                             array[i].State |= NodeLatestUpdateFlags.Connect;
                         }
                     }
                     else
                     {
-                        if (afterNodes[i].IsConnected == 0)
+                        if (after.IsConnected == 0)
                         {
                             array[i].State |= NodeLatestUpdateFlags.Disconnect;
                         }
@@ -38,15 +47,15 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.Types
             }
         }
 
-        public static NodeLatestUpdate[] ConsumeLatestUpdate(this Array8<NodeLatestUpdate> array, int number)
+        public static NodeLatestUpdate[] ConsumeLatestUpdate(this NodeLatestUpdate[] array, int number)
         {
             NodeLatestUpdate[] result = new NodeLatestUpdate[number];
 
-            lock (_lock)
+            lock (array)
             {
                 for (int i = 0; i < number; i++)
                 {
-                    result[i].Reserved = new Array7<byte>();
+                    result[i].Reserved = new byte[7];
 
                     if (i < LdnConst.NodeCountMax)
                     {

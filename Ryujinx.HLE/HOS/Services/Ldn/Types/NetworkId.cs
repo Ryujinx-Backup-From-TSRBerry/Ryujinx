@@ -1,5 +1,4 @@
-﻿using Ryujinx.Common.Memory;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace Ryujinx.HLE.HOS.Services.Ldn.Types
 {
@@ -7,6 +6,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.Types
     struct NetworkId
     {
         public IntentId      IntentId;
-        public Array16<byte> SessionId;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 0x10)]
+        public byte[]   SessionId;
     }
 }
