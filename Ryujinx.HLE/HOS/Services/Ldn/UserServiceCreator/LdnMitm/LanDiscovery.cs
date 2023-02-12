@@ -101,6 +101,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
 
             _fakeSsid = new()
             {
+                Name = new byte[LdnConst.SsidLengthMax],
                 Length = LdnConst.SsidLengthMax,
             };
             _random.NextBytes(_fakeSsid.Name.AsSpan()[..32]);
