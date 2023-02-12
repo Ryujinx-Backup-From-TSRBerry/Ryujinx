@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
@@ -57,23 +58,23 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
             {
                 NetworkId = new()
                 {
-                    SessionId = new Array16<byte>()
+                    SessionId = new byte[16]
                 },
                 Common = new()
                 {
-                    MacAddress = new Array6<byte>(),
+                    MacAddress = new byte[6],
                     Ssid = new()
                     {
-                        Name = new Array33<byte>()
+                        Name = new byte[33]
                     }
                 },
                 Ldn = new()
                 {
                     NodeCountMax      = LdnConst.NodeCountMax,
-                    SecurityParameter = new Array16<byte>(),
-                    Nodes             = new Array8<NodeInfo>(),
-                    AdvertiseData     = new Array384<byte>(),
-                    Unknown2          = new Array140<byte>()
+                    SecurityParameter = new byte[16],
+                    Nodes             = new NodeInfo[8],
+                    AdvertiseData     = new byte[384],
+                    Unknown2          = new byte[140]
                 }
             };
 
@@ -81,9 +82,9 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
             {
                 networkInfo.Ldn.Nodes[i] = new()
                 {
-                    MacAddress = new Array6<byte>(),
-                    UserName   = new Array33<byte>(),
-                    Reserved2  = new Array16<byte>()
+                    MacAddress = new byte[6],
+                    UserName   = new byte[33],
+                    Reserved2  = new byte[16]
                 };
             }
 
@@ -185,9 +186,9 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
                 {
                     NetworkInfo.Ldn.Nodes[station.NodeId] = new NodeInfo()
                     {
-                        MacAddress = new Array6<byte>(),
-                        UserName = new Array33<byte>(),
-                        Reserved2 = new Array16<byte>()
+                        MacAddress = new byte[6],
+                        UserName = new byte[33],
+                        Reserved2 = new byte[16]
                     };
 
                     UpdateNodes();
@@ -229,7 +230,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
                 NetworkInfo.Common.NetworkType = COMMON_NETWORK_TYPE;
                 NetworkInfo.Common.Ssid        = _fakeSsid;
 
-                NetworkInfo.Ldn.Nodes = new Array8<NodeInfo>();
+                NetworkInfo.Ldn.Nodes = new NodeInfo[8];
 
                 for (int i = 0; i < LdnConst.NodeCountMax; i++)
                 {
@@ -239,7 +240,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
             }
         }
 
-        protected Array6<byte> GetFakeMac(IPAddress address = null)
+        protected byte[] GetFakeMac(IPAddress address = null)
         {
             if (address == null)
             {
@@ -251,7 +252,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
             var macAddress = new Array6<byte>();
             new byte[] { 0x02, 0x00, ip[0], ip[1], ip[2], ip[3] }.CopyTo(macAddress.AsSpan());
 
-            return macAddress;
+            return macAddress.AsSpan().ToArray();
         }
 
         public bool InitTcp(bool listening, IPAddress address = null, int port = DEFAULT_PORT)
@@ -415,7 +416,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
 
         private int LocateEmptyNode()
         {
-            Array8<NodeInfo> nodes = NetworkInfo.Ldn.Nodes;
+            NodeInfo[] nodes = NetworkInfo.Ldn.Nodes;
 
             for (int i = 1; i < nodes.Length; i++)
             {
@@ -490,7 +491,7 @@ namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
 
             NetworkInfo.Common.Channel = networkConfig.Channel == 0 ? (ushort)6 : networkConfig.Channel;
 
-            NetworkInfo.NetworkId.SessionId = new Array16<byte>();
+            NetworkInfo.NetworkId.SessionId = new byte[16];
             _random.NextBytes(NetworkInfo.NetworkId.SessionId.AsSpan());
             NetworkInfo.NetworkId.IntentId = networkConfig.IntentId;
 
