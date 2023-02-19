@@ -178,10 +178,11 @@ namespace Ryujinx.Ava
             ConfigurationState.Instance.Graphics.ScalingFilter.Event       += UpdateScalingFilter;
             ConfigurationState.Instance.Graphics.ScalingFilterLevel.Event  += UpdateScalingFilterLevel;
 
-            ConfigurationState.Instance.Multiplayer.Mode.Event += UpdateMultiplayerModeState;
-            ConfigurationState.Instance.Multiplayer.LdnPassphrase.Event += UpdateLdnPassphraseState;
-            ConfigurationState.Instance.Multiplayer.DisableP2p.Event += UpdateDisableP2pState;
-            ConfigurationState.Instance.Multiplayer.LanInterfaceId.Event += UpdateLanInterfaceIdState;
+            ConfigurationState.Instance.System.EnableInternetAccess.Event  += UpdateEnableInternetAccessState;
+            ConfigurationState.Instance.Multiplayer.Mode.Event             += UpdateMultiplayerModeState;
+            ConfigurationState.Instance.Multiplayer.LdnPassphrase.Event    += UpdateLdnPassphraseState;
+            ConfigurationState.Instance.Multiplayer.DisableP2p.Event       += UpdateDisableP2pState;
+            ConfigurationState.Instance.Multiplayer.LanInterfaceId.Event   += UpdateLanInterfaceIdState;
 
             _gpuCancellationTokenSource = new CancellationTokenSource();
         }
@@ -385,6 +386,11 @@ namespace Ryujinx.Ava
             {
                 _viewModel.Volume = e.NewValue;
             });
+        }
+
+        private void UpdateEnableInternetAccessState(object sender, ReactiveEventArgs<bool> e)
+        {
+            Device.Configuration.EnableInternetAccess = e.NewValue;
         }
 
         private void UpdateMultiplayerModeState(object sender, ReactiveEventArgs<MultiplayerMode> e)
