@@ -76,17 +76,17 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ryujinx-${{ matrix.configuration }}-${{ env.RYUJINX_BASE_VERSION }}+${{ steps.git_short_hash.outputs.result }}-${{ matrix.RELEASE_ZIP_OS_NAME }}
-          path: publish
+          path: src/publish
         if: github.event_name == 'pull_request'
       - name: Upload Ryujinx.Headless.SDL2 artifact
         uses: actions/upload-artifact@v3
         with:
           name: sdl2-ryujinx-headless-${{ matrix.configuration }}-${{ env.RYUJINX_BASE_VERSION }}+${{ steps.git_short_hash.outputs.result }}-${{ matrix.RELEASE_ZIP_OS_NAME }}
-          path: publish_sdl2_headless
+          path: src/publish_sdl2_headless
         if: github.event_name == 'pull_request'
       - name: Upload Ryujinx.Ava artifact
         uses: actions/upload-artifact@v3
         with:
           name: ava-ryujinx-${{ matrix.configuration }}-${{ env.RYUJINX_BASE_VERSION }}+${{ steps.git_short_hash.outputs.result }}-${{ matrix.RELEASE_ZIP_OS_NAME }}
-          path: publish_ava
+          path: src/publish_ava
         if: github.event_name == 'pull_request'
