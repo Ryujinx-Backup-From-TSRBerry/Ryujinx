@@ -310,7 +310,7 @@ namespace Ryujinx.Modules
                         string baseBundlePath = Path.GetFullPath(Path.Combine(executableDirectory, "..", ".."));
                         string newBundlePath = Path.Combine(UpdateDir, "Ryujinx.app");
                         string updaterScriptPath = Path.Combine(newBundlePath, "Contents", "Resources", "updater.sh");
-                        string currentPid = Process.GetCurrentProcess().Id.ToString();
+                        string currentPid = Environment.ProcessId.ToString();
 
                         executablePath = "/bin/bash";
                         arguments.InsertRange(0, new List<string> { updaterScriptPath, baseBundlePath, newBundlePath, currentPid });
