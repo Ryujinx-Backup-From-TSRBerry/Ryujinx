@@ -2,7 +2,7 @@
 
 namespace Ryujinx.Graphics.Shader.Translation
 {
-    [SuppressMessage("Design", "CA1069:Enums values should not be duplicated")]
+    [SuppressMessage("Design", "CA1069: Enums values should not be duplicated")]
     enum AggregateType
     {
         Invalid,
