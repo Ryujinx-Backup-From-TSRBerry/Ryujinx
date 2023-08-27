@@ -97,7 +97,7 @@ namespace Ryujinx.Ava.UI.ViewModels
         private bool _canUpdate = true;
         private Cursor _cursor;
         private string _title;
-        private string _currentEmulatedGamePath;
+        private ApplicationData _currentEmulatedApplication;
         private readonly AutoResetEvent _rendererWaitEvent;
         private WindowState _windowState;
         private double _windowWidth;
@@ -107,8 +107,6 @@ namespace Ryujinx.Ava.UI.ViewModels
 
         public ApplicationData ListSelectedApplication;
         public ApplicationData GridSelectedApplication;
-
-        private string TitleName { get; set; }
         internal AppHost AppHost { get; set; }
 
         public MainWindowViewModel()
@@ -1117,7 +1115,7 @@ namespace Ryujinx.Ava.UI.ViewModels
                                 IsLoadingIndeterminate = false;
                                 break;
                             case LoadState.Loaded:
-                                LoadHeading = LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.LoadingHeading, TitleName);
+                                LoadHeading = LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.LoadingHeading, _currentEmulatedApplication.TitleName);
                                 IsLoadingIndeterminate = true;
                                 CacheLoadStatus = "";
                                 break;
@@ -1137,7 +1135,7 @@ namespace Ryujinx.Ava.UI.ViewModels
                                 IsLoadingIndeterminate = false;
                                 break;
                             case ShaderCacheLoadingState.Loaded:
-                                LoadHeading = LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.LoadingHeading, TitleName);
+                                LoadHeading = LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.LoadingHeading, _currentEmulatedApplication.TitleName);
                                 IsLoadingIndeterminate = true;
                                 CacheLoadStatus = "";
                                 break;
@@ -1189,13 +1187,13 @@ namespace Ryujinx.Ava.UI.ViewModels
             {
                 UserChannelPersistence.ShouldRestart = false;
 
-                await LoadApplication(_currentEmulatedGamePath);
+                await LoadApplication(_currentEmulatedApplication);
             }
             else
             {
                 // Otherwise, clear state.
                 UserChannelPersistence = new UserChannelPersistence();
-                _currentEmulatedGamePath = null;
+                _currentEmulatedApplication = null;
             }
         }
 
@@ -1482,7 +1480,12 @@ namespace Ryujinx.Ava.UI.ViewModels
 
             if (result.Count > 0)
             {
-                await LoadApplication(result[0].Path.LocalPath);
+                ApplicationData applicationData = new()
+                {
+                    Path = result[0].Path.LocalPath,
+                };
+
+                await LoadApplication(applicationData);
             }
         }
 
@@ -1496,11 +1499,17 @@ namespace Ryujinx.Ava.UI.ViewModels
 
             if (result.Count > 0)
             {
-                await LoadApplication(result[0].Path.LocalPath);
+                ApplicationData applicationData = new()
+                {
+                    TitleName = Path.GetFileNameWithoutExtension(result[0].Path.LocalPath),
+                    Path = result[0].Path.LocalPath,
+                };
+
+                await LoadApplication(applicationData);
             }
         }
 
-        public async Task LoadApplication(string path, bool startFullscreen = false, string titleName = "")
+        public async Task LoadApplication(ApplicationData application, bool startFullscreen = false)
         {
             if (AppHost != null)
             {
@@ -1520,7 +1529,7 @@ namespace Ryujinx.Ava.UI.ViewModels
 
             Logger.RestartTime();
 
-            SelectedIcon ??= ApplicationLibrary.GetApplicationIcon(path, ConfigurationState.Instance.System.Language);
+            SelectedIcon ??= ApplicationLibrary.GetApplicationIcon(application.Path, ConfigurationState.Instance.System.Language, ulong.Parse(application.TitleId, NumberStyles.HexNumber));
 
             PrepareLoadScreen();
 
@@ -1529,7 +1538,8 @@ namespace Ryujinx.Ava.UI.ViewModels
             AppHost = new AppHost(
                 RendererHostControl,
                 InputManager,
-                path,
+                application.Path,
+                ulong.Parse(application.TitleId, NumberStyles.HexNumber),
                 VirtualFileSystem,
                 ContentManager,
                 AccountManager,
@@ -1547,17 +1557,17 @@ namespace Ryujinx.Ava.UI.ViewModels
 
             CanUpdate = false;
 
-            LoadHeading = TitleName = titleName;
+            LoadHeading = application.TitleName;
 
-            if (string.IsNullOrWhiteSpace(titleName))
+            if (string.IsNullOrWhiteSpace(application.TitleName))
             {
                 LoadHeading = LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.LoadingHeading, AppHost.Device.Processes.ActiveApplication.Name);
-                TitleName = AppHost.Device.Processes.ActiveApplication.Name;
+                application.TitleName = AppHost.Device.Processes.ActiveApplication.Name;
             }
 
             SwitchToRenderer(startFullscreen);
 
-            _currentEmulatedGamePath = path;
+            _currentEmulatedApplication = application;
 
             Thread gameThread = new(InitializeGame) { Name = "GUI.WindowThread" };
             gameThread.Start();
