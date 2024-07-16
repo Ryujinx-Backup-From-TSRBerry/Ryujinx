@@ -7,6 +7,7 @@ using Ryujinx.Common.SystemInterop;
 using Ryujinx.Modules;
 using Ryujinx.SDL2.Common;
 using Ryujinx.UI;
+using Ryujinx.UI.App.Common;
 using Ryujinx.UI.Common;
 using Ryujinx.UI.Common.Configuration;
 using Ryujinx.UI.Common.Helper;
@@ -75,7 +76,7 @@ namespace Ryujinx
 
             if (OperatingSystem.IsWindows() && !OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17134))
             {
-                MessageBoxA(IntPtr.Zero, "You are running an outdated version of Windows.\n\nStarting on June 1st 2022, Ryujinx will only support Windows 10 1803 and newer.\n", $"Ryujinx {Version}", MbIconWarning);
+                MessageBoxA(IntPtr.Zero, "You are running an outdated version of Windows.\n\nRyujinx supports Windows 10 version 1803 and newer.\n", $"Ryujinx {Version}", MbIconWarning);
             }
 
             // Parse arguments
@@ -181,21 +182,24 @@ namespace Ryujinx
             {
                 // No configuration, we load the default values and save it to disk
                 ConfigurationPath = appDataConfigurationPath;
+                Logger.Notice.Print(LogClass.Application, $"No configuration file found. Saving default configuration to: {ConfigurationPath}");
 
                 ConfigurationState.Instance.LoadDefault();
                 ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationPath);
             }
             else
             {
+                Logger.Notice.Print(LogClass.Application, $"Loading configuration from: {ConfigurationPath}");
+
                 if (ConfigurationFileFormat.TryLoad(ConfigurationPath, out ConfigurationFileFormat configurationFileFormat))
                 {
                     ConfigurationState.Instance.Load(configurationFileFormat, ConfigurationPath);
                 }
                 else
                 {
-                    ConfigurationState.Instance.LoadDefault();
+                    Logger.Warning?.PrintMsg(LogClass.Application, $"Failed to load config! Loading the default config instead.\nFailed config location: {ConfigurationPath}");
 
-                    Logger.Warning?.PrintMsg(LogClass.Application, $"Failed to load config! Loading the default config instead.\nFailed config location {ConfigurationPath}");
+                    ConfigurationState.Instance.LoadDefault();
                 }
             }
 
@@ -319,7 +323,35 @@ namespace Ryujinx
 
             if (CommandLineState.LaunchPathArg != null)
             {
-                mainWindow.RunApplication(CommandLineState.LaunchPathArg, CommandLineState.StartFullscreenArg);
+                if (mainWindow.ApplicationLibrary.TryGetApplicationsFromFile(CommandLineState.LaunchPathArg, out List<ApplicationData> applications))
+                {
+                    ApplicationData applicationData;
+
+                    if (CommandLineState.LaunchApplicationId != null)
+                    {
+                        applicationData = applications.Find(application => application.IdString == CommandLineState.LaunchApplicationId);
+
+                        if (applicationData != null)
+                        {
+                            mainWindow.RunApplication(applicationData, CommandLineState.StartFullscreenArg);
+                        }
+                        else
+                        {
+                            Logger.Error?.Print(LogClass.Application, $"Couldn't find requested application id '{CommandLineState.LaunchApplicationId}' in '{CommandLineState.LaunchPathArg}'.");
+                            UserErrorDialog.CreateUserErrorDialog(UserError.ApplicationNotFound);
+                        }
+                    }
+                    else
+                    {
+                        applicationData = applications[0];
+                        mainWindow.RunApplication(applicationData, CommandLineState.StartFullscreenArg);
+                    }
+                }
+                else
+                {
+                    Logger.Error?.Print(LogClass.Application, $"Couldn't find any application in '{CommandLineState.LaunchPathArg}'.");
+                    UserErrorDialog.CreateUserErrorDialog(UserError.ApplicationNotFound);
+                }
             }
 
             if (ConfigurationState.Instance.CheckUpdatesOnStart.Value && Updater.CanUpdate(false))
